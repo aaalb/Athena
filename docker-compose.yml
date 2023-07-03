@@ -1,9 +1,47 @@
+version: "3"
 services:
   web:
+    container_name: backend_flask
     build: .
+    restart: on-failure
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: postgres_db
+      DB_USER: admin
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      FLASK_DEBUG: "true"
     ports:
       - "8000:5000"
     volumes:
       - .:/src 
+  
+  db:
+    container_name: backend_postgres
+    image: postgres
+    restart: always
+    ports:
+        - "5430:5432"
     environment:
-      FLASK_DEBUG: "true"
+        POSTGRES_USER: backend
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: postgres_db
+    volumes:
+        - postgis_data:/var/lib/postgis/data
+
+  pgadmin-compose:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "backend@test.com"
+      PGADMIN_DEFAULT_PASSWORD: "Password@12"
+    ports:
+      - "16543:80"
+    depends_on:
+      - db
+
+volumes:
+  postgis_data:
+    driver: local
