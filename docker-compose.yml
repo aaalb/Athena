@@ -23,7 +23,7 @@ services:
     image: postgres
     restart: always
     ports:
-        - "5430:5432"
+        - "5428:5432"
     environment:
         POSTGRES_USER: backend
         POSTGRES_PASSWORD: password

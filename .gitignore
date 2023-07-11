@@ -1,1 +1,3 @@
-__pycache__
+/__pycache__/
+/flutter_app/
+.DS_Store
