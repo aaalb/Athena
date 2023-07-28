@@ -34,9 +34,5 @@ def login():
     return res
 
 
-@app.route('/api/v1/getRecentExams', methods=['GET'])
-def getRecentExams():
-    query = ''
-
 if __name__ == '__main__':
    app.run()
