@@ -1,35 +1,14 @@
+import 'package:flutter_app/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/loginPage.dart';
-import 'package:go_router/go_router.dart';
-import 'package:url_strategy/url_strategy.dart';
-
-import 'dashboard.dart';
-import 'libretto.dart';
-
-final _router = GoRouter(
-  routes: [
-    GoRoute(
-      path: "/",
-      builder: (context, state) => DashBoard(title: 'ciao'),
-    ),
-    GoRoute(
-      path: "/libretto",
-      builder: (context, state) => Libretto(),
-    ),
-    GoRoute(
-      path: "/login",
-      builder: (context, state) => LoginPage(),
-    ),
-  ],
-);
+import 'package:flutter_app/screens/main/main_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  setPathUrlStrategy();
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -38,10 +17,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      title: "BD2 - Progetto",
-      theme: ThemeData.light(useMaterial3: true),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Admin Panel',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: bgColor,
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.white),
+        canvasColor: secondaryColor,
+      ),
+      home: MainScreen(),
     );
   }
 }
