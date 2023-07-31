@@ -15,8 +15,6 @@ services:
       FLASK_DEBUG: "true"
     ports:
       - "8000:5000"
-    volumes:
-      - .:/src 
   
   db:
     container_name: backend_postgres
@@ -29,7 +27,7 @@ services:
         POSTGRES_PASSWORD: password
         POSTGRES_DB: postgres_db
     volumes:
-        - postgis_data:/var/lib/postgis/data
+        - postgis_data:/var/lib/postgis_data/data
 
   pgadmin-compose:
     container_name: pgadmin
