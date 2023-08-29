@@ -39,8 +39,8 @@ class _RecentExamsState extends State<RecentExams> {
                   label: Text('Vote'),
                 ),
               ],
-              rows: List.generate(demoRecentExams.length,
-                  (index) => recentExamsDataRow(demoRecentExams[index])),
+              rows: List.generate(listRecentExams.length,
+                  (index) => recentExamsDataRow(listRecentExams[index])),
             ),
           )
         ],

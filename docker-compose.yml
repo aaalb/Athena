@@ -15,7 +15,8 @@ services:
       FLASK_DEBUG: "true"
     ports:
       - "8000:5000"
-  
+    volumes:
+      - .:/src
   db:
     container_name: backend_postgres
     image: postgres

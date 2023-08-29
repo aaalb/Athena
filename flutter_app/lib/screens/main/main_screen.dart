@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/dashboard/dashboard_main.dart';
+import 'package:flutter_app/screens/dashboard/dashboard_screen.dart';
 
-import 'components/side_menu.dart';
+import '../../side_menu.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

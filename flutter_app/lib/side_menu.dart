@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -17,12 +18,17 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "icons/menu_dashboard.svg",
+            press: () => context.go('/'),
+          ),
+          DrawerListTile(
+            title: "Libretto",
+            svgSrc: "icons/menu_dashboard.svg",
             press: () {},
           ),
           DrawerListTile(
-            title: "Appelli",
+            title: "Prenotazione Appelli",
             svgSrc: "icons/menu_tran.svg",
-            press: () {},
+            press: () => context.go('/appelli'),
           ),
           DrawerListTile(
             title: "Le mie prenotazioni",

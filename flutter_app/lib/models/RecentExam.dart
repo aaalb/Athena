@@ -4,7 +4,7 @@ class RecentExam {
   RecentExam({this.name, this.date, this.credits, this.vote});
 }
 
-List demoRecentExams = [
+List listRecentExams = [
   RecentExam(
     name: "Programmazione e laboratorio",
     date: "19/06/2023",

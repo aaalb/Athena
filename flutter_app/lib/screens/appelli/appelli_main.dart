@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/appelli/appelli_screen.dart';
 
 import 'package:flutter_app/side_menu.dart';
-import 'dashboard_screen.dart';
 
-class DashboardMain extends StatefulWidget {
-  const DashboardMain({super.key});
+class AppelliMain extends StatefulWidget {
+  const AppelliMain({super.key});
 
   @override
-  State<DashboardMain> createState() => _DashboardState();
+  State<AppelliMain> createState() => _AppelliState();
 }
 
-class _DashboardState extends State<DashboardMain> {
+class _AppelliState extends State<AppelliMain> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -27,7 +27,7 @@ class _DashboardState extends State<DashboardMain> {
             Expanded(
               // It takes 5/6 part of the screen
               flex: 5,
-              child: Dashboard(),
+              child: Appelli(),
             ),
           ],
         ),
