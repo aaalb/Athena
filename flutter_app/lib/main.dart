@@ -2,6 +2,7 @@ import 'package:flutter_app/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/appelli/appelli_main.dart';
 import 'package:flutter_app/screens/dashboard/dashboard_main.dart';
+import 'package:flutter_app/screens/login/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,14 +39,20 @@ final _router = GoRouter(
   routes: [
     GoRoute(
       name:
-          'dashboard', // Optional, add name to your routes. Allows you navigate by name instead of path
+          'Dashboard', // Optional, add name to your routes. Allows you navigate by name instead of path
       path: '/',
       builder: (context, state) => DashboardMain(),
     ),
     GoRoute(
-      name: 'appelli',
+      name: 'Appelli',
       path: '/appelli',
       builder: (context, state) => AppelliMain(),
+    ),
+    GoRoute(
+      name:
+          'Login', // Optional, add name to your routes. Allows you navigate by name instead of path
+      path: '/login',
+      builder: (context, state) => LoginPage(),
     ),
   ],
 );
