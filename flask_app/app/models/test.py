@@ -5,4 +5,4 @@ class Test(Base):
     __table__ = Table('test', metadata)
 
     def __repr__(self):
-        return f""
+        return f"Name: {self.name}"
