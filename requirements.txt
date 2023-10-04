@@ -1,5 +1,5 @@
 flask
-psycopg2-binary
 sqlalchemy
 werkzeug
+psycopg2-binary
 flask-jwt-extended
