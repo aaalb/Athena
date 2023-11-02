@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -13,5 +14,5 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
     jwt = JWTManager(app)
-    
+    CORS(app)
     return app

@@ -1,6 +1,8 @@
 from app.auth import bp 
 from app.extensions import session 
-from app.models.user import User
+from app.models.Studente import Studente
+from app.models.Docente import Docente
+
 from flask_jwt_extended import *
 from flask import request, jsonify
 from werkzeug.security import check_password_hash
@@ -8,20 +10,32 @@ from werkzeug.security import check_password_hash
 @bp.route('/login', methods=['POST'])
 def login():
     #Sanificare input, possibile SQLI
-    badgenumber = request.json["badgenumber"]
+    email = request.json["email"]
     password = request.json["password"]
 
-    if not badgenumber or not password:
+    if not email or not password:
         return jsonify({"Status": 401, "Reason":"Missing parameters!"})
 
-    user = session.query(User).filter_by(badgenumber=badgenumber).first()
-
-    if user:
-        if check_password_hash(user.password, password):
-            ret = {'access_token': create_access_token(identity=badgenumber)}
+    studente = session.query(Studente).filter_by(email=email).first()
+    if studente:
+        if check_password_hash(studente.password, password):
+            ret = {
+                'role': 'studente',
+                'access_token': create_access_token(identity=email)
+                }
+            return jsonify(ret), 200
+    
+    docente = session.query(Docente).filter_by(email=email).first()
+    if docente:
+        if check_password_hash(docente.password, password):
+            ret = {
+                'role':'docente',
+                'access_token': create_access_token(identity=email)
+                }
             return jsonify(ret), 200
     
     return jsonify({"Status": 401, "Reason":"Wrong credentials"})
+    
     
 
 @bp.route('/logout', methods=['GET'])

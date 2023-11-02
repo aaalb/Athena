@@ -1,18 +1,22 @@
 from app.api import bp 
-from app.models.user import User
 from app.extensions import session
 from flask import jsonify
 from flask_jwt_extended import *
-from app.models.exam import Exam
-from app.models.student import Student
-from app.models.test import Test
 
-#get TO-DO exams
-@bp.route('/getTODOexams', methods=['POST'])
+from app.models.Appello import Appello
+from app.models.Iscrizione import Iscrizione
+
+@bp.route('/appelli', methods=['POST'])
 @jwt_required()
-def getAppelli():
-   current_user = get_jwt_identity()
+def get_appelli():
+    current_user = get_jwt_identity()
 
-   result = session.query(Test).join(Exam, onclause=Test.examid == Exam.idexam).join(Student, Exam.studentbadgenumber == Student.badgenumber).filter(Student.badgenumber == current_user)
+    subquery = session.query(Iscrizione.idappello).filter(Iscrizione.email == current_user)
+    query = session.query(Appello).filter(Appello.idappello.notin_(subquery)).all()
 
-   return jsonify(str(result.first()))
+    result_list = [appello.__dict__ for appello in query]
+
+    for appello_dict in result_list:
+        appello_dict.pop('_sa_instance_state', None)
+
+    return jsonify(result_list)

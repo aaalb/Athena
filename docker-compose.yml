@@ -19,7 +19,7 @@ services:
       - .:/src
   db:
     container_name: backend_postgres
-    image: postgres
+    image: postgres:latest
     restart: always
     ports:
         - "5428:5432"
@@ -32,7 +32,7 @@ services:
 
   pgadmin-compose:
     container_name: pgadmin
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     environment:
       PGADMIN_DEFAULT_EMAIL: "backend@test.com"
       PGADMIN_DEFAULT_PASSWORD: "Password@12"

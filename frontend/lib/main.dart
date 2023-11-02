@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Screens/Login/login_screen.dart';
+import 'package:frontend/routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'BD2 - Progetto',
       theme: ThemeData(
         inputDecorationTheme: const InputDecorationTheme(
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      routerConfig: router,
     );
   }
 }
