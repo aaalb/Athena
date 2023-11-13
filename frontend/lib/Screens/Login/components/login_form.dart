@@ -7,7 +7,7 @@ import 'dart:convert';
 
 import 'package:go_router/go_router.dart';
 
-void login(String email, String password, BuildContext context) async {
+Future<bool> login(String email, String password) async {
   try {
     http.Response response = await http.post(
       Uri.parse('http://localhost:8000/auth/login'),
@@ -21,9 +21,12 @@ void login(String email, String password, BuildContext context) async {
       //TO-DO: change sharedpreferences with something encrypted
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("access_token", data['access_token']);
-      context.go('/libretto');
+
+      return true;
     }
   } catch (e) {}
+
+  return false;
 }
 
 class LoginForm extends StatefulWidget {
@@ -77,11 +80,9 @@ class _LoginFormState extends State<LoginForm> {
             tag: "login_btn",
             child: ElevatedButton(
               onPressed: () {
-                login(
-                  emailController.text.toString(),
-                  passwordController.text.toString(),
-                  context,
-                );
+                login(emailController.text.toString(),
+                        passwordController.text.toString())
+                    .then((value) => (value) ? context.go('/libretto') : {});
               },
               child: Text(
                 "Login".toUpperCase(),

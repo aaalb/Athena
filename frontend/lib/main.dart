@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/constants.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'package:frontend/routes.dart';
 
 void main() {
+  setPathUrlStrategy();
   runApp(const MyApp());
 }
 
@@ -15,16 +18,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'BD2 - Progetto',
       theme: ThemeData(
-        inputDecorationTheme: const InputDecorationTheme(
+        fontFamily: 'Roboto',
+        primaryColor: primaryColor,
+        secondaryHeaderColor: secondaryColor,
+        brightness: Brightness.light,
+        inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.white,
-          iconColor: Colors.blue,
-          prefixIconColor: Colors.amber,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(10.0),
           ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          fillColor: secondaryColor,
+          prefixIconColor: Colors.purple,
+          hintStyle: const TextStyle(fontFamily: 'Roboto'),
         ),
       ),
       debugShowCheckedModeBanner: false,

@@ -10,8 +10,6 @@ class LibrettoScreen extends StatefulWidget {
 class _LibrettoScreenState extends State<LibrettoScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(),
-    );
+    return Container();
   }
 }

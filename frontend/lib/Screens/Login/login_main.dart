@@ -4,8 +4,8 @@ import 'components/login_screen_top_image.dart';
 import 'components/login_form.dart';
 import 'package:frontend/background.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class Login extends StatelessWidget {
+  const Login({super.key});
 
   @override
   Widget build(BuildContext context) {
