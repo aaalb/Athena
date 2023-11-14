@@ -5,8 +5,8 @@ from flask_jwt_extended import *
 
 from app.models.Appello import Appello
 from app.models.Iscrizione import Iscrizione
-from app.models.Libretto import Libretto
 from app.models.Esame import Esame
+from app.models.Prova import Prova
 
 @bp.route('/appelli', methods=['GET'])
 @jwt_required()
@@ -14,7 +14,10 @@ def get_appelli():
     current_user = get_jwt_identity()
 
     subquery = session.query(Iscrizione.idappello).filter(Iscrizione.email == current_user)
-    query = session.query(Appello).filter(Appello.idappello.notin_(subquery)).all()
+    
+    query = session.query(Appello) \
+        .filter(Appello.idappello.notin_(subquery)) \
+        .all()
 
     result_list = [record.__dict__ for record in query]
 
@@ -23,23 +26,30 @@ def get_appelli():
 
     return jsonify(result_list)
 
-@bp.route('/libretto', methods=['GET'])
+
+@bp.route('/appelli/prenotati', methods=['GET'])
 @jwt_required()
-def get_libretto():
+def get_appelli_prenotati():
     current_user = get_jwt_identity()
 
-    query = session.query(Libretto.votocomplessivo, Esame.nome, Esame.crediti, Esame.anno) \
+    subquery = session.query(Iscrizione.idappello) \
+        .filter(Iscrizione.voto == None) \
+        .filter(Iscrizione.email == current_user)
+    
+    query = session.query(Prova.idprova, Esame.nome, Appello.data, Prova.tipologia) \
+        .select_from(Appello) \
+        .join(Prova) \
         .join(Esame) \
-        .filter(Libretto.email == current_user) \
+        .filter(Appello.idappello.in_(subquery)) \
         .all()
 
     result = []
     for record in query:
         result.append({
-            'nome' : record.nome, 
-            'voto_complessivo' : record.votocomplessivo,
-            'crediti' : record.crediti,
-            'anno' : record.anno
+            'idprova' : record.idprova, 
+            'nome' : record.nome,
+            'tipologia' : record.tipologia,
+            'data' : record.data,
         })
 
     return jsonify(result)
