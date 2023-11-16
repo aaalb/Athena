@@ -9,7 +9,7 @@ from werkzeug.security import check_password_hash
 
 @bp.route('/login', methods=['POST'])
 def login():
-    #Sanificare input, possibile SQLI
+    #TODO: Insert tole in jwt token
     email = request.json["email"]
     password = request.json["password"]
 
@@ -19,9 +19,10 @@ def login():
     studente = session.query(Studente).filter_by(email=email).first()
     if studente:
         if check_password_hash(studente.password, password):
+            identity = {'email': email, 'role': 'Studente'}
             ret = {
                 'role': 'studente',
-                'access_token': create_access_token(identity=email)
+                'access_token': create_access_token(identity=identity)
                 }
             return jsonify(ret), 200
     
