@@ -23,6 +23,11 @@ class SideMenu extends StatelessWidget {
             svgSrc: "icons/libretto.svg",
             press: () => context.go('/appelli'),
           ),
+          DrawerListTile(
+            title: "Bacheca prenotazioni",
+            svgSrc: "icons/libretto.svg",
+            press: () => context.go('/prenotazioni'),
+          ),
         ],
       ),
     );
@@ -32,7 +37,6 @@ class SideMenu extends StatelessWidget {
 class DrawerListTile extends StatelessWidget {
   const DrawerListTile({
     Key? key,
-    // For selecting those three line once press "Command+D"
     required this.title,
     required this.svgSrc,
     required this.press,
@@ -48,8 +52,6 @@ class DrawerListTile extends StatelessWidget {
       horizontalTitleGap: 0.0,
       leading: SvgPicture.asset(
         svgSrc,
-        colorFilter: const ColorFilter.mode(
-            Color.fromARGB(137, 255, 0, 0), BlendMode.srcIn),
         height: 16,
       ),
       title: Text(

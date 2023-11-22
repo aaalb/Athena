@@ -8,3 +8,5 @@ metadata.reflect(bind=engine)
 Session = sessionmaker(engine)
 Base = declarative_base()
 session = Session()
+
+token_blacklist = []

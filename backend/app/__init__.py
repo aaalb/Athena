@@ -3,6 +3,8 @@ from config import Config
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
+from app.extensions import token_blacklist
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -14,5 +16,11 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
     jwt = JWTManager(app)
+    
+    @jwt.token_in_blocklist_loader
+    def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
+        jti = jwt_payload["jti"]
+        return jti in token_blacklist
+    
     CORS(app)
     return app

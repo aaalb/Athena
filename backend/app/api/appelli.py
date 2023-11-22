@@ -14,7 +14,7 @@ from app.models.Prova import Prova
 def get_appelli():
     current_user = get_jwt_identity()
 
-    subquery = session.query(Iscrizione.idappello).filter(Iscrizione.email == current_user)
+    subquery = session.query(Iscrizione.idappello).filter(Iscrizione.email == current_user['email'])
     
     query = session.query(Appello) \
         .filter(Appello.idappello.notin_(subquery)) \
@@ -35,7 +35,7 @@ def get_appelli_prenotati():
 
     subquery = session.query(Iscrizione.idappello) \
         .filter(Iscrizione.voto == None) \
-        .filter(Iscrizione.email == current_user)
+        .filter(Iscrizione.email == current_user['email'])
     
     query = session.query(Prova.idprova, Esame.nome, Appello.data, Prova.tipologia) \
         .select_from(Appello) \
@@ -70,7 +70,7 @@ def prenota_appello():
 
     query = insert(Iscrizione).values(
         idappello = id_appello,
-        email = current_user
+        email = current_user['email']
     )
 
     session.execute(query)
@@ -92,7 +92,7 @@ def sprenota_appello():
     id_appello = query[0][0]
     
     query = session.query(Iscrizione) \
-        .filter(Iscrizione.email == current_user) \
+        .filter(Iscrizione.email == current_user['email']) \
         .filter(Iscrizione.idappello == id_appello) \
         .delete()
 

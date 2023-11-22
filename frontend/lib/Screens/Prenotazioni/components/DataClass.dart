@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/models/Esame.dart';
+import 'package:frontend/models/Prenotazione.dart';
 
 class DataClass extends StatelessWidget {
   const DataClass({super.key, required this.dataList});
-  final List<Esame> dataList;
+  final List<Prenotazione> dataList;
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +19,20 @@ class DataClass extends StatelessWidget {
           border: TableBorder.all(width: 1.0),
           // Data columns as required by APIs data.
           columns: const [
+            DataColumn(label: Text("ID Prova")),
             DataColumn(label: Text("Attività Didattica")),
-            DataColumn(label: Text("Voto complessivo")),
-            DataColumn(label: Text("Crediti")),
-            DataColumn(label: Text("Anno")),
+            DataColumn(label: Text("Tipologia")),
+            DataColumn(label: Text("Data")),
           ],
           // Main logic and code for geting data and shoing it in table rows.
           rows: dataList
               .map(
                   //maping each rows with datalist data
                   (data) => DataRow(cells: [
+                        DataCell(Text(data.idprova)),
                         DataCell(Text(data.attivitaDidattica)),
-                        DataCell(Text(data.votoComplessivo.toString())),
-                        DataCell(Text(data.crediti.toString())),
-                        DataCell(Text(data.anno.toString())),
+                        DataCell(Text(data.tipologia)),
+                        DataCell(Text(data.data)),
                       ]))
               .toList(), // converting at last into list.
         )));

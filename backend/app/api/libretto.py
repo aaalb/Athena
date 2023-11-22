@@ -13,7 +13,7 @@ def get_libretto():
 
     query = session.query(Libretto.votocomplessivo, Esame.nome, Esame.crediti, Esame.anno) \
         .join(Esame) \
-        .filter(Libretto.email == current_user) \
+        .filter(Libretto.email == current_user['email']) \
         .all()
 
     result = []
