@@ -7,12 +7,7 @@ services:
     depends_on:
       - db
     environment:
-      DB_HOST: db
-      DB_NAME: postgres_db
-      DB_USER: admin
-      DB_PASSWORD: password
-      DB_PORT: 5432
-      FLASK_DEBUG: "true"
+      FLASK_DEBUG: ${FLASK_DEBUG}
     ports:
       - "8000:5000"
     volumes:
@@ -24,23 +19,23 @@ services:
     ports:
         - "5428:5432"
     environment:
-        POSTGRES_USER: backend
-        POSTGRES_PASSWORD: password
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: postgres_db
     volumes:
-        - postgis_data:/var/lib/postgis_data/data
+        - postgres_data:/var/datadb/
 
   pgadmin-compose:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
     environment:
-      PGADMIN_DEFAULT_EMAIL: "backend@test.com"
-      PGADMIN_DEFAULT_PASSWORD: "Password@12"
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "16543:80"
     depends_on:
       - db
 
 volumes:
-  postgis_data:
+  postgres_data:
     driver: local

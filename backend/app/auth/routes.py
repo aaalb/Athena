@@ -34,13 +34,16 @@ def login():
                 }
             return jsonify(ret), 200
     
-    return jsonify({"Status": 401, "Reason":"Wrong credentials"})
+    return "Wrong credentials", 401
     
     
 
-@bp.route('/logout', methods=['GET'])
+@bp.route('/logout', methods=['POST'])
 @jwt_required()
 def logout():
-    jti = get_jwt()['jti']
-    token_blacklist.append(jti)
-    return jsonify({"Status": 200, "Info": "Logout Successfull"})
+    try:
+        jti = get_jwt()['jti']
+        token_blacklist.append(jti)
+        return "Logged out", 200
+    except:
+        return "Error", 500

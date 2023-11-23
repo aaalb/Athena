@@ -1,14 +1,13 @@
 import os 
 import datetime
-import configparser
+from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-config = configparser.ConfigParser()
-config.read('app.ini')
+load_dotenv()
 
 class Config:  
-    SQLACHEMY_DATABASE_URI = 'postgresql://backend:password@backend_postgres:5432/postgres_db'
+    SQLACHEMY_DATABASE_URI = os.environ.get('DB_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = 'prova'
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=30)
