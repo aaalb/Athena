@@ -86,3 +86,15 @@ flutter:
          - asset: assets/fonts/Roboto-Bold.ttf
            weight: 700
          - asset: assets/fonts/Roboto-Regular.ttf
+     - family: Medieval
+       fonts:
+         - asset: assets/fonts/MedievalSharp-Regular.ttf
+     - family: SourceSansPro
+       fonts:
+       - asset: assets/fonts/SourceSansPro-Bold.otf
+         weight: 700
+       - asset: assets/fonts/SourceSansPro-Light.otf
+         weight: 300
+       - asset: assets/fonts/SourceSansPro-Regular.otf
+       - asset: assets/fonts/SourceSansPro-Semibold.otf
+         weight: 600
