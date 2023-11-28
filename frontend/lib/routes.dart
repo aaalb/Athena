@@ -11,7 +11,7 @@ final router = GoRouter(
     GoRoute(
       name: 'Login',
       path: '/',
-      builder: (context, state) => Login(),
+      builder: (context, state) => LoginPage(),
     ),
     GoRoute(
       name: 'Libretto',
