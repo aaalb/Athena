@@ -53,7 +53,7 @@ VALUES
 
 INSERT INTO uniexams.Iscrizioni(idAppello, email, voto, bonus, idoneita)
 VALUES
-	(1, '886512@unive.it', 17, 0, false),
-	(6, '886512@unive.it', 30, 0, true),
-	(2, '600653@unive.it', 18, 1, true),
-	(4, '886512@unive.it', NULL, 0, true);
+	(6, '886512@unive.it', 17, 0, false),
+	(7, '886512@unive.it', 30, 0, true),
+	(8, '600653@unive.it', 18, 1, true),
+	(9, '886512@unive.it', NULL, 0, true);

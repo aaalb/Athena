@@ -102,7 +102,7 @@ def sprenota_appello():
             .filter(Iscrizione.email == current_user['email']) \
             .filter(Iscrizione.idappello == id_appello) \
             .delete()
-
+        
         return "Done", 200
     except:
         return "Error", 500
