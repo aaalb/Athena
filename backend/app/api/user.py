@@ -9,9 +9,9 @@ from app.models.Docente import Docente
 @bp.route('/utente/data', methods=['GET'])
 @jwt_required()
 def get_user_data():
-    tipo = request.args.get('tipo')
     current_user = get_jwt_identity()
-
+    tipo = current_user['role']
+    
     result = []
     if tipo == 'Studente':
         query = session.query(Studente.nome, Studente.cognome, Studente.email, Studente.datanascita, Studente.matricola, Studente.facolta) \

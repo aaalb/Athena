@@ -9,7 +9,7 @@ from app.models.Iscrizione import Iscrizione
 from app.models.Esame import Esame
 from app.models.Prova import Prova
 
-@bp.route('/appelli', methods=['GET'])
+@bp.route('/appelli/', methods=['GET'])
 @jwt_required()
 def get_appelli():
     current_user = get_jwt_identity()
@@ -28,7 +28,7 @@ def get_appelli():
     return jsonify(result_list)
 
 
-@bp.route('/appelli/prenotati', methods=['GET'])
+@bp.route('/appelli/prenotazioni', methods=['GET'])
 @jwt_required()
 def get_appelli_prenotati():
     try:
@@ -63,17 +63,18 @@ def get_appelli_prenotati():
 def prenota_appello():
     try:
         current_user = get_jwt_identity()
-        id_prova = request.form.get('idprova')
-        data = request.form.get('data')
+        id_prova = request.json['idprova']
+        data = request.json['data']
 
-        query = session.query(Appello) \
+        if not id_prova or not data:
+            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
+
+        appello = session.query(Appello) \
             .filter(Appello.idprova == id_prova) \
-            .filter(Appello.data == data).all()
-        
-        id_appello = query[0][0]
+            .filter(Appello.data == data).first()
 
         query = insert(Iscrizione).values(
-            idappello = id_appello,
+            idappello = appello.idappello,
             email = current_user['email']
         )
 
@@ -84,6 +85,7 @@ def prenota_appello():
     except:
         return "Error", 500
 
+
 @bp.route('/appelli/sprenota', methods=['POST'])
 @jwt_required()
 def sprenota_appello():
@@ -91,6 +93,9 @@ def sprenota_appello():
         current_user = get_jwt_identity()
         id_prova = request.form.get('idprova')
         data = request.form.get('data')
+
+        if not id_prova or not data:
+            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
 
         query = session.query(Appello.idappello) \
             .filter(Appello.idprova == id_prova) \
@@ -106,5 +111,6 @@ def sprenota_appello():
         return "Done", 200
     except:
         return "Error", 500
+
 
 
