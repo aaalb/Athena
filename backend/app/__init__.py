@@ -2,6 +2,7 @@ from flask import Flask
 from config import Config
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from flask_wtf import CSRFProtect 
 
 from app.extensions import token_blacklist
 
@@ -22,5 +23,6 @@ def create_app(config_class=Config):
         jti = jwt_payload["jti"]
         return jti in token_blacklist
     
+    #csrf = CSRFProtect(app) 
     CORS(app)
     return app

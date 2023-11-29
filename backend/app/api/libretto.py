@@ -2,11 +2,10 @@ from app.api import bp
 from app.extensions import session
 from flask import jsonify, request
 from flask_jwt_extended import *
+from sqlalchemy import insert
 
 from app.models.Libretto import Libretto
 from app.models.Esame import Esame
-
-import sys
 
 @bp.route('/libretto', methods=['GET'])
 @jwt_required()
@@ -30,27 +29,6 @@ def get_libretto():
 
         return jsonify(result), 200
     except:
-        return "Error", 500
+        return "Internal Server Error", 500
 
-
-@bp.route('/libretto/inserisci', methods=['POST'])
-@jwt_required()
-def inserisci_in_libretto():
-    try:
-        current_user = get_jwt_identity()
-        if current_user['role'] == 'Studente':
-            return 'Not Allowed', 403
-
-        idesame = request.json["idesame"]
-        nome = request.json["nome"]
-        crediti = request.json["crediti"]
-        anno = request.json["anno"]
-        prove = request.json["prove"]
-
-        for prova in prove:
-            print(prova, file=sys.stderr)
-
-        return jsonify()
-        
-    except:
-        return "Error", 500
+    

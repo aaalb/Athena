@@ -1,7 +1,7 @@
 version: "3"
 services:
   web:
-    container_name: backend_flask
+    container_name: athena_backend
     build: .
     restart: on-failure
     depends_on:
@@ -12,8 +12,9 @@ services:
       - "8000:5000"
     volumes:
       - .:/src
+  
   db:
-    container_name: backend_postgres
+    container_name: athena_db
     image: postgres:latest
     restart: always
     ports:
@@ -21,7 +22,7 @@ services:
     environment:
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: postgres_db
+        POSTGRES_DB: athena_db
     volumes:
         - postgres_data:/var/datadb/
 

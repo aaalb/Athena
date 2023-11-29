@@ -31,9 +31,9 @@ CREATE TABLE UniExams.Prove(
     opzionale BOOLEAN,
     dataScadenza DATE,
     dipendeDa VARCHAR(10),
-    FOREIGN KEY (dipendeDa) REFERENCES UniExams.Prove (idProva),
+    FOREIGN KEY (dipendeDa) REFERENCES UniExams.Prove (idProva) ON DELETE CASCADE,
     idEsame VARCHAR(8),
-    FOREIGN KEY (idEsame) REFERENCES UniExams.Esami (idEsame),
+    FOREIGN KEY (idEsame) REFERENCES UniExams.Esami (idEsame) ON DELETE CASCADE,
     responsabile VARCHAR(64),
     FOREIGN KEY (responsabile) REFERENCES UniExams.Docenti (email)
 );
@@ -54,7 +54,7 @@ CREATE TABLE uniexams.Iscrizioni(
     bonus INTEGER,
     idoneita BOOLEAN,
 
-    FOREIGN KEY(idAppello) REFERENCES uniexams.Appelli(idAppello),
+    FOREIGN KEY(idAppello) REFERENCES uniexams.Appelli(idAppello) ON DELETE CASCADE,
     FOREIGN KEY(email) REFERENCES uniexams.Studenti(email)
 );
 
@@ -64,7 +64,7 @@ CREATE TABLE uniexams.realizza(
 
     PRIMARY KEY(email, idEsame),
     FOREIGN KEY(email) REFERENCES uniexams.Docenti(email),
-    FOREIGN KEY(idEsame) REFERENCES uniexams.Esami(idEsame)
+    FOREIGN KEY(idEsame) REFERENCES uniexams.Esami(idEsame) ON DELETE CASCADE
 );
 
 CREATE TABLE UniExams.Libretto (
@@ -73,5 +73,5 @@ CREATE TABLE UniExams.Libretto (
     idEsame VARCHAR(8),
     PRIMARY KEY(email, idEsame),
     FOREIGN KEY (email) REFERENCES UniExams.Studenti (email),
-    FOREIGN KEY (idEsame) REFERENCES UniExams.Esami (idEsame)
+    FOREIGN KEY (idEsame) REFERENCES UniExams.Esami (idEsame) ON DELETE CASCADE
 );

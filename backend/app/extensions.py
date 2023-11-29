@@ -1,7 +1,9 @@
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import create_engine, MetaData
 
-engine = create_engine('postgresql://backend:password@backend_postgres:5432/postgres_db')
+import os
+
+engine = create_engine(os.environ.get('DB_URI'))
 
 metadata = MetaData(schema='uniexams')
 metadata.reflect(bind=engine)
