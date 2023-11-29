@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         
         inputDecorationTheme: InputDecorationTheme
         (
-          filled: false,
+          //filled: true,
           border: OutlineInputBorder
           (
             borderSide: BorderSide.none,
