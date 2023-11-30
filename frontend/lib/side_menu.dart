@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/Screens/Libretto/libretto_main.dart';
+import 'dart:js';
+import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -11,21 +14,21 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-            child: Image.asset("images/logo.jpeg"),
+            child: Image.asset("images/cf-logo.png"),
           ),
           DrawerListTile(
             title: "Libretto",
-            svgSrc: "icons/libretto.svg",
+            svgSrc: "images/libretto_icon.png",
             press: () => context.go('/libretto'),
           ),
           DrawerListTile(
             title: "Iscrizione agli appelli",
-            svgSrc: "icons/libretto.svg",
+            svgSrc: "images/iscrizione_icon.png",
             press: () => context.go('/appelli'),
           ),
           DrawerListTile(
             title: "Bacheca prenotazioni",
-            svgSrc: "icons/libretto.svg",
+            svgSrc: "images/bacheca_icon.png",
             press: () => context.go('/prenotazioni'),
           ),
         ],
@@ -50,7 +53,7 @@ class DrawerListTile extends StatelessWidget {
     return ListTile(
       onTap: press,
       horizontalTitleGap: 0.0,
-      leading: SvgPicture.asset(
+      leading: Image.asset(
         svgSrc,
         height: 16,
       ),

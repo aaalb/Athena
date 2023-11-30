@@ -2,6 +2,7 @@ import 'package:frontend/Screens/Libretto/libretto_main.dart';
 import 'package:frontend/Screens/Appelli/appelli_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:frontend/Screens/Prenotazioni/prenotazioni_main.dart';
+import 'package:frontend/Screens/Dashboard/dashboard_main.dart';
 import 'package:go_router/go_router.dart';
 
 // GoRouter configuration
@@ -9,8 +10,18 @@ final router = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
-      name: 'Login',
+      name: 'Profilo',
+      path: '/profilo',
+      builder: (context, state) => Dashboard(),
+    ),
+    GoRoute(
+      name: 'Dashboard',
       path: '/',
+      builder: (context, state) => Dashboard(),
+    ),
+    GoRoute(
+      name: 'Login',
+      path: '/login',
       builder: (context, state) => LoginPage(),
     ),
     GoRoute(

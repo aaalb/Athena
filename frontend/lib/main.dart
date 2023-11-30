@@ -4,8 +4,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'package:frontend/routes.dart';
 
-void main() 
-{
+void main() {
   setPathUrlStrategy();
   runApp(const MyApp());
 }
@@ -15,11 +14,10 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) 
-  {
-    return MaterialApp.router
-    (
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
       title: 'Athena',
+<<<<<<< HEAD
       theme: ThemeData
       (
         fontFamily: 'Roboto',
@@ -35,26 +33,36 @@ class MyApp extends StatelessWidget {
           (
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(10.0),
+=======
+      theme: ThemeData(
+          fontFamily: 'Roboto',
+          primaryColor: primaryColor,
+          secondaryHeaderColor: secondaryColor,
+          brightness: Brightness.light,
+          primarySwatch:
+              createMaterialColor(const Color.fromARGB(255, 157, 98, 31)),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: false,
+            border: OutlineInputBorder(
+              //borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            fillColor: secondaryColor,
+            prefixIconColor: Colors.purple,
+            hintStyle: const TextStyle(fontFamily: 'Roboto'),
+>>>>>>> 37cdae9 (dashboard)
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          fillColor: secondaryColor,
-          prefixIconColor: Colors.purple,
-          hintStyle: const TextStyle(fontFamily: 'Roboto'),
-        ),
-        
-        dataTableTheme: const DataTableThemeData
-        (
-          dataTextStyle: TextStyle(fontFamily: 'Roboto'),
-          headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
-        )
-      ),
+          dataTableTheme: const DataTableThemeData(
+            dataTextStyle: TextStyle(fontFamily: 'Roboto'),
+            headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
+          )),
       debugShowCheckedModeBanner: false,
       routerConfig: router,
     );
   }
 }
-
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
@@ -72,6 +80,7 @@ MaterialColor createMaterialColor(Color color) {
       b + ((ds < 0 ? b : (255 - b)) * ds).round(),
       1,
     );
-  };
+  }
+  ;
   return MaterialColor(color.value, swatch);
 }
