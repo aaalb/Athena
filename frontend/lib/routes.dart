@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Libretto/libretto_main.dart';
 import 'package:frontend/Screens/Appelli/appelli_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
@@ -5,7 +6,6 @@ import 'package:frontend/Screens/Prenotazioni/prenotazioni_main.dart';
 import 'package:frontend/Screens/Dashboard/dashboard_main.dart';
 import 'package:go_router/go_router.dart';
 
-// GoRouter configuration
 final router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -25,10 +25,10 @@ final router = GoRouter(
       builder: (context, state) => LoginPage(),
     ),
     GoRoute(
-      name: 'Libretto',
-      path: '/libretto',
-      builder: (context, state) => Libretto(),
-    ),
+        name: 'Libretto',
+        path: '/libretto',
+        builder: (context, state) => Libretto(),
+        redirect: (context, state) => _redirect(context, state)),
     GoRoute(
       name: 'Appelli',
       path: '/appelli',
@@ -46,3 +46,8 @@ final router = GoRouter(
     ),
   ],
 );
+
+String? _redirect(BuildContext context, GoRouterState state) {
+  bool isAuthenticated = true;
+  return isAuthenticated ? null : state.namedLocation("Login");
+}

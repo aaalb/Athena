@@ -17,43 +17,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Athena',
-<<<<<<< HEAD
-      theme: ThemeData
-      (
-        fontFamily: 'Roboto',
-        primaryColor: primaryColor,
-        secondaryHeaderColor: secondaryColor,
-        brightness: Brightness.light,
-        primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
-        
-        inputDecorationTheme: InputDecorationTheme
-        (
-          //filled: true,
-          border: OutlineInputBorder
-          (
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(10.0),
-=======
       theme: ThemeData(
           fontFamily: 'Roboto',
           primaryColor: primaryColor,
           secondaryHeaderColor: secondaryColor,
           brightness: Brightness.light,
-          primarySwatch:
-              createMaterialColor(const Color.fromARGB(255, 157, 98, 31)),
+          primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
           inputDecorationTheme: InputDecorationTheme(
-            filled: false,
-            border: OutlineInputBorder(
-              //borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            fillColor: secondaryColor,
-            prefixIconColor: Colors.purple,
-            hintStyle: const TextStyle(fontFamily: 'Roboto'),
->>>>>>> 37cdae9 (dashboard)
-          ),
+              //filled: true,
+              border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(10.0),
+          )),
           dataTableTheme: const DataTableThemeData(
             dataTextStyle: TextStyle(fontFamily: 'Roboto'),
             headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),

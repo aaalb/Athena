@@ -12,7 +12,7 @@ Future<List<Prenotazione>> fetchPrenotazioni() async {
   final String accessToken = await prefs.getString("access_token") ?? "";
 
   http.Response response = await http.get(
-    Uri.parse('http://localhost:8000/api/appelli/prenotati'),
+    Uri.parse('http://localhost:8000/api/appelli/prenotazioni'),
     headers: {"Authorization": "Bearer $accessToken"},
   );
 
