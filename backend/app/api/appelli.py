@@ -131,8 +131,10 @@ def sprenota_appello():
             .filter(Iscrizione.idappello == appello.idappello) \
             .delete()
         
+        session.commit()
         jsonify({"Status":"Success"}), 200
     except:
+        session.rollback()
         jsonify({"Error":"Internal Server Error"}), 500
 
 

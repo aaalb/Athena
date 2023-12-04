@@ -10,8 +10,6 @@ from app.models.Prova import Prova
 from app.models.Realizza import Realizza
 from app.models.Appello import Appello
 
-import sys
-
 @bp.route('/esami/crea', methods=['POST'])
 @jwt_required()
 def inserisci_in_libretto():
@@ -102,7 +100,6 @@ def elimina_esame():
         session.commit()
         return jsonify({"Status": "Success"}),200
     except Exception as e:
-        print(e, file=sys.stderr)
         session.rollback()
         return jsonify({"Status": "Internal Server Error"}), 500
     

@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Libretto/libretto_main.dart';
-import 'dart:js';
-import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-Future<bool> logout() async {
-  try {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? accessToken = prefs.getString("access_token");
-    http.Response response = await http.post(
-      Uri.parse('http://localhost:8000/auth/logout'),
-      headers: {"Authorization": 'Bearer $accessToken'},
-    );
-    return true;
-  } catch (e) {}
-  return false;
-}
+import 'package:frontend/models/ApiManager.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});

@@ -10,8 +10,6 @@ from app.models.Docente import Docente
 @jwt_required()
 def get_user_data():
     current_user = get_jwt_identity()
-    if current_user['role'] == 'Studente':
-            return jsonify({"Error":"Not Allowed"}), 403
     tipo = current_user['role']
     
     result = []

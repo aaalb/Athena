@@ -9,14 +9,15 @@ class DataClass extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        // Using scrollView for scrolling and formating
-        scrollDirection: Axis.vertical,
-        // using FittedBox for fitting complte table in screen horizontally.
-        child: FittedBox(
-            child: DataTable(
+      // Using scrollView for scrolling and formating
+      scrollDirection: Axis.vertical,
+      // using FittedBox for fitting complte table in screen horizontally.
+      child: FittedBox(
+        child: DataTable(
           sortColumnIndex: 1,
           showCheckboxColumn: false,
-          border: TableBorder.all(width: 1.0),
+          columnSpacing: 8.0,
+          border: TableBorder.all(color: Colors.black),
           // Data columns as required by APIs data.
           columns: const [
             DataColumn(
@@ -65,6 +66,8 @@ class DataClass extends StatelessWidget {
                         ),
                       ]))
               .toList(), // converting at last into list.
-        )));
+        ),
+      ),
+    );
   }
 }

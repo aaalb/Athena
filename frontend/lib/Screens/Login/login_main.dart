@@ -186,23 +186,21 @@ class LoginPageState extends State<LoginPage> {
                                     ),
                                     onPressed: () {
                                       login(
-                                              emailController.text.toString(),
-                                              passwordController.text
-                                                  .toString())
-                                          .then((value) => (value)
-                                              ? context.go('/libretto')
-                                              : {
-                                                  setState(() {
-                                                    borderColor =
-                                                        Color.fromARGB(
-                                                            255, 255, 0, 0);
-                                                    errorText =
-                                                        "Email o password errati";
-                                                    loginFailed = true;
+                                        emailController.text.toString(),
+                                        passwordController.text.toString(),
+                                      ).then((value) => (value)
+                                          ? context.go('/libretto')
+                                          : {
+                                              setState(() {
+                                                borderColor = Color.fromARGB(
+                                                    255, 255, 0, 0);
+                                                errorText =
+                                                    "Email o password errati";
+                                                loginFailed = true;
 
-                                                    passwordController.clear();
-                                                  })
-                                                });
+                                                passwordController.clear();
+                                              })
+                                            });
                                     },
                                     child: const Padding(
                                       padding: EdgeInsets.symmetric(),
