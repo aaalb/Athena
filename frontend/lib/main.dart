@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Common/canvas.dart';
 import 'package:frontend/constants.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -17,23 +18,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Athena',
-<<<<<<< HEAD
-      theme: ThemeData
-      (
-        fontFamily: 'Roboto',
-        primaryColor: primaryColor,
-        secondaryHeaderColor: secondaryColor,
-        brightness: Brightness.light,
-        primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
-        
-        inputDecorationTheme: InputDecorationTheme
-        (
-          //filled: true,
-          border: OutlineInputBorder
-          (
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(10.0),
-=======
       theme: ThemeData(
           fontFamily: 'Roboto',
           primaryColor: primaryColor,
@@ -52,7 +36,6 @@ class MyApp extends StatelessWidget {
             fillColor: secondaryColor,
             prefixIconColor: Colors.purple,
             hintStyle: const TextStyle(fontFamily: 'Roboto'),
->>>>>>> 37cdae9 (dashboard)
           ),
           dataTableTheme: const DataTableThemeData(
             dataTextStyle: TextStyle(fontFamily: 'Roboto'),
@@ -60,19 +43,23 @@ class MyApp extends StatelessWidget {
           )),
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      builder: (context, child) => MyCanvas(child: child!)
     );
   }
 }
 
-MaterialColor createMaterialColor(Color color) {
+MaterialColor createMaterialColor(Color color) 
+{
   List strengths = <double>[.05];
   Map<int, Color> swatch = {};
   final int r = color.red, g = color.green, b = color.blue;
 
-  for (int i = 1; i < 10; i++) {
+  for (int i = 1; i < 10; i++) 
+  {
     strengths.add(0.1 * i);
   }
-  for (var strength in strengths) {
+  for (var strength in strengths)
+  {
     final double ds = 0.5 - strength;
     swatch[(strength * 1000).round()] = Color.fromRGBO(
       r + ((ds < 0 ? r : (255 - r)) * ds).round(),
@@ -81,6 +68,5 @@ MaterialColor createMaterialColor(Color color) {
       1,
     );
   }
-  ;
   return MaterialColor(color.value, swatch);
 }
