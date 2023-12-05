@@ -83,7 +83,7 @@ def inserisci_in_libretto():
         return jsonify({"Status": "Failure"}), 500
     
 
-@bp.route('/esami/elimina', methods=['POST'])
+@bp.route('/esami/elimina', methods=['DELETE'])
 @jwt_required()
 def elimina_esame():
     try:
@@ -104,7 +104,7 @@ def elimina_esame():
         return jsonify({"Status": "Internal Server Error"}), 500
     
 
-@bp.route('/esami/', methods=['GET'])
+@bp.route('/esami', methods=['GET'])
 @jwt_required()
 def visualizza_esame():
     current_user = get_jwt_identity()
@@ -123,12 +123,13 @@ def visualizza_esame():
             lista_prove.append({
                 "idprova" : prova.idprova,
                 "tipologia" : prova.tipologia,
-                "opzionale" : prova.opzionale,
+                "opzionale" : "true",
                 "datascadenza" : prova.datascadenza,
                 "dipendeda" : prova.dipendeda 
             })
 
         result.append({
+            "idesame" : esame.idesame,
             "nome" : esame.nome,
             "crediti" : esame.crediti,
             "anno" : esame.anno,

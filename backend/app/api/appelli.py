@@ -108,7 +108,7 @@ def prenota_appello():
         return jsonify({"Error":"Internal Server Error"}), 500
 
 
-@bp.route('/appelli/sprenota', methods=['POST'])
+@bp.route('/appelli/sprenota', methods=['DELETE'])
 @jwt_required()
 def sprenota_appello():
     try:

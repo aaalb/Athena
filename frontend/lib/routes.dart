@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Screens/Docente/EsamiDocente/esami_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:frontend/Screens/Studente/Appelli/appelli_main.dart';
 import 'package:frontend/Screens/Studente/Dashboard/dashboard_main.dart';
 import 'package:frontend/Screens/Studente/Libretto/libretto_main.dart';
 import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_main.dart';
-import 'package:frontend/models/AuthService.dart';
+import 'package:frontend/utils/AuthService.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -49,6 +50,12 @@ final router = GoRouter(
       name: 'Logout',
       path: '/logout',
       builder: (context, state) => Prenotazioni(),
+      redirect: (context, state) => _redirect(context, state),
+    ),
+    GoRoute(
+      name: 'EsamiDocente',
+      path: '/docente/esami',
+      builder: (context, state) => EsamiDocente(),
       redirect: (context, state) => _redirect(context, state),
     ),
   ],

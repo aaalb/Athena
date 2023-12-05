@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:frontend/models/AuthService.dart';
+import 'package:frontend/utils/AuthService.dart';
 import 'dart:js';
 import 'package:go_router/go_router.dart';
 

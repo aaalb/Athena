@@ -18,21 +18,31 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Athena',
       theme: ThemeData(
-          fontFamily: 'Roboto',
-          primaryColor: primaryColor,
-          secondaryHeaderColor: secondaryColor,
-          brightness: Brightness.light,
-          primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
-          inputDecorationTheme: InputDecorationTheme(
-              //filled: true,
-              border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(10.0),
-          )),
-          dataTableTheme: const DataTableThemeData(
-            dataTextStyle: TextStyle(fontFamily: 'Roboto'),
-            headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
-          )),
+        fontFamily: 'Roboto',
+        primaryColor: primaryColor,
+        secondaryHeaderColor: secondaryColor,
+        brightness: Brightness.light,
+        primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: TextStyle(
+            color: Colors.blueGrey,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.green, width: 2.0),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        dataTableTheme: const DataTableThemeData(
+          dataTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
+          headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 23),
+          headingRowHeight: 40,
+          dividerThickness: 1, // Spessore del separatore tra le righe
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       routerConfig: router,
     );

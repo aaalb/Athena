@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/ApiManager.dart';
-import 'package:frontend/models/Prenotazione.dart';
+import 'package:frontend/utils/ApiManager.dart';
+import 'package:frontend/Screens/Studente/models/Prenotazione.dart';
 
 void _sprenota(String idProva, String data) {
   Map<String, dynamic> postData = {
