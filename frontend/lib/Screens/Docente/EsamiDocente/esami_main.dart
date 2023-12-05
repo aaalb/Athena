@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Docente/EsamiDocente/components/esami_scree.dart';
+import 'package:frontend/Screens/Docente/EsamiDocente/components/esami_screen.dart';
 
 import 'package:frontend/Screens/Docente/side_menu.dart';
 

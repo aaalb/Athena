@@ -11,10 +11,11 @@ class Prova {
 
   factory Prova.fromJson(Map<String, dynamic> json) {
     return Prova(
-        idProva: json['idprova'],
-        tipologia: json['tipologia'],
-        opzionale: (json['opzionale'] == "true") ? "Si" : "No",
-        dataScadenza: json['datascadenza'],
-        dipendenza: json['dipendeda'] ?? "");
+      idProva: json['idprova'],
+      tipologia: json['tipologia'],
+      opzionale: (json['opzionale'] == "true") ? "Si" : "No",
+      dataScadenza: json['datascadenza'],
+      dipendenza: json['dipendeda'] ?? "",
+    );
   }
 }

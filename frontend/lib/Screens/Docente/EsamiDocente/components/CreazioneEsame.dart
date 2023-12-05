@@ -1,105 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/ApiManager.dart';
 
-class DynamicInputDialog extends StatefulWidget {
+class _DynamicInputDialog extends StatefulWidget {
   @override
   _DynamicInputDialogState createState() => _DynamicInputDialogState();
 }
 
-class _DynamicInputDialogState extends State<DynamicInputDialog> {
+class _DynamicInputDialogState extends State<_DynamicInputDialog> {
   List<TextEditingController> controllers = [];
   TextEditingController idesameController = TextEditingController();
   TextEditingController nomeController = TextEditingController();
   TextEditingController creditiController = TextEditingController();
   TextEditingController annoController = TextEditingController();
 
-  List<String> labels = ['Tipologia', 'Opzionale', 'Scadenza', 'Propedeutico'];
   int counter = 0;
-  String selectedValue = 'Tipologia';
+  List<String> selectedValue = [];
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding: EdgeInsets.all(20.0),
+      insetPadding: const EdgeInsets.all(20.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: FractionallySizedBox(
         widthFactor: 0.9,
         child: Container(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: TextFormField(
-                        controller: idesameController,
-                        decoration: InputDecoration(
-                          labelText: 'ID Esame',
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 40.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 20.0),
-                    Expanded(
-                      child: TextFormField(
-                        controller: nomeController,
-                        decoration: InputDecoration(
-                          labelText: 'Nome',
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 40.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                const Text(
+                  "Crea un nuovo esame",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  controller: idesameController,
+                  decoration: const InputDecoration(
+                    labelText: 'ID Esame',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  controller: nomeController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nome',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 20.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Expanded(
                       child: TextFormField(
                         controller: creditiController,
-                        decoration: InputDecoration(
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
                           labelText: 'Crediti',
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 40.0,
-                          ),
+                          border: OutlineInputBorder(),
                         ),
                       ),
                     ),
-                    SizedBox(width: 20.0),
+                    const SizedBox(width: 20.0),
                     Expanded(
                       child: TextFormField(
                         controller: annoController,
-                        decoration: InputDecoration(
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
                           labelText: 'Anno',
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 40.0,
-                          ),
+                          border: OutlineInputBorder(),
                         ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                for (var i = 0; i < controllers.length; i += 4)
+                for (var i = 0; i < controllers.length; i += 5)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${idesameController.text}-${counter + 1}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        "${idesameController.text}-$counter",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
@@ -107,74 +98,139 @@ class _DynamicInputDialogState extends State<DynamicInputDialog> {
                               padding: const EdgeInsets.only(right: 10.0),
                               child: TextFormField(
                                 controller: controllers[i],
-                                decoration: InputDecoration(
-                                  labelText: labels[i % labels.length],
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 12.0,
-                                    horizontal: 40.0,
-                                  ),
+                                decoration: const InputDecoration(
+                                  labelText: 'Tipologia',
+                                  border: OutlineInputBorder(),
                                 ),
                               ),
                             ),
                           ),
                           Expanded(
-                            child: DropdownButton<String>(
-                              hint: Text(selectedValue),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  selectedValue = value ?? 'Tipologia';
-                                });
-                              },
-                              items: <String>['Scritto', 'Orale', 'Progetto']
-                                  .map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: TextFormField(
+                                controller: controllers[i + 1],
+                                decoration: const InputDecoration(
+                                  labelText: 'Scadenza',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                             ),
                           ),
-                          Checkbox(
-                            value: i + 1 < controllers.length
-                                ? controllers[i + 1].text.isNotEmpty
-                                : false,
-                            onChanged: (value) {
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: TextFormField(
+                                controller: controllers[i + 2],
+                                decoration: const InputDecoration(
+                                  labelText: 'Dipendenza',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: TextFormField(
+                                controller: controllers[i + 3],
+                                decoration: const InputDecoration(
+                                  labelText: 'Responsabile',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Checkbox(
+                                value: i + 4 < controllers.length
+                                    ? controllers[i + 4].text.isNotEmpty
+                                    : false,
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (i + 4 < controllers.length) {
+                                      controllers[i + 4].text =
+                                          value ?? false ? 'Checked' : '';
+                                    }
+                                  });
+                                },
+                              ),
+                              const Text("Opzionale"),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
                               setState(() {
-                                if (i + 1 < controllers.length) {
-                                  controllers[i + 1].text =
-                                      value ?? false ? 'Checked' : '';
+                                --counter;
+                                for (var i = 0; i < 5; i++) {
+                                  controllers.removeLast();
                                 }
                               });
                             },
+                            child: const Icon(
+                              Icons.delete_outline,
+                              size: 30,
+                            ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      for (var i = 0; i < 2; i++) {
-                        controllers.add(TextEditingController());
-                      }
-                      counter = controllers.length ~/ 4;
-                    });
+                    if (idesameController.text != "") {
+                      ++counter;
+                      setState(() {
+                        for (var i = 0; i < 5; i++) {
+                          controllers.add(TextEditingController());
+                        }
+                      });
+                    }
                   },
-                  child: Text('Aggiungi una prova'),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.all(16.0),
+                  ),
+                  child: const Text(
+                    'Aggiungi prova',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
-                    // Do something with the input values
-                    for (var controller in controllers) {
-                      print(controller.text);
-                      // Here you can process the text from each controller
-                    }
-                    // Close the dialog
+                    _creaEsame(
+                        idesameController.text,
+                        nomeController.text,
+                        creditiController.text,
+                        annoController.text,
+                        controllers);
                     Navigator.of(context).pop();
                   },
-                  child: Text('Conferma'),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.all(16.0),
+                  ),
+                  child: const Text(
+                    'Conferma',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ],
             ),
@@ -189,7 +245,39 @@ Future<void> creaEsame(BuildContext context) async {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
-      return DynamicInputDialog();
+      return _DynamicInputDialog();
     },
   );
+}
+
+Future<void> _creaEsame(String idEsame, String nome, String crediti,
+    String anno, List<TextEditingController> controllers) async {
+  List<Map<String, dynamic>> prove = [];
+
+  for (int i = 0; i < controllers.length; i += 5) {
+    // Adding each controller's text to the list as a Map
+    prove.add({
+      'tipologia': controllers[i].text,
+      'datascadenza': controllers[i + 1].text,
+      'dipendeda': controllers[i + 2].text,
+      'responsabile':
+          (controllers[i + 3].text.isEmpty) ? '' : controllers[i + 3].text,
+      'opzionale': (controllers[i + 4].text == 'Checked') ? true : false
+    });
+  }
+
+  Map<String, dynamic> postData = {
+    'idesame': idEsame,
+    'nome': nome,
+    'crediti': crediti,
+    'anno': anno,
+    'prove': prove,
+  };
+
+  print(postData);
+  // Assuming you have an ApiManager class with a postData method
+  await ApiManager.postData('esami/crea',
+      postData); // Changed to postData method assuming it creates an exam
+
+  // Consider handling the response or errors after the API call
 }

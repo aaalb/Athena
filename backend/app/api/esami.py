@@ -9,7 +9,7 @@ from app.models.Esame import Esame
 from app.models.Prova import Prova
 from app.models.Realizza import Realizza
 from app.models.Appello import Appello
-
+import sys
 @bp.route('/esami/crea', methods=['POST'])
 @jwt_required()
 def inserisci_in_libretto():
@@ -23,9 +23,8 @@ def inserisci_in_libretto():
         crediti = request.json["crediti"]
         anno = request.json["anno"]
         prove = request.json["prove"]
-        collaboratori = request.json["collaboratori"]
 
-        if not idesame or not nome or not crediti or not anno or not prove or not collaboratori:
+        if not idesame or not nome or not crediti or not anno or not prove:
             return jsonify({"Error":"Missing parameters"}), 400
 
         query = insert(Esame).values(
@@ -37,16 +36,12 @@ def inserisci_in_libretto():
 
         session.execute(query)
 
-        query = insert(Realizza).values(
-            email = current_user['email'],
-            idesame = idesame
-        )
-
-        session.execute(query)
+        collaboratori = [current_user['email']]
 
         #TO-DO: opzionale deve avere valori uguali a true o false
         for index, prova in enumerate(prove, start=1):
             idprova = f"{idesame}-{index}",
+
             query = insert(Prova).values(
                 idprova = idprova,
                 tipologia = prova.get("tipologia"),
@@ -54,10 +49,14 @@ def inserisci_in_libretto():
                 datascadenza = prova.get("datascadenza"),
                 dipendeda = prova.get("dipendeda") if prova.get("dipendeda") != "" else None,
                 idesame = idesame,
-                responsabile = current_user['email']
+                responsabile = prova.get("responsabile") if prova.get("responsabile") != "" else current_user['email'],
             )
             session.execute(query)
             
+            responsabile = prova.get("responsabile") if prova.get("responsabile") != "" else current_user['email']
+            if responsabile not in collaboratori:
+                collaboratori.append(responsabile)
+
             date_appelli = genera_date_appello(4)
 
             for data in date_appelli:
@@ -74,11 +73,12 @@ def inserisci_in_libretto():
             )
 
             session.execute(query)
-        
+
         session.commit()
         return jsonify({"Status": "Success"}),200
 
-    except:
+    except Exception as e:
+        print(e, file=sys.stderr)
         session.rollback()
         return jsonify({"Status": "Failure"}), 500
     
@@ -123,7 +123,7 @@ def visualizza_esame():
             lista_prove.append({
                 "idprova" : prova.idprova,
                 "tipologia" : prova.tipologia,
-                "opzionale" : "true",
+                "opzionale" : prova.opzionale,
                 "datascadenza" : prova.datascadenza,
                 "dipendeda" : prova.dipendeda 
             })

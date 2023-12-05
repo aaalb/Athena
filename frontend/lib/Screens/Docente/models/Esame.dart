@@ -1,5 +1,4 @@
 import './Prova.dart';
-import 'dart:convert';
 
 class Esame {
   String attivitaDidattica, idesame;

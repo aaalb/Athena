@@ -21,30 +21,26 @@ class DataClass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      sortColumnIndex: 1,
-      showCheckboxColumn: false,
-      columns: const [
-        DataColumn(label: Text("ID Esame")),
-        DataColumn(label: Text("Attività Didattica")),
-        DataColumn(label: Text("Crediti")),
-        DataColumn(label: Text("Anno")),
-      ],
-      rows: dataList
-          .map(
-            (data) => DataRow(
-              cells: [
-                DataCell(Text(data.idesame)),
-                DataCell(Text(data.attivitaDidattica)),
-                DataCell(Text(data.crediti.toString())),
-                DataCell(Text(data.anno.toString())),
-              ],
-              onSelectChanged: (selected) {
-                _dialogBuilder(context, data.proveList, data.idesame);
-              },
+    return ListView.builder(
+      itemCount: dataList.length,
+      itemBuilder: (context, index) {
+        Esame data = dataList[index];
+        return Card(
+          margin: EdgeInsets.all(8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: ListTile(
+            title: Text(data.attivitaDidattica),
+            subtitle: Text(
+              'ID Esame: ${data.idesame} - Anno: ${data.anno} - Crediti: ${data.crediti}',
             ),
-          )
-          .toList(),
+            onTap: () {
+              _dialogBuilder(context, data.proveList, data.idesame);
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -55,49 +51,60 @@ Future<void> _dialogBuilder(
     context: context,
     builder: (BuildContext context) {
       return Dialog(
-        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        backgroundColor: Colors.white, // Set dialog background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0), // Rounded corners
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(20.0), // Aggiungi padding al Dialog
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: DataTable(
-                  sortColumnIndex: 1,
-                  showCheckboxColumn: false,
-                  columns: const [
-                    DataColumn(label: Text("ID Prova")),
-                    DataColumn(label: Text("Tipologia")),
-                    DataColumn(label: Text("Opzionale")),
-                    DataColumn(label: Text("Scadenza")),
-                    DataColumn(label: Text("Propedeutico")),
-                  ],
-                  rows: proveList
-                      .map(
-                        (data) => DataRow(
-                          cells: [
-                            DataCell(Text(data.idProva)),
-                            DataCell(Text(data.tipologia)),
-                            DataCell(Text(data.opzionale)),
-                            DataCell(Text(data.dataScadenza)),
-                            DataCell(Text(data.dipendenza)),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ),
+              DataTable(
+                columnSpacing: 20.0,
+                headingRowHeight: 40.0,
+                sortColumnIndex: 1,
+                columns: const [
+                  DataColumn(label: Text("ID Prova")),
+                  DataColumn(label: Text("Tipologia")),
+                  DataColumn(label: Text("Opzionale")),
+                  DataColumn(label: Text("Scadenza")),
+                  DataColumn(label: Text("Propedeutico")),
+                ],
+                rows: proveList
+                    .map(
+                      (data) => DataRow(
+                        cells: [
+                          DataCell(Text(data.idProva)),
+                          DataCell(Text(data.tipologia)),
+                          DataCell(Text(data.opzionale)),
+                          DataCell(Text(data.dataScadenza)),
+                          DataCell(Text((data.dipendenza) != ""
+                              ? data.dipendenza
+                              : "Nessuna")),
+                        ],
+                      ),
+                    )
+                    .toList(),
               ),
-              const SizedBox(
-                width: 16,
-              ),
+              const SizedBox(height: 20.0),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                  ),
+                ),
                 onPressed: () {
                   _eliminaEsame(idEsame);
-                  Navigator.of(context)
-                      .pop(); // Chiudi il dialog dopo la cancellazione
+                  Navigator.of(context).pop();
                 },
-                child: const Text("Elimina esame"),
+                child: const Text(
+                  "Elimina esame",
+                  style: TextStyle(fontSize: 16.0),
+                ),
               ),
             ],
           ),
