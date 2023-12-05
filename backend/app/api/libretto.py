@@ -12,7 +12,9 @@ from app.models.Esame import Esame
 def get_libretto():
     try:
         current_user = get_jwt_identity()
-
+        if current_user['role'] == 'Docente':
+            return jsonify({"Error":"Not Allowed"}), 403
+        
         query = session.query(Libretto.votocomplessivo, Esame.nome, Esame.crediti, Esame.anno) \
             .join(Esame) \
             .filter(Libretto.email == current_user['email']) \
@@ -29,6 +31,6 @@ def get_libretto():
 
         return jsonify(result), 200
     except:
-        return "Internal Server Error", 500
+        return jsonify({"Error":"Internal Server Error"}), 500
 
     

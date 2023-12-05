@@ -6,7 +6,6 @@ import 'package:frontend/Screens/Prenotazioni/prenotazioni_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:go_router/go_router.dart';
 
-// GoRouter configuration
 final router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -50,21 +49,29 @@ final router = GoRouter(
       name: 'Libretto',
       path: '/libretto',
       builder: (context, state) => Libretto(),
+      redirect: (context, state) => _redirect(context, state),
     ),
     GoRoute(
       name: 'Appelli',
       path: '/appelli',
       builder: (context, state) => Appelli(),
+      redirect: (context, state) => _redirect(context, state),
     ),
     GoRoute(
       name: 'Bacheca prenotazioni',
       path: '/prenotazioni',
       builder: (context, state) => Prenotazioni(),
+      redirect: (context, state) => _redirect(context, state),
     ),
     GoRoute(
       name: 'Logout',
       path: '/logout',
       builder: (context, state) => Prenotazioni(),
+      redirect: (context, state) => _redirect(context, state),
     ),
   ],
 );
+
+String? _redirect(BuildContext context, GoRouterState state) {
+  return (AuthService.isAuthenticated) ? null : null;
+}

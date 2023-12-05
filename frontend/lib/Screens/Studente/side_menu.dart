@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Libretto/libretto_main.dart';
 import 'dart:js';
-import 'package:http/http.dart' as http;
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});

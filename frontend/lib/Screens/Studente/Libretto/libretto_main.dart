@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/side_menu.dart';
-import './appelli_screen.dart';
+import 'package:frontend/Screens/Studente/side_menu.dart';
+import 'components/libretto_screen.dart';
 
-class Appelli extends StatefulWidget {
-  const Appelli({super.key});
+class Libretto extends StatefulWidget {
+  const Libretto({super.key});
 
   @override
-  State<Appelli> createState() => _LibrettoState();
+  State<Libretto> createState() => _LibrettoState();
 }
 
-class _LibrettoState extends State<Appelli> {
+class _LibrettoState extends State<Libretto> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

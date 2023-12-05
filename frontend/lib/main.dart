@@ -23,8 +23,7 @@ class MyApp extends StatelessWidget {
           primaryColor: primaryColor,
           secondaryHeaderColor: secondaryColor,
           brightness: Brightness.light,
-          primarySwatch:
-              createMaterialColor(const Color.fromARGB(255, 157, 98, 31)),
+          primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
           inputDecorationTheme: InputDecorationTheme(
             filled: false,
             border: OutlineInputBorder(

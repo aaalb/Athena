@@ -16,7 +16,7 @@ def inserisci_in_libretto():
     try:
         current_user = get_jwt_identity()
         if current_user['role'] == 'Studente':
-            return 'Not Allowed', 403
+            return jsonify({"Error":"Not Allowed"}), 403
 
         idesame = request.json["idesame"]
         nome = request.json["nome"]
@@ -24,9 +24,9 @@ def inserisci_in_libretto():
         anno = request.json["anno"]
         prove = request.json["prove"]
         collaboratori = request.json["collaboratori"]
- 
+
         if not idesame or not nome or not crediti or not anno or not prove or not collaboratori:
-            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
+            return jsonify({"Error":"Missing parameters"}), 400
 
         query = insert(Esame).values(
             idesame = idesame,
@@ -58,14 +58,14 @@ def inserisci_in_libretto():
             )
             session.execute(query)
             
-        date_appelli = genera_date_appello(4)
+            date_appelli = genera_date_appello(4)
 
-        for data in date_appelli:
-            query = insert(Appello).values(
-                idprova = idprova,
-                data = data
-            )
-            session.execute(query)
+            for data in date_appelli:
+                query = insert(Appello).values(
+                    idprova = idprova,
+                    data = data
+                )
+                session.execute(query)
 
         for collaboratore in collaboratori:
             query = insert(Realizza).values(
@@ -89,17 +89,50 @@ def elimina_esame():
     try:
         current_user = get_jwt_identity()
         if current_user['role'] == 'Studente':
-            return 'Not Allowed', 403
+            return jsonify({"Error":"Not Allowed"}), 403
 
         idesame = request.json["idesame"]
 
         if not idesame:
-            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
+            return jsonify({"Error":"Missing parameters!"}), 400
 
         session.query(Esame).filter(Esame.idesame == idesame).delete()
         session.commit()
         return jsonify({"Status": "Success"}),200
-    except:
+    except Exception as e:
         session.rollback()
-        return jsonify({"Status": "Failure"}), 500
+        return jsonify({"Status": "Internal Server Error"}), 500
+    
 
+@bp.route('/esami/', methods=['GET'])
+@jwt_required()
+def visualizza_esame():
+    current_user = get_jwt_identity()
+    if current_user['role'] == 'Studente':
+        return jsonify({"Error":"Not Allowed"}), 403
+    
+    subquery = session.query(Realizza.idesame).filter(Realizza.email == current_user['email'])
+    esami = session.query(Esame).filter(Esame.idesame.in_(subquery))
+
+    result = []
+    for esame in esami:
+        prove = session.query(Prova).filter(Prova.idesame == esame.idesame)
+
+        lista_prove = []
+        for prova in prove:
+            lista_prove.append({
+                "idprova" : prova.idprova,
+                "tipologia" : prova.tipologia,
+                "opzionale" : prova.opzionale,
+                "datascadenza" : prova.datascadenza,
+                "dipendeda" : prova.dipendeda 
+            })
+
+        result.append({
+            "nome" : esame.nome,
+            "crediti" : esame.crediti,
+            "anno" : esame.anno,
+            "prove" : lista_prove
+        })
+
+    return jsonify(result), 200
