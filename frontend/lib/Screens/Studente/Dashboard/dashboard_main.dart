@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/AuthService.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/models/ApiManager.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -133,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         GestureDetector(
                             onTap: () {
-                              logout().then((value) =>
+                              AuthService.logout().then((value) =>
                                   (value) ? context.go('/login') : {});
                             },
                             child: Column(

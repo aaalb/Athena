@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Libretto/libretto_main.dart';
-import 'package:frontend/Screens/Appelli/appelli_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
-import 'package:frontend/Screens/Prenotazioni/prenotazioni_main.dart';
-import 'package:frontend/Screens/Dashboard/dashboard_main.dart';
+import 'package:frontend/Screens/Studente/Appelli/appelli_main.dart';
+import 'package:frontend/Screens/Studente/Dashboard/dashboard_main.dart';
+import 'package:frontend/Screens/Studente/Libretto/libretto_main.dart';
+import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_main.dart';
+import 'package:frontend/models/AuthService.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/models/ApiManager.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -55,6 +55,5 @@ final router = GoRouter(
 );
 
 String? _redirect(BuildContext context, GoRouterState state) {
-  bool isAuthenticated = (currentUser != null) ? true : false;
-  return null;
+  return (AuthService.isAuthenticated) ? null : null;
 }

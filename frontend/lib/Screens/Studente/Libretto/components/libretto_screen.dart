@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Libretto/components/DataClass.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:frontend/Screens/Studente/Libretto/components/DataClass.dart';
+import 'package:frontend/models/ApiManager.dart';
+import 'dart:convert';
 import 'package:frontend/constants.dart';
 import 'package:frontend/models/Esame.dart';
 
-import 'dart:convert';
-
-Future<List<Esame>> fetchLibretto() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String access_token = await prefs.getString("access_token") ?? "";
-
-  http.Response response = await http.get(
-    Uri.parse('http://localhost:8000/api/libretto'),
-    headers: {"Authorization": "Bearer $access_token"},
-  );
-
-  if (response.statusCode == 200) {
-    var results = json.decode(response.body) as List;
-    return results.map((e) => Esame.fromJson(e)).toList();
-  } else {
-    throw Exception(response.reasonPhrase);
+Future<List<Esame>> _fetchLibretto() async {
+  var response = await ApiManager.fetchData('libretto');
+  if (response != null) {
+    var results = json.decode(response) as List?;
+    if (results != null) {
+      return results.map((e) => Esame.fromJson(e)).toList();
+    }
   }
+
+  return [];
 }
 
 class LibrettoScreen extends StatefulWidget {
@@ -36,9 +28,10 @@ class _LibrettoScreenState extends State<LibrettoScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Esame>>(
-      future: fetchLibretto(),
+      future: _fetchLibretto(),
       builder: (BuildContext context, AsyncSnapshot<List<Esame>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.none) {
+        if (snapshot.connectionState == ConnectionState.none ||
+            !snapshot.hasData) {
           return const Text('no data');
         } else if (snapshot.connectionState == ConnectionState.done) {
           return Container(

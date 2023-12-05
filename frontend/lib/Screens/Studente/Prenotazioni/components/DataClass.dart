@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
-
-import 'package:frontend/models/Prenotazione.dart';
 import 'package:frontend/models/ApiManager.dart';
+import 'package:frontend/models/Prenotazione.dart';
+
+void _sprenota(String idProva, String data) {
+  Map<String, dynamic> postData = {
+    'idprova': idProva,
+    'data': data,
+  };
+
+  ApiManager.deleteData('/appelli/sprenota', postData);
+}
 
 class DataClass extends StatelessWidget {
   const DataClass({
@@ -84,7 +92,9 @@ Future<void> _dialogBuilder(BuildContext context, String idProva, String data) {
                 Positioned(
                   top: 50,
                   child: ElevatedButton(
-                      onPressed: () => {deleteAppello(idProva, data)},
+                      onPressed: () => {
+                            _sprenota(idProva, data),
+                          },
                       child: const Text("Cancella Prenotazione")),
                 )
               ],

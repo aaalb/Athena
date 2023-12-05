@@ -3,6 +3,19 @@ import 'package:frontend/models/Prenotazione.dart';
 import 'DataClass.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/models/ApiManager.dart';
+import 'dart:convert';
+
+Future<List<Prenotazione>> _fetchPrenotazioni() async {
+  var response = await ApiManager.fetchData('appelli/prenotazioni');
+  if (response != null) {
+    var results = json.decode(response) as List?;
+    if (results != null) {
+      return results.map((e) => Prenotazione.fromJson(e)).toList();
+    }
+  }
+
+  return [];
+}
 
 class PrenotazioniScreen extends StatefulWidget {
   const PrenotazioniScreen({super.key});
@@ -15,7 +28,7 @@ class _PrenotazioniScreenState extends State<PrenotazioniScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Prenotazione>>(
-      future: fetchPrenotazioni(),
+      future: _fetchPrenotazioni(),
       builder: (BuildContext context,
           AsyncSnapshot<List<Prenotazione>> snapshotPrenotazione) {
         if (snapshotPrenotazione.connectionState == ConnectionState.none) {

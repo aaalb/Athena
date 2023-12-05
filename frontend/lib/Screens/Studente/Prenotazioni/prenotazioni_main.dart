@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/side_menu.dart';
-import 'components/libretto_screen.dart';
+import 'package:frontend/Screens/Studente/side_menu.dart';
+import 'components/prenotazioni_screen.dart';
 
-class Libretto extends StatefulWidget {
-  const Libretto({super.key});
+class Prenotazioni extends StatefulWidget {
+  const Prenotazioni({super.key});
 
   @override
-  State<Libretto> createState() => _LibrettoState();
+  State<Prenotazioni> createState() => _PrenotazioniState();
 }
 
-class _LibrettoState extends State<Libretto> {
+class _PrenotazioniState extends State<Prenotazioni> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -27,7 +27,7 @@ class _LibrettoState extends State<Libretto> {
             Expanded(
               // It takes 5/6 part of the screen
               flex: 5,
-              child: LibrettoScreen(),
+              child: PrenotazioniScreen(),
             ),
           ],
         ),
