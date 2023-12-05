@@ -28,7 +28,6 @@ class DataClass extends StatelessWidget {
             child: DataTable(
           sortColumnIndex: 1,
           showCheckboxColumn: false,
-          border: TableBorder.all(color: Colors.black),
           // Data columns as required by APIs data.
           columns: const [
             DataColumn(label: Text("ID Prova")),
@@ -43,7 +42,7 @@ class DataClass extends StatelessWidget {
                 //maping each rows with datalist data
                 (data) => DataRow(
                     onSelectChanged: ((selected) {
-                      _dialogBuilder(context, data.idprova, data.data);
+                      _dialogBuilder(context, data);
                     }),
                     cells: [
                       DataCell(Text(data.idprova)),
@@ -57,75 +56,48 @@ class DataClass extends StatelessWidget {
   }
 }
 
-Future<void> _dialogBuilder(BuildContext context, String idProva, String data) {
+Future<void> _dialogBuilder(BuildContext context, Prenotazione data) {
   return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-            backgroundColor: Theme.of(context).dialogBackgroundColor,
-            insetPadding: const EdgeInsets.all(10),
-            child: Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                DataTable(
-                  showCheckboxColumn: false,
-                  columnSpacing: 8.0,
-                  columns: const [
-                    DataColumn(
-                      label: Text("Name"),
-                    ),
-                    DataColumn(
-                      label: Text("Exam Type"),
-                    ),
-                    DataColumn(
-                      label: Text("Professor"),
-                    ),
-                  ],
-                  rows: const [
-                    DataRow(cells: [
-                      DataCell(Text("ciao")),
-                      DataCell(Text("ciao")),
-                      DataCell(Text("ciao")),
-                    ])
-                  ],
-                ),
-                Positioned(
-                  top: 50,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            _sprenota(idProva, data),
-                          },
-                      child: const Text("Cancella Prenotazione")),
-                )
-              ],
-            )
-            /*child: Column(
-            children: [
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+          backgroundColor: Theme.of(context).dialogBackgroundColor,
+          insetPadding: const EdgeInsets.all(10),
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
               DataTable(
                 showCheckboxColumn: false,
                 columnSpacing: 8.0,
                 columns: const [
-                  DataColumn(label: Text("Attività Didattica")),
-                  DataColumn(label: Text("Data")),
-                  DataColumn(label: Text("Tipologia")),
-                  DataColumn(label: Text("Presidente")),
-                  DataColumn(label: Text("CFU"))
+                  DataColumn(
+                    label: Text("ID Prova"),
+                  ),
+                  DataColumn(
+                    label: Text("Tipologia"),
+                  ),
+                  DataColumn(
+                    label: Text("Opzionale"),
+                  ),
+                  DataColumn(
+                    label: Text("Scadenza"),
+                  ),
+                  DataColumn(
+                    label: Text("Dipendenza"),
+                  )
                 ],
-                rows: datalistAppello
-                    .map(
-                      //maping each rows with datalist data
-                      (data) => DataRow(cells: [
-                        DataCell(Text(data.attivitaDidattica ?? '')),
-                        DataCell(Text(data.data ?? '')),
-                        DataCell(Text(data.tipologia ?? '')),
-                        DataCell(Text(data.presidente ?? '')),
-                        DataCell(Text(data.CFU ?? '')),
-                      ]),
-                    )
-                    .toList(),
+                rows: [],
+              ),
+              Positioned(
+                top: 50,
+                child: ElevatedButton(
+                    onPressed: () => {
+                          _sprenota(data.idprova, data.data),
+                        },
+                    child: const Text("Cancella Prenotazione")),
               )
             ],
-          ),*/
-            );
-      });
+          ));
+    },
+  );
 }

@@ -167,33 +167,3 @@ def storico_appelli():
         return jsonify(result), 200
     except:
         jsonify({"Error":"Internal Server Error"}), 500
-
-
-@bp.route('/appelli/info', methods=['GET'])
-@jwt_required()
-def get_info_appello():
-    try:
-        current_user = get_jwt_identity()
-        if current_user['role'] == 'Docente':
-            return jsonify({"Error":"Not Allowed"}), 403
-
-        id_prova = request.json['idprova']
-
-        if not id_prova:
-            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
-        
-        query = session.query(Prova).filter(Prova.idprova == id_prova).all()
-
-        result = []
-        for record in query:
-            result.append({
-                'idprova' : record.idprova, 
-                'tipologia' : record.tipologia,
-                'opzionale' : record.opzionale,
-                'dipendeda' : record.dipendeda,
-                'responsabile' : record.responsabile
-            })
-
-        return jsonify(result), 200
-    except:
-        return jsonify({"Error":"Internal Server Error"}), 500

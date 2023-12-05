@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Common/canvas.dart';
 import 'package:frontend/constants.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -16,36 +17,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Athena',
-      theme: ThemeData(
-        fontFamily: 'Roboto',
-        primaryColor: primaryColor,
-        secondaryHeaderColor: secondaryColor,
-        brightness: Brightness.light,
-        primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
-        inputDecorationTheme: InputDecorationTheme(
-          labelStyle: TextStyle(
-            color: Colors.blueGrey,
-          ),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue, width: 2.0),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.green, width: 2.0),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-        dataTableTheme: const DataTableThemeData(
-          dataTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
-          headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 23),
-          headingRowHeight: 40,
-          dividerThickness: 1, // Spessore del separatore tra le righe
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-    );
+        title: 'Athena',
+        theme: ThemeData(
+            fontFamily: 'Roboto',
+            primaryColor: primaryColor,
+            secondaryHeaderColor: secondaryColor,
+            brightness: Brightness.light,
+            primarySwatch:
+                createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: false,
+              border: OutlineInputBorder(
+                //borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              fillColor: secondaryColor,
+              prefixIconColor: Colors.purple,
+              hintStyle: const TextStyle(fontFamily: 'Roboto'),
+            ),
+            dataTableTheme: const DataTableThemeData(
+              dataTextStyle: TextStyle(fontFamily: 'Roboto'),
+              headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
+            )),
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        builder: (context, child) => MyCanvas(child: child!));
   }
 }
 
@@ -66,6 +64,5 @@ MaterialColor createMaterialColor(Color color) {
       1,
     );
   }
-  ;
   return MaterialColor(color.value, swatch);
 }
