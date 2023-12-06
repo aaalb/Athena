@@ -82,7 +82,7 @@ Future<void> _dialogBuilder(
                           DataCell(Text(data.dataScadenza)),
                           DataCell(Text((data.dipendenza) != ""
                               ? data.dipendenza
-                              : "Nessuna")),
+                              : "No")),
                         ],
                       ),
                     )
@@ -103,8 +103,7 @@ Future<void> _dialogBuilder(
                   IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () {
-                      // Aggiungi azione per l'icona di eliminazione
-                      // Esegui qualcosa quando l'utente preme l'icona di eliminazione
+                      _eliminaEsame(idEsame);
                     },
                   ),
                 ],

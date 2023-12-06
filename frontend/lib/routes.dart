@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Screens/Docente/AppelliDocente/appelli_main.dart';
 import 'package:frontend/Screens/Studente/Libretto/libretto_main.dart';
 import 'package:frontend/Screens/Studente/Appelli/appelli_main.dart';
 import 'package:frontend/Screens/Studente/Menu/menu_main.dart';
+import 'package:frontend/Screens/Docente/Menu/menu_main.dart';
 import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:go_router/go_router.dart';
@@ -26,13 +28,29 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      name: "Menu",
-      path: '/menu',
+      name: "MenuStudente",
+      path: '/studente',
       pageBuilder: (context, state) {
         return CustomTransitionPage(
             transitionDuration: const Duration(milliseconds: 200),
             key: state.pageKey,
-            child: Menu(),
+            child: MenuStudente(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ));
+      },
+    ),
+    GoRoute(
+      name: "MenuDocente",
+      path: '/docente',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+            transitionDuration: const Duration(milliseconds: 200),
+            key: state.pageKey,
+            child: MenuDocente(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) =>
                     FadeTransition(
@@ -83,6 +101,22 @@ final router = GoRouter(
             transitionDuration: const Duration(milliseconds: 200),
             key: state.pageKey,
             child: EsamiDocente(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ));
+      },
+    ),
+    GoRoute(
+      name: 'AppelliDocente',
+      path: '/docente/appelli',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+            transitionDuration: const Duration(milliseconds: 200),
+            key: state.pageKey,
+            child: AppelliDocente(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) =>
                     FadeTransition(

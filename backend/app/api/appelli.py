@@ -17,13 +17,10 @@ def get_appelli():
         if current_user['role'] == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
-        subquery = session.query(Iscrizione.idappello).filter(Iscrizione.email == current_user['email'])
-        
         query = session.query(Appello.data, Prova.idprova, Prova.tipologia, Prova.opzionale, Prova.dipendeda, Esame.nome) \
             .select_from(Appello) \
             .join(Prova) \
             .join(Esame) \
-            .filter(Appello.idappello.notin_(subquery)) \
             .all()
 
         result = []
@@ -32,7 +29,7 @@ def get_appelli():
                 'idprova' : record.idprova, 
                 'nome' : record.nome,
                 'tipologia' : record.tipologia,
-                'data' : record.data,
+                'data' : str(record.data),
                 'opzionale' : record.opzionale,
                 'dipendeda' : record.dipendeda
             })
@@ -67,7 +64,7 @@ def get_appelli_prenotati():
                 'idprova' : record.idprova, 
                 'nome' : record.nome,
                 'tipologia' : record.tipologia,
-                'data' : record.data,
+                'data' : str(record.data),
             })
 
         return jsonify(result), 200
@@ -160,10 +157,66 @@ def storico_appelli():
                 'idprova' : record.idprova, 
                 'nome' : record.nome,
                 'tipologia' : record.tipologia,
-                'data' : record.data,
+                'data' : str(record.data),
                 'voto' : record.voto
             })
 
         return jsonify(result), 200
     except:
         jsonify({"Error":"Internal Server Error"}), 500
+
+
+@bp.route('/docente/appelli', methods=['GET'])
+@jwt_required()
+def get_appelli_docente():
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] == 'Studente':
+            return jsonify({"Error":"Not Allowed"}), 403
+        
+        query = session.query(Appello.data, Prova.idprova, Prova.tipologia, Prova.opzionale, Prova.dipendeda, Esame.nome) \
+            .select_from(Appello) \
+            .join(Prova) \
+            .join(Esame) \
+            .filter(Prova.responsabile == current_user['email']) \
+            .all()
+
+        result = []
+        for record in query:
+            result.append({
+                'idprova' : record.idprova, 
+                'nome' : record.nome,
+                'tipologia' : record.tipologia,
+                'data' : str(record.data),
+                'opzionale' : record.opzionale,
+                'dipendeda' : record.dipendeda
+            })
+
+        return jsonify(result), 200
+    except:
+        jsonify({"Error":"Internal Server Error"}), 500
+
+
+@bp.route('/appelli/<idprova>/info', methods=['GET'])
+@jwt_required()
+def get_info_appello(idprova):
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] == 'Docente':
+            return jsonify({"Error":"Not Allowed"}), 403
+        
+        query = session.query(Prova).filter(Prova.idprova == idprova).all()
+
+        result = []
+        for record in query:
+            result.append({
+                'idprova' : record.idprova, 
+                'tipologia' : record.tipologia,
+                'opzionale' : record.opzionale,
+                'dipendeda' : record.dipendeda,
+                'responsabile' : record.responsabile
+            })
+
+        return jsonify(result), 200
+    except:
+        return jsonify({"Error":"Internal Server Error"}), 500

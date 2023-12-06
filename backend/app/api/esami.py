@@ -9,7 +9,8 @@ from app.models.Esame import Esame
 from app.models.Prova import Prova
 from app.models.Realizza import Realizza
 from app.models.Appello import Appello
-import sys
+from app.models.Studente import Studente
+from app.models.Iscrizione import Iscrizione
 
 @bp.route('/esami/crea', methods=['POST'])
 @jwt_required()
@@ -39,7 +40,6 @@ def inserisci_in_libretto():
 
         collaboratori = [current_user['email']]
 
-        #TO-DO: opzionale deve avere valori uguali a true o false
         for index, prova in enumerate(prove, start=1):
             idprova = f"{idesame}-{index}",
 
@@ -124,7 +124,7 @@ def visualizza_esame():
                 "idprova" : prova.idprova,
                 "tipologia" : prova.tipologia,
                 "opzionale" : prova.opzionale,
-                "datascadenza" : prova.datascadenza,
+                "datascadenza" : str(prova.datascadenza),
                 "dipendeda" : prova.dipendeda 
             })
 
@@ -141,5 +141,24 @@ def visualizza_esame():
 
 @bp.route('/esami/<idesame>/registra', methods=['GET'])
 @jwt_required()
-def registra_esame():
-    return ""
+def registra_esame(idesame):
+    current_user = get_jwt_identity()
+    if current_user['role'] == 'Studente':
+        return jsonify({"Error":"Not Allowed"}), 403
+    
+    studenti = session.query(Studente.email).all()
+    prove = session.query(Prova.idprova).filter(Prova.idesame == idesame).all()
+
+    candidati = []
+    flag = True
+    for studente in studenti:
+        for prova in prove:
+            result = session.query(Iscrizione) \
+                .join(Appello) \
+                .filter(Appello.idprova == prova) \
+                .filter(Iscrizione.idoneita != None)
+            
+            if result is None:
+                flag = False
+        
+        if flag : candidati.append(studente)

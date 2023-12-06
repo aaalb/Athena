@@ -17,6 +17,11 @@ class SideMenu extends StatelessWidget {
             svgSrc: "images/libretto_icon.png",
             press: () => context.go('/docente/esami'),
           ),
+          DrawerListTile(
+            title: "Appelli",
+            svgSrc: "images/libretto_icon.png",
+            press: () => context.go('/docente/appelli'),
+          ),
         ],
       ),
     );

@@ -33,7 +33,7 @@ class _EsamiDocenteScreenState extends State<EsamiDocenteScreen> {
       builder: (BuildContext context, AsyncSnapshot<List<Esame>> snapshot) {
         if (snapshot.connectionState == ConnectionState.none ||
             !snapshot.hasData) {
-          return const Text('no data');
+          return const Text('Nessun dato disponibil');
         } else if (snapshot.connectionState == ConnectionState.done) {
           return Stack(
             fit: StackFit.expand,

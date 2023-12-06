@@ -185,41 +185,38 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
                       const SizedBox(height: 20),
                     ],
                   ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    if (idesameController.text != "") {
-                      ++counter;
-                      setState(() {
-                        for (var i = 0; i < 5; i++) {
-                          controllers.add(TextEditingController());
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        if (idesameController.text != "") {
+                          ++counter;
+                          setState(() {
+                            for (var i = 0; i < 5; i++) {
+                              controllers.add(TextEditingController());
+                            }
+                          });
                         }
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    _creaEsame(
-                        idesameController.text,
-                        nomeController.text,
-                        creditiController.text,
-                        annoController.text,
-                        controllers);
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      },
                     ),
-                    padding: const EdgeInsets.all(16.0),
-                  ),
-                  child: const Text(
-                    'Conferma',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
+                    const SizedBox(width: 20),
+                    IconButton(
+                      icon: const Icon(Icons.check),
+                      onPressed: () {
+                        _creaEsame(
+                            idesameController.text,
+                            nomeController.text,
+                            creditiController.text,
+                            annoController.text,
+                            controllers);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                )
               ],
             ),
           ),
