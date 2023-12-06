@@ -20,6 +20,18 @@ Future<List<Candidato>> _fetchCandidati(String idProva, String data) async {
   return [];
 }
 
+Future<void> _inserisciVoto(
+    String idProva, String data, String email, String voto) async {
+  Map<String, dynamic> postData = {
+    'stud_email': email,
+    'voto': voto,
+  };
+
+  // Assuming you have an ApiManager class with a postData method
+  await ApiManager.postData('iscrizioni/$idProva/$data/voto',
+      postData); // Changed to postData method assuming it creates an exam
+}
+
 class DataClass extends StatelessWidget {
   const DataClass({
     Key? key,
@@ -117,6 +129,8 @@ Future<void> _dialogInfoBuilder(BuildContext context, Appello data) {
 Future<void> _dialogVotiBuilder(
     BuildContext context, String idProva, String data) {
   List<TextEditingController> voti = [];
+  List<Candidato> candidati = [];
+
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -146,7 +160,7 @@ Future<void> _dialogVotiBuilder(
                       child: Text('Nessuna iscrizione alla prova'),
                     );
                   } else {
-                    List<Candidato> candidati = snapshot.data!;
+                    candidati = snapshot.data!;
                     for (int i = 0; i < candidati.length; ++i) {
                       voti.add(TextEditingController());
                     }
@@ -209,7 +223,10 @@ Future<void> _dialogVotiBuilder(
               child: IconButton(
                 icon: Icon(Icons.send),
                 onPressed: () {
-                  print(voti[0].text);
+                  for (int i = 0; i < voti.length; ++i) {
+                    _inserisciVoto(
+                        idProva, data, candidati[i].email, voti[i].text);
+                  }
                 },
               ),
             ),

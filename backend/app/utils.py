@@ -1,5 +1,10 @@
 import random
 from datetime import datetime, timedelta
+from app.extensions import session
+
+from app.models.Prova import Prova
+from app.models.Appello import Appello
+from app.models.Iscrizione import Iscrizione
 
 def genera_date_appello(num_date):
     date_appello = []

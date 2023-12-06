@@ -3,12 +3,48 @@ import 'package:frontend/Screens/Docente/models/Esame.dart';
 import 'package:frontend/Screens/Docente/models/Prova.dart';
 import 'package:frontend/utils/ApiManager.dart';
 
+class Prova {
+  final String idprova; 
+  final int voto, bonus;
+
+  Prova({
+    required this.idprova,
+    required this.voto,
+    required this.bonus,
+  });
+
+  factory Prova.fromJson(Map<String, dynamic> json) {
+    return Prova(
+      idprova: json['idprova'],
+      voto: json['voto'] ?? "",
+      bonus: json['bonus'] ?? "",
+    );
+  }
+}
+
+
 void _eliminaEsame(String idesame) {
   Map<String, dynamic> postData = {
     'idesame': idesame,
   };
 
   ApiManager.deleteData('esami/elimina', postData);
+}
+
+Future<List<Candidato>> _fetchCandidati(String idProva, String data) async {
+  var response = await ApiManager.fetchData('iscrizioni/$idProva/$data');
+  if (response != null) {
+    var results = json.decode(response) as List?;
+    List<Candidato> list = [];
+    if (results != null) {
+      for (var j in results) {
+        list.add(Candidato.fromJson(j));
+      }
+      return list;
+    }
+  }
+
+  return [];
 }
 
 class DataClass extends StatelessWidget {
@@ -95,8 +131,7 @@ Future<void> _dialogBuilder(
                   IconButton(
                     icon: Icon(Icons.book_rounded),
                     onPressed: () {
-                      // Aggiungi azione per l'icona di aggiunta
-                      // Esegui qualcosa quando l'utente preme l'icona di aggiunta
+                      _dialogCandidatiBuilder(context, idProva, data)
                     },
                   ),
                   SizedBox(width: 10),
@@ -115,3 +150,116 @@ Future<void> _dialogBuilder(
     },
   );
 }
+
+Future<void> _dialogCandidatiBuilder(
+    BuildContext context, String idEsame) {
+  List<TextEditingController> voti = [];
+  List<String> candidati = [];
+  List<Prova> 
+
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<List<Candidato>>(
+                future: _fetchCandidati(idProva, data),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Candidato>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Errore durante il recupero dei dati'),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Nessuna iscrizione alla prova'),
+                    );
+                  } else {
+                    candidati = snapshot.data!;
+                    for (int i = 0; i < candidati.length; ++i) {
+                      voti.add(TextEditingController());
+                    }
+                    ;
+                    return ListView.builder(
+                      itemCount: candidati.length,
+                      itemBuilder: (context, index) {
+                        Candidato data = candidati[index];
+                        return Card(
+                          margin: const EdgeInsets.all(8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${data.cognome} ${data.nome}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text('Email: ${data.email}'),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  flex: 2,
+                                  child: TextFormField(
+                                    controller: voti[index],
+                                    decoration: const InputDecoration(
+                                      labelText: 'Voto',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () {
+                  for (int i = 0; i < voti.length; ++i) {
+                    _inserisciVoto(
+                        idProva, data, candidati[i].email, voti[i].text);
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+

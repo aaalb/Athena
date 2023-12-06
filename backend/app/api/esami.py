@@ -11,10 +11,10 @@ from app.models.Realizza import Realizza
 from app.models.Appello import Appello
 from app.models.Studente import Studente
 from app.models.Iscrizione import Iscrizione
-
+import sys
 @bp.route('/esami/crea', methods=['POST'])
 @jwt_required()
-def inserisci_in_libretto():
+def crea_esame():
     try:
         current_user = get_jwt_identity()
         if current_user['role'] == 'Studente':
@@ -139,26 +139,45 @@ def visualizza_esame():
     return jsonify(result), 200
 
 
-@bp.route('/esami/<idesame>/registra', methods=['GET'])
+@bp.route('/esami/<idesame>/candidati', methods=['GET'])
 @jwt_required()
-def registra_esame(idesame):
-    current_user = get_jwt_identity()
-    if current_user['role'] == 'Studente':
-        return jsonify({"Error":"Not Allowed"}), 403
-    
-    studenti = session.query(Studente.email).all()
-    prove = session.query(Prova.idprova).filter(Prova.idesame == idesame).all()
-
-    candidati = []
-    flag = True
-    for studente in studenti:
-        for prova in prove:
-            result = session.query(Iscrizione) \
-                .join(Appello) \
-                .filter(Appello.idprova == prova) \
-                .filter(Iscrizione.idoneita != None)
-            
-            if result is None:
-                flag = False
+def get_candidati(idesame):
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] == 'Studente':
+            return jsonify({"Error":"Not Allowed"}), 403
         
-        if flag : candidati.append(studente)
+        studenti = session.query(Studente).all()
+        prove = session.query(Prova.idprova).filter(Prova.idesame == idesame).all()
+        candidati = []
+
+        for studente in studenti:
+            flag = True
+            tmp = {'email': studente.email, 'prove': []}
+            for prova in prove:
+                query = session.query(Iscrizione.voto, Iscrizione.bonus) \
+                    .join(Appello) \
+                    .filter(Iscrizione.email == studente.email) \
+                    .filter(Iscrizione.idoneita == True) \
+                    .filter(Appello.idprova == prova.idprova).first()
+                
+                if query:
+                    tmp['prove'].append({
+                        'idprova':prova.idprova,
+                        'voto': query.voto,
+                        'bonus':query.bonus
+                    })
+
+                else:
+                    flag = False
+            
+            if flag: 
+                candidati.append(tmp)
+        
+        return jsonify(candidati)
+    
+    except Exception as e:
+        print(e, file=sys.stderr)
+        session.rollback()
+        return jsonify({"Status": "Internal Server Error"}), 500
+        

@@ -48,7 +48,7 @@ def get_iscritti(idprova=None, data=None):
         return jsonify({"error": "Something went wrong"}), 500
     
 
-@bp.route('/iscrizioni/<idprova>/<data>/voto')
+@bp.route('/iscrizioni/<idprova>/<data>/voto', methods=['POST'])
 @jwt_required()
 def inserisci_voto(idprova, data):
     try:
