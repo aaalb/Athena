@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Libretto/libretto_main.dart';
-import 'package:frontend/Screens/Appelli/appelli_main.dart';
-import 'package:frontend/Screens/Menu/menu_main.dart';
-import 'package:frontend/Screens/Prenotazioni/prenotazioni_main.dart';
+import 'package:frontend/Screens/Studente/Menu/menu_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/Screens/Studente/Appelli/appelli_main.dart';
+import 'package:frontend/Screens/Studente/Libretto2/libretto_main.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -48,14 +47,42 @@ final router = GoRouter(
     GoRoute(
       name: 'Libretto',
       path: '/libretto',
-      builder: (context, state) => Libretto(),
-      redirect: (context, state) => _redirect(context, state),
+      pageBuilder: (context, state) => CustomTransitionPage
+      (
+        transitionDuration: const Duration(milliseconds: 200),
+        key: state.pageKey,
+        child: Libretto2(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition
+          (
+            opacity: animation,
+            child: child,
+          ) 
+      ),
+      //redirect: (context, state) => _redirect(context, state),
     ),
     GoRoute(
       name: 'Appelli',
       path: '/appelli',
+      pageBuilder: (context, state) => CustomTransitionPage
+      (
+        transitionDuration: const Duration(milliseconds: 200),
+        key: state.pageKey,
+        child: Appelli(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition
+          (
+            opacity: animation,
+            child: child,
+          ) 
+      ),
+      //redirect: (context, state) => _redirect(context, state),
+    ),
+    /*GoRoute(
+      name: 'Appelli',
+      path: '/appelli',
       builder: (context, state) => Appelli(),
-      redirect: (context, state) => _redirect(context, state),
+      //redirect: (context, state) => _redirect(context, state),
     ),
     GoRoute(
       name: 'Bacheca prenotazioni',
@@ -68,10 +95,12 @@ final router = GoRouter(
       path: '/logout',
       builder: (context, state) => Prenotazioni(),
       redirect: (context, state) => _redirect(context, state),
-    ),
+    ),*/
   ],
 );
 
+/*
 String? _redirect(BuildContext context, GoRouterState state) {
   return (AuthService.isAuthenticated) ? null : null;
 }
+*/

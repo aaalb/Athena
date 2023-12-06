@@ -14,9 +14,9 @@ class LoginPage extends StatefulWidget
     constraints: BoxConstraints
     (
       minWidth: 390,
-      maxWidth: 500,
-      minHeight: 430,
-      maxHeight: 430,
+      maxWidth: 600,
+      minHeight: 230,
+      maxHeight: 600,
     )
   );
   @override
@@ -25,8 +25,6 @@ class LoginPage extends StatefulWidget
 
 class LoginPageState extends State<LoginPage>
 {
-  Widget? form;
-
   @override
   void initState()
   {
@@ -48,8 +46,8 @@ class LoginPageState extends State<LoginPage>
   {
     return const Padding
     (
-      padding: EdgeInsets.fromLTRB(55, 30, 55, 30),
-      child: SingleChildScrollView(child: LoginFormComponent()),
+      padding: EdgeInsets.fromLTRB(55, 40, 55, 40),
+      child: Center(child: SingleChildScrollView(child: LoginFormComponent())),
     );
   }
 }

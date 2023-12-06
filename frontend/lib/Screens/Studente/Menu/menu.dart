@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Menu/menu_item.dart';
+import 'package:frontend/Screens/Studente/Menu/menu_item.dart';
+import 'package:go_router/go_router.dart';
 
 class MenuComponent extends StatefulWidget {
   @override
@@ -9,7 +10,7 @@ class MenuComponent extends StatefulWidget {
 class MenuComponentState extends State<MenuComponent> {
   @override
   Widget build(BuildContext context) {
-    return const Column
+    return Column
     (
       children: 
       [
@@ -28,7 +29,9 @@ class MenuComponentState extends State<MenuComponent> {
             VerticalDivider(width: 30,),
             Expanded
             (
-              child: MenuItem(imagePath: "images/libretto_icon_2.png", label: "Libretto")
+              child: MenuItem(imagePath: "images/libretto_icon_2.png", label: "Libretto",
+                onClick: () => GoRouter.of(context).go("/libretto"),
+              ),
             ),
             VerticalDivider(width: 30,),
             Expanded

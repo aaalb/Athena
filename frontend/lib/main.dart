@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Common/canvas.dart';
 import 'package:frontend/constants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'package:frontend/routes.dart';
@@ -16,6 +17,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    //GoRouter.optionURLReflectsImperativeAPIs = true;
     return MaterialApp.router(
       title: 'Athena',
       theme: ThemeData(
@@ -41,6 +44,7 @@ class MyApp extends StatelessWidget {
             headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
           )),
       debugShowCheckedModeBanner: false,
+      
       routerConfig: router,
       builder: (context, child) => MyCanvas(child: child!)
     );

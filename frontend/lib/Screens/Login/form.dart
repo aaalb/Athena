@@ -60,97 +60,115 @@ class _LoginFormComponentState extends State<LoginFormComponent>
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Form
+    return Form
     (
       child: AutofillGroup
       (
-        
         child: Column
         (
+          mainAxisSize: MainAxisSize.min,
           children: 
           [
-            Image.asset("images/cf-logo.png", fit: BoxFit.fill,),
-
-            Text(errorText, style: const TextStyle
+            Padding
             (
-              color: Colors.red
-            ),),
-            Material
-            (
-              elevation: elevations[0],
-              borderRadius: BorderRadius.circular(10.0),
-              child: Focus
-              (
-                focusNode: FOCemail_out,
-                child: TextField
-                (
-                  focusNode: FOCemail_in,
-                  autofillHints: [AutofillHints.email, AutofillHints.username],
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration
-                  (
-                    hintText: "Email",
-                    focusedBorder: OutlineInputBorder
-                    (
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: borderColor),
-                    ),
-                    enabledBorder: OutlineInputBorder
-                    (
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: borderColor),
-                    ),
-                  ),
-                ),
-                onFocusChange: (hasFocus) => _onFocusChange(hasFocus: hasFocus, callerId: 0)
-              )
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Image.asset("images/cf-logo.png", fit: BoxFit.fill,),
             ),
 
-            Material
+            Padding
             (
-              elevation: elevations[1],
-              borderRadius: BorderRadius.circular(10.0),
-              child: Focus
+              padding: EdgeInsets.only(bottom: 20),
+              child: Text(errorText, style: const TextStyle
               (
-                focusNode: FOCpass_out,
-                child: TextField
+                color: Colors.red
+              ),),
+            ),
+
+            Padding
+            (
+              padding: EdgeInsets.only(bottom: 20),
+              child: Material
+              (
+                elevation: elevations[0],
+                borderRadius: BorderRadius.circular(10.0),
+                child: Focus
                 (
-                  autofillHints: [AutofillHints.password],
-                  controller: passwordController,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.done,
-                  obscureText: hidePassword,
-                  decoration: InputDecoration
+                  focusNode: FOCemail_out,
+                  child: TextField
                   (
-                    hintText: "Password",
-                    focusedBorder: OutlineInputBorder
+                    focusNode: FOCemail_in,
+                    autofillHints: [AutofillHints.email, AutofillHints.username],
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration
                     (
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: borderColor),
+                      hintText: "Email",
+                      focusedBorder: OutlineInputBorder
+                      (
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: borderColor),
+                      ),
+                      enabledBorder: OutlineInputBorder
+                      (
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: borderColor),
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder
-                    (
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: borderColor),
-                    ),
-                    suffixIcon: IconButton
-                    (
-                      icon: Icon(hidePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                      onPressed: () {
-                        setState(() {
-                          hidePassword = !hidePassword;
-                        });
-                      },
-                    )
                   ),
-                  onSubmitted: (value) => tryLogin(context),
-                  focusNode: FOCpass_in,
-                ),
-                onFocusChange: (hasFocus) => _onFocusChange(hasFocus: hasFocus, callerId: 1),
-              )
+                  
+                  onFocusChange: (hasFocus) => _onFocusChange(hasFocus: hasFocus, callerId: 0)
+                )
+              ),
+            ),
+
+            Padding
+            (
+              padding: EdgeInsets.only(bottom: 20),
+              child: Material
+              (
+                elevation: elevations[1],
+                borderRadius: BorderRadius.circular(10.0),
+                child: Focus
+                (
+                  focusNode: FOCpass_out,
+                  child: TextField
+                  (
+                    autofillHints: [AutofillHints.password],
+                    controller: passwordController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.done,
+                    obscureText: hidePassword,
+                    decoration: InputDecoration
+                    (
+                      hintText: "Password",
+                      focusedBorder: OutlineInputBorder
+                      (
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: borderColor),
+                      ),
+                      enabledBorder: OutlineInputBorder
+                      (
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(color: borderColor),
+                      ),
+                      suffixIcon: IconButton
+                      (
+                        icon: Icon(hidePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                        onPressed: () {
+                          setState(() {
+                            hidePassword = !hidePassword;
+                          });
+                        },
+                      )
+                    ),
+                    onSubmitted: (value) => tryLogin(context),
+                    focusNode: FOCpass_in,
+                  ),
+                  
+                  onFocusChange: (hasFocus) => _onFocusChange(hasFocus: hasFocus, callerId: 1),
+                )
+              ),
             ),
 
             Focus(
@@ -183,10 +201,10 @@ class _LoginFormComponentState extends State<LoginFormComponent>
               onFocusChange: (hasFocus) => _onFocusChange(hasFocus: hasFocus, callerId: -1),
             ),
 
-          ].map((widget) => Padding(
+          ]/*.map((widget) => Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: widget,
-          )).toList(),
+          )).toList(),*/
         )
       )
     );

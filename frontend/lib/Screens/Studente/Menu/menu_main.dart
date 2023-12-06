@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:frontend/Screens/Menu/menu.dart';
+import 'package:frontend/Screens/Studente/Menu/menu.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 import 'package:frontend/Common/notifications.dart';
 
@@ -11,14 +11,14 @@ class Menu extends StatefulWidget
 
   static PageDimensions dimensions = const PageDimensions
   (
-    width: 800,
-    height: 230,
+    //width: 800,
+    //height: 230,
     constraints: BoxConstraints
     (
       minWidth: 390,
       maxWidth: 700,
-      maxHeight: 265,
       minHeight: 265,
+      maxHeight: 265,
     )
   );
 
@@ -50,7 +50,7 @@ class MenuState extends State<Menu>
     return Padding
     (
       padding: EdgeInsets.all(20),
-      child: SingleChildScrollView(child: MenuComponent()),
+      child: Center(child: SingleChildScrollView(child: MenuComponent())),
     );
   }
 }
