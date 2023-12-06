@@ -12,7 +12,7 @@ class MenuComponentState extends State<MenuComponent> {
     return const Column(
       children: [
         Text(
-          "Ciao, Albert",
+          "Ciao",
           style: TextStyle(
             color: Color.fromARGB(255, 209, 67, 67),
             fontFamily: 'SourceSansPro',
