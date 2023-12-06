@@ -51,7 +51,7 @@ def get_appelli_prenotati():
             .filter(Iscrizione.voto == None) \
             .filter(Iscrizione.email == current_user['email'])
         
-        query = session.query(Prova.idprova, Esame.nome, Appello.data, Prova.tipologia) \
+        query = session.query(Prova.idprova, Esame.nome, Appello.data, Prova.tipologia, Prova.responsabile, Prova.dipendeda) \
             .select_from(Appello) \
             .join(Prova) \
             .join(Esame) \
@@ -65,6 +65,8 @@ def get_appelli_prenotati():
                 'nome' : record.nome,
                 'tipologia' : record.tipologia,
                 'data' : str(record.data),
+                'responsabile' : record.responsabile,
+                'dipendenza' : record.dipendeda
             })
 
         return jsonify(result), 200

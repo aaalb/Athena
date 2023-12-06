@@ -23,7 +23,7 @@ def get_libretto():
             .filter(Libretto.email == current_user['email']) \
             .all()
 
-        d = session.query(Appello.data) \
+        data = session.query(Appello.data) \
             .join(Iscrizione) \
             .filter(Iscrizione.idoneita == True) \
             .filter(Iscrizione.voto != None).first()
@@ -35,7 +35,8 @@ def get_libretto():
                 'voto_complessivo' : record.votocomplessivo,
                 'crediti' : record.crediti,
                 'anno' : record.anno,
-                'data' : str(d.data)
+                'data' : str(data.data),
+                'idesame' : record.idesame,
             })
 
         return jsonify(result), 200

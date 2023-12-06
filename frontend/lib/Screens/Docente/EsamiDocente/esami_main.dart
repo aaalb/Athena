@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Docente/EsamiDocente/components/esami_screen.dart';
 
 import 'package:frontend/Screens/Docente/side_menu.dart';
-/*
+
 class EsamiDocente extends StatefulWidget {
   const EsamiDocente({super.key});
 
@@ -35,4 +35,3 @@ class _LibrettoState extends State<EsamiDocente> {
     );
   }
 }
-*/

@@ -15,11 +15,11 @@ def get_user_data():
     result = []
     if tipo == 'Studente':
         query = session.query(Studente.nome, Studente.cognome, Studente.email, Studente.datanascita, Studente.matricola, Studente.facolta) \
-            .filter(Studente.email == current_user) \
+            .filter(Studente.email == current_user['email']) \
             .all()
     else:
         query = session.query(Docente.nome, Docente.cognome, Docente.email, Docente.datanascita) \
-            .filter(Docente.email == current_user) \
+            .filter(Docente.email == current_user['email']) \
             .all()
         
     result = []
@@ -28,7 +28,7 @@ def get_user_data():
             'nome' : record.nome, 
             'cognome' : record.cognome,
             'email' : record.email,
-            'datanascita' : record.datanascita,
+            'datanascita' : str(record.datanascita),
             'facolta': record.facolta if tipo == 'Studente' else None, 
             'matricola': record.matricola if tipo == 'Studente' else None, 
         })
