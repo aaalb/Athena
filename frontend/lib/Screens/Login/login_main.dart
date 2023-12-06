@@ -4,8 +4,7 @@ import 'package:frontend/Common/notifications.dart';
 import 'package:frontend/Screens/Login/form.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
-class LoginPage extends StatefulWidget
-{
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   static PageDimensions dimensions = const PageDimensions
@@ -26,14 +25,11 @@ class LoginPage extends StatefulWidget
 class LoginPageState extends State<LoginPage>
 {
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
 
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp)
-    {
-      LoadNewPageNotification
-      (
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      LoadNewPageNotification(
         width: LoginPage.dimensions.width,
         height: LoginPage.dimensions.height,
         constraints: LoginPage.dimensions.constraints,

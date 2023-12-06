@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:frontend/Screens/Studente/Menu/menu.dart';
+import 'package:frontend/Screens/Docente/Menu/menu.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 import 'package:frontend/Common/notifications.dart';
 
-class MenuStudente extends StatefulWidget {
-  const MenuStudente({super.key});
+class MenuDocente extends StatefulWidget {
+  const MenuDocente({super.key});
 
   static PageDimensions dimensions = const PageDimensions(
       width: 800,
@@ -18,19 +18,19 @@ class MenuStudente extends StatefulWidget {
       ));
 
   @override
-  State<MenuStudente> createState() => MenuState();
+  State<MenuDocente> createState() => MenuState();
 }
 
-class MenuState extends State<MenuStudente> {
+class MenuState extends State<MenuDocente> {
   @override
   void initState() {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       LoadNewPageNotification(
-        width: MenuStudente.dimensions.width,
-        height: MenuStudente.dimensions.height,
-        constraints: MenuStudente.dimensions.constraints,
+        width: MenuDocente.dimensions.width,
+        height: MenuDocente.dimensions.height,
+        constraints: MenuDocente.dimensions.constraints,
       ).dispatch(context);
     });
   }

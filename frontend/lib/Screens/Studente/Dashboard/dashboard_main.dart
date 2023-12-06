@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/AuthService.dart';
+import 'package:frontend/utils/AuthService.dart';
 import 'package:go_router/go_router.dart';
 
 class Dashboard extends StatefulWidget {

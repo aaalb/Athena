@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Studente/Libretto/components/DataClass.dart';
-import 'package:frontend/models/ApiManager.dart';
+import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
 import 'package:frontend/constants.dart';
-import 'package:frontend/models/Esame.dart';
+import 'package:frontend/Screens/Studente/models/Esame.dart';
 
 Future<List<Esame>> _fetchLibretto() async {
   var response = await ApiManager.fetchData('libretto');

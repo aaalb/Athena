@@ -29,7 +29,7 @@ def get_iscritti(idprova=None, data=None):
             .filter(Iscrizione.idappello == appello.idappello) \
             .filter(Iscrizione.voto == None)
 
-        query = session.query(Studente.nome, Studente.cognome, Studente.email, Studente.matricola) \
+        query = session.query(Studente.nome, Studente.cognome, Studente.email) \
             .filter(Studente.email.in_(subquery)) \
             .all()
 
@@ -39,7 +39,6 @@ def get_iscritti(idprova=None, data=None):
                 'nome' : record.nome, 
                 'cognome' : record.cognome,
                 'email' : record.email,
-                'matricola' : record.matricola
             })
         if not result:
             return jsonify({"Error": "No Data Found"}), 404
