@@ -89,22 +89,25 @@ Future<void> _dialogBuilder(
                     .toList(),
               ),
               const SizedBox(height: 20.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0), // Rounded corners
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.book_rounded),
+                    onPressed: () {
+                      // Aggiungi azione per l'icona di aggiunta
+                      // Esegui qualcosa quando l'utente preme l'icona di aggiunta
+                    },
                   ),
-                ),
-                onPressed: () {
-                  _eliminaEsame(idEsame);
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  "Elimina esame",
-                  style: TextStyle(fontSize: 16.0),
-                ),
+                  SizedBox(width: 10),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      // Aggiungi azione per l'icona di eliminazione
+                      // Esegui qualcosa quando l'utente preme l'icona di eliminazione
+                    },
+                  ),
+                ],
               ),
             ],
           ),

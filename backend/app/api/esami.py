@@ -10,6 +10,7 @@ from app.models.Prova import Prova
 from app.models.Realizza import Realizza
 from app.models.Appello import Appello
 import sys
+
 @bp.route('/esami/crea', methods=['POST'])
 @jwt_required()
 def inserisci_in_libretto():
@@ -78,7 +79,6 @@ def inserisci_in_libretto():
         return jsonify({"Status": "Success"}),200
 
     except Exception as e:
-        print(e, file=sys.stderr)
         session.rollback()
         return jsonify({"Status": "Failure"}), 500
     
@@ -137,3 +137,9 @@ def visualizza_esame():
         })
 
     return jsonify(result), 200
+
+
+@bp.route('/esami/<idesame>/registra', methods=['GET'])
+@jwt_required()
+def registra_esame():
+    return ""

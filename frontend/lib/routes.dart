@@ -78,8 +78,18 @@ final router = GoRouter(
     GoRoute(
       name: 'EsamiDocente',
       path: '/docente/esami',
-      builder: (context, state) => EsamiDocente(),
-      redirect: (context, state) => _redirect(context, state),
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+            transitionDuration: const Duration(milliseconds: 200),
+            key: state.pageKey,
+            child: EsamiDocente(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ));
+      },
     ),
   ],
 );

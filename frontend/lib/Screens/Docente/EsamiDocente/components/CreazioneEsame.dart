@@ -169,8 +169,9 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
                           const SizedBox(
                             width: 10,
                           ),
-                          GestureDetector(
-                            onTap: () {
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline_rounded),
+                            onPressed: () {
                               setState(() {
                                 --counter;
                                 for (var i = 0; i < 5; i++) {
@@ -178,17 +179,14 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
                                 }
                               });
                             },
-                            child: const Icon(
-                              Icons.delete_outline,
-                              size: 30,
-                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
                     ],
                   ),
-                ElevatedButton(
+                IconButton(
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     if (idesameController.text != "") {
                       ++counter;
@@ -199,16 +197,6 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
                       });
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.all(16.0),
-                  ),
-                  child: const Text(
-                    'Aggiungi prova',
-                    style: TextStyle(fontSize: 18),
-                  ),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
