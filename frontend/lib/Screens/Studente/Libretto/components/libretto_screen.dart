@@ -26,19 +26,28 @@ class LibrettoScreen extends StatefulWidget {
 
 class _LibrettoScreenState extends State<LibrettoScreen> {
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<Esame>>(
+  Widget build(BuildContext context)
+  {
+    return FutureBuilder<List<Esame>>
+    (
       future: _fetchLibretto(),
-      builder: (BuildContext context, AsyncSnapshot<List<Esame>> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<Esame>> snapshot) 
+      {
         if (snapshot.connectionState == ConnectionState.none ||
-            !snapshot.hasData) {
+            !snapshot.hasData) 
+        {
           return const Text('no data');
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          return Container(
+        } 
+        else if (snapshot.connectionState == ConnectionState.done) 
+        {
+          return Container
+          (
             padding: const EdgeInsets.all(defaultPadding),
             child: DataClass(dataList: snapshot.data as List<Esame>),
           );
-        } else {
+        }
+        else
+        {
           return const Center(child: CircularProgressIndicator());
         }
       },

@@ -1,43 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-class MenuItem extends StatefulWidget {
-  final String? imagePath;
-  final String? label;
-  const MenuItem({this.imagePath, this.label});
+class MenuItem extends StatefulWidget
+{
+  final String ? imagePath;
+  final String ? label;
+  final Function() ? onClick;
+  const MenuItem({this.imagePath, this.label, this.onClick});
 
   @override
-  State<MenuItem> createState() =>
-      MenuItemState(imagePath: imagePath, label: label);
+  State<MenuItem> createState() => MenuItemState(imagePath: imagePath, label: label, onClick: onClick);
 }
 
-class MenuItemState extends State<MenuItem> {
-  String? imagePath;
-  String? label;
+class MenuItemState extends State<MenuItem>
+{
+  String ? imagePath;
+  String ? label;
+  Function() ? onClick;
   double elevation = 2;
-  MenuItemState({this.imagePath, this.label});
+  MenuItemState({this.imagePath, this.label, this.onClick});
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Material(
-        elevation: elevation,
-        child: Column(children: [
-          Image.asset(
-            imagePath!,
-            width: 100,
-            height: 100,
-            //color: Color.fromARGB(255, 209, 67, 67),
+  Widget build(BuildContext context)
+  {
+    return InkWell
+    (
+      child: IgnorePointer
+      (
+        child: Material
+        (
+          elevation: elevation,
+          child: Column
+          ( 
+            children:
+            [
+              Image.asset
+              (
+                imagePath!,
+                width: 100, 
+                height: 100,
+                //color: Color.fromARGB(255, 209, 67, 67),
+              ),
+              Text(label!),
+            ]
           ),
-          Text(label!),
-        ]),
+        ),
       ),
-      onTap: () {
-        context.go('/$label'.toLowerCase());
-      },
+      onTap: onClick,
       onHover: (val) => setState(() {
         elevation = val ? 20 : 2;
-      }),
+      }),  
     );
   }
 }

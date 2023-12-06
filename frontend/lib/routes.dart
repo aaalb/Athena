@@ -68,8 +68,25 @@ final router = GoRouter(
     GoRoute(
       name: 'Appelli',
       path: '/appelli',
+      pageBuilder: (context, state) => CustomTransitionPage
+      (
+        transitionDuration: const Duration(milliseconds: 200),
+        key: state.pageKey,
+        child: Appelli(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition
+          (
+            opacity: animation,
+            child: child,
+          ) 
+      ),
+      //redirect: (context, state) => _redirect(context, state),
+    ),
+    /*GoRoute(
+      name: 'Appelli',
+      path: '/appelli',
       builder: (context, state) => Appelli(),
-      redirect: (context, state) => _redirect(context, state),
+      //redirect: (context, state) => _redirect(context, state),
     ),
     GoRoute(
       name: "Prenotazioni",
@@ -128,6 +145,8 @@ final router = GoRouter(
   ],
 );
 
+/*
 String? _redirect(BuildContext context, GoRouterState state) {
   return (AuthService.isAuthenticated) ? null : null;
 }
+*/

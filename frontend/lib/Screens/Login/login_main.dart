@@ -7,21 +7,23 @@ import 'package:frontend/Common/page_dimensions.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-  static PageDimensions dimensions = const PageDimensions(
-      width: 390,
-      constraints: BoxConstraints(
-        minWidth: 390,
-        maxWidth: 500,
-        minHeight: 430,
-        maxHeight: 430,
-      ));
+  static PageDimensions dimensions = const PageDimensions
+  (
+    width: 390,
+    constraints: BoxConstraints
+    (
+      minWidth: 390,
+      maxWidth: 600,
+      minHeight: 230,
+      maxHeight: 600,
+    )
+  );
   @override
   State<LoginPage> createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
-  Widget? form;
-
+class LoginPageState extends State<LoginPage>
+{
   @override
   void initState() {
     super.initState();
@@ -36,10 +38,12 @@ class LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(55, 30, 55, 30),
-      child: SingleChildScrollView(child: LoginFormComponent()),
+  Widget build(BuildContext context)
+  {
+    return const Padding
+    (
+      padding: EdgeInsets.fromLTRB(55, 40, 55, 40),
+      child: Center(child: SingleChildScrollView(child: LoginFormComponent())),
     );
   }
 }

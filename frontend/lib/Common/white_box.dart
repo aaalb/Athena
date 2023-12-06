@@ -55,17 +55,18 @@ class WhiteBoxState extends State<WhiteBox>
       }, 
       child: SizedBox
       (
+        //constraints: BoxConstraints(maxHeight: 2000, minHeight: 20, maxWidth: 2000, minWidth: 20),
         child: Center
         (
-          child: SingleChildScrollView
-          (
+          //child: SingleChildScrollView
+          //(
             child: Padding
             (
               padding: EdgeInsets.all(20),
               child: AnimatedContainer
               (
-                width: width,
-                height: height,
+                //width: width,
+                //height: height,
                 constraints: constraints,
 
                 duration: const Duration(milliseconds: 500),
@@ -86,7 +87,7 @@ class WhiteBoxState extends State<WhiteBox>
                 child: child,
               )
             )
-          )
+          //)
         )
       )
     );
