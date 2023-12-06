@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:frontend/constants.dart';
 import 'package:frontend/Screens/Docente/models/Esame.dart';
 import 'CreazioneEsame.dart';
-
+/*
 Future<List<Esame>> _fetchEsami() async {
   var response = await ApiManager.fetchData('esami');
   if (response != null) {
@@ -63,3 +63,4 @@ class _EsamiDocenteScreenState extends State<EsamiDocenteScreen> {
     );
   }
 }
+*/

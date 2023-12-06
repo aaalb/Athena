@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Docente/models/Esame.dart';
-import 'package:frontend/Screens/Docente/models/Prova.dart';
 import 'package:frontend/utils/ApiManager.dart';
-
+/*
 class Prova {
   final String idprova; 
   final int voto, bonus;
@@ -31,7 +30,7 @@ void _eliminaEsame(String idesame) {
   ApiManager.deleteData('esami/elimina', postData);
 }
 
-Future<List<Candidato>> _fetchCandidati(String idProva, String data) async {
+Future<List<Prova>> _fetchCandidati(String idesame) async {
   var response = await ApiManager.fetchData('iscrizioni/$idProva/$data');
   if (response != null) {
     var results = json.decode(response) as List?;
@@ -263,3 +262,4 @@ Future<void> _dialogCandidatiBuilder(
   );
 }
 
+*/

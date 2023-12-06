@@ -100,7 +100,7 @@ final router = GoRouter(
         return CustomTransitionPage(
             transitionDuration: const Duration(milliseconds: 200),
             key: state.pageKey,
-            child: EsamiDocente(),
+            child: AppelliDocente(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) =>
                     FadeTransition(
