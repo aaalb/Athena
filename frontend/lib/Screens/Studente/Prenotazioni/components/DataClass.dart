@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/ApiManager.dart';
+import 'package:frontend/Screens/Studente/models/Appello.dart';
 import 'package:frontend/Screens/Studente/models/Prenotazione.dart';
+import 'dart:convert';
 
 void _sprenota(String idProva, String data) {
   Map<String, dynamic> postData = {
@@ -9,6 +11,17 @@ void _sprenota(String idProva, String data) {
   };
 
   ApiManager.deleteData('/appelli/sprenota', postData);
+}
+
+Future<List<Appello>> _getInfoEsami(String idprova) async {
+  var response = await ApiManager.fetchData('appelli/$idprova/info');
+  if (response != null) {
+    var result = json.decode(response) as List?;
+    if (result != null) {
+      return result.map((e) => Appello.fromJson(e)).toList();
+    }
+  }
+  return [];
 }
 
 class DataClass extends StatelessWidget {
@@ -56,8 +69,77 @@ class DataClass extends StatelessWidget {
   }
 }
 
-Future<void> _dialogBuilder(BuildContext context, Prenotazione data) {
-  return showDialog<void>(
+FutureBuilder<List<Appello>> _dialogBuilder(
+    BuildContext context, Prenotazione data) {
+  return FutureBuilder<List<Appello>>(
+      future: _getInfoEsami(data.idprova),
+      builder: (BuildContext context, AsyncSnapshot<List<Appello>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Se il futuro è in attesa, puoi mostrare un indicatore di caricamento
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Se si verifica un errore durante il caricamento del futuro
+          return Text('Errore: ${snapshot.error}');
+        } else {
+          // Se il futuro è stato completato con successo
+          List<Appello>? dataEsame = snapshot.data;
+          if (dataEsame != null && dataEsame.isNotEmpty) {
+            return Dialog(
+                backgroundColor: Theme.of(context).dialogBackgroundColor,
+                insetPadding: const EdgeInsets.all(10),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    DataTable(
+                      showCheckboxColumn: false,
+                      columnSpacing: 8.0,
+                      columns: const [
+                        DataColumn(
+                          label: Text("ID Prova"),
+                        ),
+                        DataColumn(
+                          label: Text("Nome"),
+                        ),
+                        DataColumn(
+                          label: Text("Tipologia"),
+                        ),
+                        DataColumn(
+                          label: Text("Data"),
+                        ),
+                        DataColumn(
+                          label: Text("Opzionale"),
+                        ),
+                        DataColumn(label: Text("Dipende Da"))
+                      ],
+                      rows: dataEsame
+                          .map((data) => DataRow(cells: [
+                                DataCell(Text(data.idprova ?? '')),
+                                DataCell(Text(data.nome ?? '')),
+                                DataCell(Text(data.tipologia ?? '')),
+                                DataCell(Text(data.data ?? '')),
+                                DataCell(Text(data.opzionale ?? '')),
+                                DataCell(Text(data.dipendeda ?? ''))
+                              ]))
+                          .toList(),
+                    ),
+                    Positioned(
+                      top: 50,
+                      child: ElevatedButton(
+                          onPressed: () => {
+                                _sprenota(data.idprova, data.data),
+                              },
+                          child: const Text("Cancella Prenotazione")),
+                    )
+                  ],
+                ));
+          } else {
+            // Gestione del caso in cui la lista sia vuota
+            return Text('Nessun dato disponibile');
+          }
+        }
+      });
+
+  /* return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return Dialog(
@@ -67,27 +149,31 @@ Future<void> _dialogBuilder(BuildContext context, Prenotazione data) {
             alignment: Alignment.center,
             children: <Widget>[
               DataTable(
-                showCheckboxColumn: false,
-                columnSpacing: 8.0,
-                columns: const [
-                  DataColumn(
-                    label: Text("ID Prova"),
-                  ),
-                  DataColumn(
-                    label: Text("Tipologia"),
-                  ),
-                  DataColumn(
-                    label: Text("Opzionale"),
-                  ),
-                  DataColumn(
-                    label: Text("Scadenza"),
-                  ),
-                  DataColumn(
-                    label: Text("Dipendenza"),
-                  )
-                ],
-                rows: [],
-              ),
+                  showCheckboxColumn: false,
+                  columnSpacing: 8.0,
+                  columns: const [
+                    DataColumn(
+                      label: Text("ID Prova"),
+                    ),
+                    DataColumn(
+                      label: Text("Tipologia"),
+                    ),
+                    DataColumn(
+                      label: Text("Opzionale"),
+                    ),
+                    DataColumn(
+                      label: Text("Scadenza"),
+                    ),
+                    DataColumn(
+                      label: Text("Dipendenza"),
+                    )
+                  ],
+                  rows: [
+                    DataRow(cells: [
+                      DataCell(Text(data.attivitaDidattica)),
+                      DataCell(Text(data.data))
+                    ])
+                  ]),
               Positioned(
                 top: 50,
                 child: ElevatedButton(
@@ -99,5 +185,5 @@ Future<void> _dialogBuilder(BuildContext context, Prenotazione data) {
             ],
           ));
     },
-  );
+  );*/
 }

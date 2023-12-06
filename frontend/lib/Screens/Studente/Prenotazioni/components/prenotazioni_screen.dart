@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Studente/models/Prenotazione.dart';
+import 'package:frontend/Screens/Studente/models/Appello.dart';
 import 'DataClass.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/utils/ApiManager.dart';
