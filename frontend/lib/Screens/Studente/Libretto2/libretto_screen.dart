@@ -1,22 +1,22 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Studente/Libretto/components/DataClass.dart';
-import 'package:frontend/models/ApiManager.dart';
+import 'package:frontend/Common/notifications.dart';
+import 'package:frontend/Common/search.dart';
+import 'package:frontend/Common/title.dart';
+import 'package:frontend/Common/exam_tile.dart';
+import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
-import 'package:frontend/constants.dart';
-import 'package:frontend/models/Esame.dart';
+import 'package:frontend/Screens/Studente/models/Esame.dart';
 import 'package:go_router/go_router.dart';
 
-Future<List<Esame>> _fetchLibretto() async {
+Future<List<ExamTile>> _fetchLibretto() async {
   var response = await ApiManager.fetchData('libretto');
   if (response != null) {
     var results = json.decode(response) as List?;
     if (results != null) {
-      return results.map((e) => Esame.fromJson(e)).toList();
+      return results.map((e) => ExamTile.fromJson(e)).toList();
     }
   }
-
   return [];
 }
 
@@ -33,310 +33,221 @@ class Libretto2ComponentState extends State<Libretto2Component> {
   IconData searchIcon = Icons.search;
   bool noDataVisible = false;
   double? searchHeight = 0;
-  List<ExamTile> exams = allExams;
+
+  late List<ExamTile> allExams;
+  late List<ExamTile> exams = allExams;
+  Future<List<ExamTile>> _futureExams = _fetchLibretto();
+
+  List<double> visibleExams = List.empty(growable: true);
+  List<double> visibleProve = List.empty(growable: true);
   
+
   @override
   Widget build(BuildContext context)
   {
     if(exams.isEmpty) noDataVisible = true;
-    return Column
+    return NotificationListener<SearchRequestedNotification>
     (
-      mainAxisSize: MainAxisSize.min,
-      children: 
-      [
-        Row
+      onNotification: (notification) 
+      {
+        setState(() {
+          if(notification.open == false)
+          {
+            exams = allExams;
+            visibleExams.clear();
+            visibleProve.clear();
+          }
+        });
+        return false;
+      },
+      child: NotificationListener<SearchQueryNotification>
+      (
+        onNotification: (notification) 
+        {
+          setState(() {  
+            if(notification.text != null)
+            {
+              visibleExams.clear();
+              visibleProve.clear();
+
+              String query = notification.text!;
+              debugPrint("DEBUG: $query");
+              exams = allExams.where((exam)
+              {
+                return (exam.attivita.toLowerCase().contains(query.toLowerCase()));
+              }).toList();
+
+              noDataVisible = exams.isEmpty;
+            }
+          });
+          return false;
+        },
+        child: Column
         (
+          mainAxisSize: MainAxisSize.min,
           children: 
           [
-            Align
+            WindowTitle(title: "Libretto"),
+            
+            const Divider(height: 20,),
+            
+            TitleSearchBar(key: WindowTitleState.searchBarKey, hint: "Cerca esame"),
+            
+            Visibility(child: Text("No data"), visible: noDataVisible,),
+            
+            Expanded
             (
-              alignment: Alignment.centerRight,
-              child: InkWell
+              child:
               (
-                child: Icon
+                ListView.builder
                 (
-                  backIcon, 
-                  color: Color.fromARGB(255, 209, 67, 67),
-                  size: 40,
-                ),
-                onTap: () {
-                  context.go("/menu");
-                },
-                onHover: (hovered)
-                {
-                  setState(() {
-                    backIcon = hovered ? Icons.arrow_circle_left_rounded : Icons.arrow_circle_left_outlined;
-                  });
-                },
-              )
-            ),
-            const Expanded
-            (
-              child: Align
-              (
-                alignment: Alignment.center,
-                child: Text("Libretto",style: TextStyle
-                (
-                  color: Color.fromARGB(255, 209, 67, 67),
-                  fontFamily: 'SourceSansPro',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 44,
-                ),),
-              )
-            ),
-            Align
-            (
-              alignment: Alignment.centerLeft,
-              child: InkWell
-              (
-                child: Icon
-                (
-                  searchIcon, 
-                  color: Color.fromARGB(255, 209, 67, 67),
-                  size: 40,
-                ),
-                onTap: () {
-                  setState(() 
+                  shrinkWrap: false,
+                  itemCount: exams.length,
+                  itemBuilder: (context, index) 
                   {
-                    if(searchIcon == Icons.search)
-                    {
-                      searchIcon = Icons.search_off;
-                      searchHeight = null;
-                    }
-                    else
-                    {
-                      searchIcon = Icons.search;
-                      searchHeight = 0;
-                      exams = allExams;
-                    }
-                    noDataVisible = allExams.isEmpty;
-                  });
-                },
+                    visibleExams.add(1);
+                    visibleProve.add(0);
+                    return Column
+                    (
+                      children: 
+                      [
+                        Visibility
+                        (
+                          visible: visibleExams[index] == 1,
+                          maintainAnimation: true,
+                          maintainState: true,
+                          child: AnimatedOpacity
+                          (
+                            opacity: visibleExams[index],
+                            duration: Duration(milliseconds: 500),
+                            child: ExamTile
+                            (
+                              attivita: exams[index].attivita,
+                              idesame: exams[index].idesame,
+                              voto: exams[index].voto,
+                              crediti: exams[index].crediti,
+                              anno: exams[index].anno,
+                              storico: exams[index].storico,
+                              onTap: () 
+                              {
+                                setState(() {
+                                  for(int i = 0; i < visibleExams.length; i++)
+                                  {
+                                    if(i != index)
+                                    {
+                                      visibleExams[i] = visibleExams[i] == 1? 0 : 1;
+                                    }
+                                    else
+                                    {
+                                      visibleProve[i] = visibleProve[i] == 1? 0 : 1;
+                                    }
+                                  }
+                                });
+                              },
+                            ), 
+                          ),
+                        ),
+
+                        Visibility
+                        (
+                          visible: visibleProve[index] == 1,
+                          maintainAnimation: true,
+                          maintainState: true,
+                          child: AnimatedOpacity
+                          (
+                            opacity: visibleProve[index],
+                            duration: Duration(milliseconds: 500),
+                            
+                            child: ColumnBuilder
+                            (
+                              itemCount: exams[index].storico.length,
+                              itemBuilder: (context, nestedIndex)
+                              {
+                                return ProvaTile
+                                (
+                                  nome: exams[index].storico[nestedIndex].nome,
+                                  idprova: exams[index].storico[nestedIndex].idprova,
+                                  data: exams[index].storico[nestedIndex].data,
+                                  tipologia: exams[index].storico[nestedIndex].tipologia,
+                                  voto: exams[index].storico[nestedIndex].voto,
+                                );
+                              }
+                            )
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                )
               )
             ),
           ],
-        ),
-
-        const Divider(height: 20,),
-        
-        AnimatedSize
-        (
-          duration: Duration(milliseconds: 200),
-          curve: Curves.easeIn,
-          child: Container
-          (
-            height: searchHeight,
-            child: Column
-            (
-              children: 
-              [
-                TextField
-                (
-                  //controller: emailController,
-                  decoration: InputDecoration
-                  (
-                    hintText: "Nome dell'esame",
-                    focusedBorder: OutlineInputBorder
-                    (
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Color.fromARGB(255, 209, 67, 67), width: 3),
-                    ),
-                  ),
-
-                  onChanged: (value)
-                  {
-                    setState(() {
-                      exams = allExams.where((exam)
-                      {
-                        return (exam.attivita.toLowerCase().contains(value.toLowerCase()));
-                      }).toList();
-
-                      noDataVisible = allExams.isEmpty;
-                    });
-                  }
-                ),
-                Divider(height: 20,),
-              ]
-            )
-          )
-        ),
-        
-        Visibility(child: Text("No data"), visible: noDataVisible,),
-        
-        Expanded
-        (
-          //constraints: BoxConstraints(maxHeight: 250, minHeight: 10),
-          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-          child: //SingleChildScrollView(child:
-          (
-            ListView.builder
-            (
-              shrinkWrap: false,
-              itemCount: exams.length,
-              itemBuilder: (context, index) 
-              {
-                return ExamTile
-                (
-                  attivita: exams[index].attivita,
-                  idesame: exams[index].idesame,
-                  voto: exams[index].voto,
-                  crediti: exams[index].crediti,
-                  anno: exams[index].anno
-                );
-              },
-            )
-          )
-        ),
-      ],
-    ); 
-    
-    /*
-    FutureBuilder<List<Esame>>
-    (
-      future: _fetchLibretto(),
-      builder: (BuildContext context, AsyncSnapshot<List<Esame>> snapshot) 
-      {
-        if (snapshot.connectionState == ConnectionState.none ||
-            !snapshot.hasData) 
-        {
-          return const Text('no data');
-        } 
-        else if (snapshot.connectionState == ConnectionState.done) 
-        {
-          return Container
-          (
-            padding: const EdgeInsets.all(defaultPadding),
-            child: DataClass(dataList: snapshot.data as List<Esame>),
-          );
-        }
-        else
-        {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );*/
+        )
+      )
+    );
   }
 }
 
 var allExams = <ExamTile>
 [
-  ExamTile(idesame: "CT-0000", attivita: "Basi di dati", voto: 27, crediti: 12, anno: 2),
-  ExamTile(idesame: "CT-0000", attivita: "Calcolo 1", voto: 20, crediti: 6, anno: 1),
-  ExamTile(idesame: "CT-0000", attivita: "Algoritmi e strutture dati", voto: 19, crediti: 12, anno: 2),
-  ExamTile(idesame: "CT-0000", attivita: "Ricerca operativa", voto: 24, crediti: 6, anno: 3),
-  //ExamTile(idesame: "CT-0000", attivita: "Calcolabilità e linguaggi formali", voto: 25, crediti: 6, anno: 3),
+  ExamTile(idesame: "CT-0000", attivita: "Basi di dati", voto: 27, crediti: 12, anno: 2, storico: allProve),
+  ExamTile(idesame: "CT-0000", attivita: "Calcolo 1", voto: 20, crediti: 6, anno: 1, storico: allProve),
+  ExamTile(idesame: "CT-0000", attivita: "Algoritmi e strutture dati", voto: 19, crediti: 12, anno: 2, storico: allProve),
+  ExamTile(idesame: "CT-0000", attivita: "Ricerca operativa", voto: 24, crediti: 6, anno: 3, storico: allProve),
+  ExamTile(idesame: "CT-0000", attivita: "Calcolabilità e linguaggi formali", voto: 25, crediti: 6, anno: 3, storico: allProve),
 ];
 
+var allProve = <Prova>
+[
+  Prova(idprova: "ABCDE", nome: "Basi mod 1", tipologia: "Scritto", data: "23/01/2022", voto: 27),
+  Prova(idprova: "FGHIJ", nome: "Basi mod 2", tipologia: "Orale", data: "11/09/2022", voto: 20),
+];
 
-class ExamTile extends StatelessWidget
+class Prova
 {
-  String attivita;
-  String idesame;
+  String nome;
+  String idprova;
+  String tipologia;
+  String data;
   int voto;
-  int crediti;
-  int anno;
 
-  ExamTile
+  Prova
   (
     {
-      required this.attivita,
-      required this.idesame,
-      required this.voto, 
-      required this.crediti, 
-      required this.anno
+      required this.nome,
+      required this.idprova,
+      required this.tipologia, 
+      required this.data,
+      required this.voto,
     }
   );
-
-  @override
-  Widget build(BuildContext context)
-  {
-
-    return Card
-    (
-      margin: EdgeInsets.all(8.0),
-      shape: RoundedRectangleBorder
-      (
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ListTile
-      (
-        title: Text(attivita),
-        subtitle: Text
-        (
-          'ID Esame: ${idesame} - Anno: ${anno} - Crediti: ${crediti}',
-        ),
-        trailing: Text("$voto"),
-
-        onTap: () 
-        {
-          //_dialogBuilder(context, data.proveList, data.idesame);
-        },
-      ),
-    );
-  }
 }
 
+class ColumnBuilder extends StatelessWidget {
+	final IndexedWidgetBuilder itemBuilder;
+	final MainAxisAlignment mainAxisAlignment;
+	final MainAxisSize mainAxisSize;
+	final CrossAxisAlignment crossAxisAlignment;
+	final TextDirection textDirection;
+	final VerticalDirection verticalDirection;
+	final int itemCount;
 
-class ExamRow extends StatelessWidget
-{
-  String attivita;
-  int voto;
-  int crediti;
-  int anno;
+	const ColumnBuilder({
+		Key? key,
+		required this.itemBuilder,
+		required this.itemCount,
+		this.mainAxisAlignment = MainAxisAlignment.start,
+		this.mainAxisSize = MainAxisSize.max,
+		this.crossAxisAlignment = CrossAxisAlignment.center,
+		this.textDirection = TextDirection.ltr,
+		this.verticalDirection = VerticalDirection.down,
+	}) : super(key: key);
 
-  ExamRow
-  (
-    {
-      required this.attivita, 
-      required this.voto, 
-      required this.crediti, 
-      required this.anno
-    }
-  );
-
-  @override
-  Widget build(BuildContext context)
-  {
-    return Row
-    (
-      children: 
-      [
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(attivita),
-          )
-        ),
-        VerticalDivider(width: 10,),
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(voto.toString()),
-          )
-        ),
-        VerticalDivider(width: 10,),
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(crediti.toString()),
-          )
-        ),
-        VerticalDivider(width: 10,),
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(anno.toString()),
-          )
-        ),
-      ],
-    );
-  }
+	@override
+	Widget build(BuildContext context) {
+		return new Column(
+			children: new List.generate(this.itemCount,
+					(index) => this.itemBuilder(context, index)).toList(),
+		);
+	}
 }

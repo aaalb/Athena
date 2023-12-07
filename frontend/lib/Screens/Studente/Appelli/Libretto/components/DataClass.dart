@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 
-import 'package:frontend/Screens/Studente/models/Esame.dart';
+import 'package:frontend/models/Esame.dart';
 
 class DataClass extends StatelessWidget
 {
@@ -45,4 +45,4 @@ class DataClass extends StatelessWidget
       )
     );
   }
-}
+}*/

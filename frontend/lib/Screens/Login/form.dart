@@ -252,7 +252,7 @@ class _LoginFormComponentState extends State<LoginFormComponent>
         {
           debugPrint("login OK: ${emailController.text.toString()} : ${passwordController.text.toString()}");
           
-          context.go('/menu');
+          context.go('/studente');
         }
         else
         {

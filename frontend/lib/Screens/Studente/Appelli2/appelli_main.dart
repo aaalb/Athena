@@ -1,19 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:frontend/Common/notifications.dart';
+import 'package:frontend/Common/page_dimensions.dart';
 
-import 'package:frontend/Screens/Studente/side_menu.dart';
 import './appelli_screen.dart';
 
 class Appelli2 extends StatefulWidget {
   const Appelli2({super.key});
 
+  static PageDimensions dimensions = const PageDimensions
+  (
+    //width: 800,
+    constraints: BoxConstraints
+    (
+      minWidth: 390,
+      maxWidth: 600,
+      minHeight: 200,
+      maxHeight: 400,
+    )
+  );
+
   @override
-  State<Appelli2> createState() => _LibrettoState();
+  State<Appelli2> createState() => Appelli2State();
 }
 
-class _LibrettoState extends State<Appelli2> {
+class Appelli2State extends State<Appelli2> {
+  
+  void initState()
+  {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp)
+    {
+      LoadNewPageNotification
+      (
+        width: Appelli2.dimensions.width,
+        height: Appelli2.dimensions.height,
+        constraints: Appelli2.dimensions.constraints,
+      ).dispatch(context);
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return const Padding
+    (
+      padding: EdgeInsets.all(20),
+      child: Center(child: Appelli2Component()),
+    );
+
+
+    /*return const Scaffold(
       drawer: SideMenu(),
       body: SafeArea(
         child: Row(
@@ -32,6 +69,6 @@ class _LibrettoState extends State<Appelli2> {
           ],
         ),
       ),
-    );
+    );*/
   }
 }

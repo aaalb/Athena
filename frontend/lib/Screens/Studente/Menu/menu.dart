@@ -30,13 +30,15 @@ class MenuComponentState extends State<MenuComponent> {
             Expanded
             (
               child: MenuItem(imagePath: "images/libretto_icon_2.png", label: "Libretto",
-                onClick: () => GoRouter.of(context).go("/libretto"),
+                onClick: () => GoRouter.of(context).go("/studente/libretto"),
               ),
             ),
             VerticalDivider(width: 30,),
             Expanded
             (
-              child: MenuItem(imagePath: "images/iscrizione_icon_2.png", label: "Appelli")
+              child: MenuItem(imagePath: "images/iscrizione_icon_2.png", label: "Appelli",
+                onClick: () => GoRouter.of(context).go("/studente/appelli"),
+              )
             ),
             VerticalDivider(width: 30,),
             Expanded
