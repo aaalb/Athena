@@ -48,13 +48,7 @@ class MenuComponentState extends State<MenuComponent> {
                 onClick: () => GoRouter.of(context).go("/docente/appelli"),
               ),
             ),
-            const VerticalDivider(
-              width: 30,
-            ),
           ],
-        ),
-        const Divider(
-          height: 30,
         ),
       ],
     );

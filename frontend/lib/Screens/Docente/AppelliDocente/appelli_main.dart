@@ -14,7 +14,7 @@ class AppelliDocente extends StatefulWidget {
     minWidth: 390,
     maxWidth: 600,
     minHeight: 200,
-    maxHeight: 400,
+    maxHeight: 600,
   ));
 
   @override

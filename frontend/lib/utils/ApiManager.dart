@@ -48,7 +48,7 @@ class ApiManager {
     }
   }
 
-  static Future<Map<String, dynamic>?> deleteData(
+  static Future<void> deleteData(
       String endpoint, Map<String, dynamic> data) async {
     String? token = await getToken();
     final response = await http.delete(

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_main.dart';
-import 'package:frontend/Screens/Studente/Libretto/libretto_main.dart';
-import 'package:frontend/Screens/Studente/Libretto/libretto_screen.dart';
 import 'package:frontend/utils/ApiManager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PrenotazioneTile extends StatelessWidget {
   final String nome, idprova, tipologia, data, dipendenza, responsabile;

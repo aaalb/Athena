@@ -11,7 +11,9 @@ import 'package:frontend/utils/AppService.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: (AppService.instance.currentUser?.role == 'Studente')
+      ? '/studente'
+      : '/docente',
   redirect: _redirect,
   debugLogDiagnostics: true,
   refreshListenable: AppService.instance,
@@ -104,6 +106,7 @@ final router = GoRouter(
         path: '/docente',
         pageBuilder: (context, state) {
           return CustomTransitionPage(
+              maintainState: false,
               transitionDuration: const Duration(milliseconds: 200),
               key: state.pageKey,
               child: MenuDocente(),
