@@ -34,5 +34,5 @@ def get_user_data():
         })
 
     if not result:
-        return 'Invalid data', 404
+        return jsonify({"Error":"No data found"}), 404
     return jsonify(result), 200

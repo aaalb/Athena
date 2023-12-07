@@ -14,7 +14,7 @@ def login():
     password = request.json["password"]
 
     if not email or not password:
-        return jsonify({"Status": 401, "Reason":"Missing parameters!"})
+        return jsonify({"Error":"Missing Parameters"}), 400
 
     studente = session.query(Studente).filter_by(email=email).first()
     if studente:
@@ -34,7 +34,7 @@ def login():
                 }
             return jsonify(ret), 200
     
-    return "Wrong credentials", 401
+    return jsonify({"Error":"Wrong Credentials"}), 403
     
     
 
@@ -44,6 +44,6 @@ def logout():
     try:
         jti = get_jwt()['jti']
         token_blacklist.append(jti)
-        return "Logged out", 200
+        return jsonify({"Status":"Done"}), 200
     except:
-        return "Error", 500
+        return jsonify({"Error":"Something Went Wrong"}), 500

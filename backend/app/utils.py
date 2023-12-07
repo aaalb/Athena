@@ -6,10 +6,9 @@ def genera_date_appello(num_date):
     mesi_validi = [1, 5, 6, 9]  # Mesi validi: gennaio (1), maggio (5), giugno (6), settembre (9)
 
     for _ in range(num_date):
-        # Genera una data casuale all'interno del range specificato
-        mese_casuale = random.choice(mesi_validi)  # Scelta casuale tra i mesi validi
+        mese_casuale = random.choice(mesi_validi) 
         giorni_nel_mese = (datetime(2024, mese_casuale % 12 + 1, 1) - timedelta(days=1)).day
-        giorno_casuale = random.randint(1, giorni_nel_mese)  # Giorno casuale nel mese selezionato
+        giorno_casuale = random.randint(1, giorni_nel_mese) 
 
         data_casuale = datetime(2024, mese_casuale, giorno_casuale)
         date_appello.append(data_casuale)

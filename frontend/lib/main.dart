@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Common/canvas.dart';
 import 'package:frontend/constants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'package:frontend/routes.dart';
@@ -15,32 +17,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    //GoRouter.optionURLReflectsImperativeAPIs = true;
     return MaterialApp.router(
-      title: 'Athena',
-<<<<<<< HEAD
-      theme: ThemeData
-      (
-        fontFamily: 'Roboto',
-        primaryColor: primaryColor,
-        secondaryHeaderColor: secondaryColor,
-        brightness: Brightness.light,
-        primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
-        
-        inputDecorationTheme: InputDecorationTheme
-        (
-          //filled: true,
-          border: OutlineInputBorder
-          (
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(10.0),
-=======
-      theme: ThemeData(
+        title: 'Athena',
+        theme: ThemeData(
           fontFamily: 'Roboto',
           primaryColor: primaryColor,
           secondaryHeaderColor: secondaryColor,
           brightness: Brightness.light,
-          primarySwatch:
-              createMaterialColor(const Color.fromARGB(255, 157, 98, 31)),
+          primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
           inputDecorationTheme: InputDecorationTheme(
             filled: false,
             border: OutlineInputBorder(
@@ -52,14 +38,15 @@ class MyApp extends StatelessWidget {
             fillColor: secondaryColor,
             prefixIconColor: Colors.purple,
             hintStyle: const TextStyle(fontFamily: 'Roboto'),
->>>>>>> 37cdae9 (dashboard)
           ),
           dataTableTheme: const DataTableThemeData(
             dataTextStyle: TextStyle(fontFamily: 'Roboto'),
             headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
           )),
       debugShowCheckedModeBanner: false,
+      
       routerConfig: router,
+      builder: (context, child) => MyCanvas(child: child!)
     );
   }
 }
@@ -81,6 +68,5 @@ MaterialColor createMaterialColor(Color color) {
       1,
     );
   }
-  ;
   return MaterialColor(color.value, swatch);
 }
