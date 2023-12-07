@@ -8,3 +8,17 @@ class LoadNewPageNotification extends Notification
 
   const LoadNewPageNotification({this.height, this.width, this.constraints});
 }
+
+class SearchQueryNotification extends Notification
+{
+  final String ? text;
+
+  const SearchQueryNotification({this.text});
+}
+
+class SearchRequestedNotification extends Notification
+{
+  final bool ? open;
+
+  const SearchRequestedNotification({this.open});
+}
