@@ -259,7 +259,6 @@ Future<void> _creaEsame(String idEsame, String nome, String crediti,
     'prove': prove,
   };
 
-  print(postData);
   // Assuming you have an ApiManager class with a postData method
   await ApiManager.postData('esami/crea',
       postData); // Changed to postData method assuming it creates an exam
