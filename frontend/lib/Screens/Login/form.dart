@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/user-data.dart';
+import 'package:frontend/utils/AppService.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/utils/ApiManager.dart';
 import 'package:frontend/utils/AuthService.dart';
+import 'dart:convert';
 
 class LoginFormComponent extends StatefulWidget {
   const LoginFormComponent({super.key});
@@ -179,10 +183,23 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
 
   void tryLogin(BuildContext context) {
     AuthService.login(
-            emailController.text.toString(), passwordController.text.toString())
-        .then((value) {
+      emailController.text.toString(),
+      passwordController.text.toString(),
+    ).then((value) {
       if (value) {
-        context.go('/studente');
+        _fetchUser().then((user) {
+          if (user != null) {
+            AppService.instance.setUserData(user);
+
+            if (user.role == 'Docente') {
+              context.go('/docente');
+            } else if (user.role == 'Studente') {
+              context.go('/studente');
+            }
+          } else {
+            // Gestire il caso in cui non si ottiene un utente
+          }
+        });
       } else {
         setState(() {
           borderColor = Color.fromARGB(255, 255, 0, 0);
@@ -193,5 +210,20 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
         });
       }
     });
+  }
+
+  Future<UserData?> _fetchUser() async {
+    try {
+      final response = await ApiManager.fetchData('utente/data');
+      if (response != null) {
+        final List<dynamic> results = json.decode(response);
+        if (results.isNotEmpty) {
+          return UserData.fromJson(results.first);
+        }
+      }
+    } catch (e) {
+      print('Errore durante il recupero dei dati dell\'utente: $e');
+    }
+    return null;
   }
 }

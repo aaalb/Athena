@@ -5,6 +5,8 @@ import 'prenotazioni_screen.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
 class Prenotazioni extends StatefulWidget {
+  static const route = '/studente/prenotazioni';
+
   const Prenotazioni({super.key});
 
   static PageDimensions dimensions = const PageDimensions(

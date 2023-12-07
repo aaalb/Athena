@@ -57,14 +57,19 @@ def inserisci_in_libretto():
         stud_email = request.json["stud_email"]
         voto = request.json["voto"]
 
-        query = insert(Libretto).values(
+        if not idesame or not stud_email or not voto:
+            return jsonify({"Error":"Missing parameters"}), 400
+
+        insert(Libretto).values(
             idesame = idesame,
             email = stud_email,
             votocomplessivo = voto
         )
 
+        session.commit()
         return jsonify({"Status": "Success"}),200
     except Exception as e:
         print(e, file=sys.stderr)
+        session.rollback()
         return jsonify({"Error":"Internal Server Error"}), 500
     

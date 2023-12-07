@@ -4,8 +4,9 @@ import 'package:frontend/Common/notifications.dart';
 import 'libretto_screen.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
-class Libretto2 extends StatefulWidget {
-  const Libretto2({super.key});
+class Libretto extends StatefulWidget {
+  static const route = '/studente/libretto';
+  const Libretto({super.key});
 
   static PageDimensions dimensions = const PageDimensions(
       //width: 800,
@@ -17,19 +18,19 @@ class Libretto2 extends StatefulWidget {
   ));
 
   @override
-  State<Libretto2> createState() => _Libretto2State();
+  State<Libretto> createState() => _Libretto2State();
 }
 
-class _Libretto2State extends State<Libretto2> {
+class _Libretto2State extends State<Libretto> {
   @override
   void initState() {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       LoadNewPageNotification(
-        width: Libretto2.dimensions.width,
-        height: Libretto2.dimensions.height,
-        constraints: Libretto2.dimensions.constraints,
+        width: Libretto.dimensions.width,
+        height: Libretto.dimensions.height,
+        constraints: Libretto.dimensions.constraints,
       ).dispatch(context);
     });
   }

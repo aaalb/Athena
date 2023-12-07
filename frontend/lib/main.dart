@@ -1,53 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Common/canvas.dart';
 import 'package:frontend/constants.dart';
-import 'package:go_router/go_router.dart';
-import 'package:url_strategy/url_strategy.dart';
-
+import 'package:frontend/utils/AppService.dart';
 import 'package:frontend/routes.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:frontend/user-data.dart';
 
-void main() {
-  setPathUrlStrategy();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(UserDataAdapter());
+  await Hive.openBox('App Service Box');
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    AppService.instance.initialize();
+    usePathUrlStrategy();
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     //GoRouter.optionURLReflectsImperativeAPIs = true;
     return MaterialApp.router(
         title: 'Athena',
         theme: ThemeData(
-          fontFamily: 'Roboto',
-          primaryColor: primaryColor,
-          secondaryHeaderColor: secondaryColor,
-          brightness: Brightness.light,
-          primarySwatch: createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: false,
-            border: OutlineInputBorder(
-              //borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10.0),
+            fontFamily: 'Roboto',
+            primaryColor: primaryColor,
+            secondaryHeaderColor: secondaryColor,
+            brightness: Brightness.light,
+            primarySwatch:
+                createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: false,
+              border: OutlineInputBorder(
+                //borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              fillColor: secondaryColor,
+              prefixIconColor: Colors.purple,
+              hintStyle: const TextStyle(fontFamily: 'Roboto'),
             ),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            fillColor: secondaryColor,
-            prefixIconColor: Colors.purple,
-            hintStyle: const TextStyle(fontFamily: 'Roboto'),
-          ),
-          dataTableTheme: const DataTableThemeData(
-            dataTextStyle: TextStyle(fontFamily: 'Roboto'),
-            headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
-          )),
-      debugShowCheckedModeBanner: false,
-      
-      routerConfig: router,
-      builder: (context, child) => MyCanvas(child: child!)
-    );
+            dataTableTheme: const DataTableThemeData(
+              dataTextStyle: TextStyle(fontFamily: 'Roboto'),
+              headingTextStyle: TextStyle(fontFamily: 'Roboto', fontSize: 18),
+            )),
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        //routerDelegate: router.routerDelegate,
+        //routeInformationParser: router.routeInformationParser,
+        //routeInformationProvider: router.routeInformationProvider,
+        builder: (context, child) => MyCanvas(child: child!));
   }
 }
 

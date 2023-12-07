@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Studente/side_menu.dart';
 import './appelli_screen.dart';
 
-class Appelli2 extends StatefulWidget {
-  const Appelli2({super.key});
+class Appelli extends StatefulWidget {
+  const Appelli({super.key});
 
   @override
-  State<Appelli2> createState() => _LibrettoState();
+  State<Appelli> createState() => _LibrettoState();
 }
 
-class _LibrettoState extends State<Appelli2> {
+class _LibrettoState extends State<Appelli> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

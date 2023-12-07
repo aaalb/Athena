@@ -125,16 +125,19 @@ def sprenota_appello():
             .filter(Appello.idprova == id_prova) \
             .filter(Appello.data == data).first()
         
-        query = session.query(Iscrizione) \
+        if not appello:
+            return jsonify({"Error": "Nessun Appello Trovato"}), 404
+
+        session.query(Iscrizione) \
             .filter(Iscrizione.email == current_user['email']) \
             .filter(Iscrizione.idappello == appello.idappello) \
             .delete()
         
         session.commit()
-        jsonify({"Status":"Success"}), 200
+        return jsonify({"Status":"Success"}), 200
     except:
         session.rollback()
-        jsonify({"Error":"Internal Server Error"}), 500
+        return jsonify({"Error":"Internal Server Error"}), 500
 
 
 @bp.route('/appelli/storico', methods=['GET'])
@@ -165,7 +168,7 @@ def storico_appelli():
 
         return jsonify(result), 200
     except:
-        jsonify({"Error":"Internal Server Error"}), 500
+        return jsonify({"Error":"Internal Server Error"}), 500
 
 
 @bp.route('/docente/appelli', methods=['GET'])
@@ -196,7 +199,7 @@ def get_appelli_docente():
 
         return jsonify(result), 200
     except:
-        jsonify({"Error":"Internal Server Error"}), 500
+        return jsonify({"Error":"Internal Server Error"}), 500
 
 
 @bp.route('/appelli/<idprova>/info', methods=['GET'])
@@ -207,10 +210,13 @@ def get_info_appello(idprova):
         if current_user['role'] == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
-        query = session.query(Prova).filter(Prova.idprova == idprova).all()
+        prova = session.query(Prova).filter(Prova.idprova == idprova).all()
+
+        if not prova:
+            return jsonify({"Error": "Nessuna Prova Trovata"}), 404
 
         result = []
-        for record in query:
+        for record in prova:
             result.append({
                 'idprova' : record.idprova, 
                 'tipologia' : record.tipologia,

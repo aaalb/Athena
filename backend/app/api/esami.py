@@ -11,7 +11,7 @@ from app.models.Realizza import Realizza
 from app.models.Appello import Appello
 from app.models.Studente import Studente
 from app.models.Iscrizione import Iscrizione
-import sys
+
 @bp.route('/esami/crea', methods=['POST'])
 @jwt_required()
 def crea_esame():
@@ -97,8 +97,10 @@ def elimina_esame():
             return jsonify({"Error":"Missing parameters!"}), 400
 
         session.query(Esame).filter(Esame.idesame == idesame).delete()
+
         session.commit()
         return jsonify({"Status": "Success"}),200
+    
     except Exception as e:
         session.rollback()
         return jsonify({"Status": "Internal Server Error"}), 500
@@ -113,6 +115,9 @@ def visualizza_esame():
     
     subquery = session.query(Realizza.idesame).filter(Realizza.email == current_user['email'])
     esami = session.query(Esame).filter(Esame.idesame.in_(subquery))
+
+    if not esami:
+            return jsonify({"Error": "Nessun Esame Trovato"}), 404
 
     result = []
     for esame in esami:
@@ -148,7 +153,13 @@ def get_candidati(idesame):
             return jsonify({"Error":"Not Allowed"}), 403
         
         studenti = session.query(Studente).all()
+        if not studenti:
+            return jsonify({"Error": "Nessuno Studente Trovato"}), 404
+
         prove = session.query(Prova.idprova).filter(Prova.idesame == idesame).all()
+        if not prove:
+            return jsonify({"Error": "Nessuna Prova Trovata"}), 404
+        
         candidati = []
 
         for studente in studenti:
@@ -177,7 +188,6 @@ def get_candidati(idesame):
         return jsonify(candidati)
     
     except Exception as e:
-        print(e, file=sys.stderr)
         session.rollback()
         return jsonify({"Status": "Internal Server Error"}), 500
         

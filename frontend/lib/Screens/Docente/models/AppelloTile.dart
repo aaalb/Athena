@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:frontend/Screens/Docente/models/Appello.dart';
-import 'package:frontend/Screens/Docente/models/Candidato.dart';
+import './Candidato.dart';
 import 'package:frontend/utils/ApiManager.dart';
+import 'dart:convert';
 
 Future<List<Candidato>> _fetchCandidati(String idProva, String data) async {
   var response = await ApiManager.fetchData('iscrizioni/$idProva/$data');
@@ -32,98 +31,50 @@ Future<void> _inserisciVoto(
       postData); // Changed to postData method assuming it creates an exam
 }
 
-class DataClass extends StatelessWidget {
-  const DataClass({
-    Key? key,
-    required this.dataList,
-  }) : super(key: key);
+class AppelloTile extends StatelessWidget {
+  final String nome, idprova, tipologia, data, dipendenza, responsabile;
+  final bool opzionale;
 
-  final List<Appello> dataList;
+  AppelloTile({
+    required this.idprova,
+    required this.nome,
+    required this.tipologia,
+    required this.data,
+    required this.opzionale,
+    required this.dipendenza,
+    required this.responsabile,
+  });
+
+  factory AppelloTile.fromJson(Map<String, dynamic> json) {
+    return AppelloTile(
+      idprova: json["idprova"] ?? '',
+      nome: json["nome"] ?? '',
+      tipologia: json["tipologia"] ?? '',
+      data: json["data"] ?? '',
+      opzionale: json["opzionale"] ?? '',
+      dipendenza: json["dipendeda"] ?? '',
+      responsabile: json["responsabile"] ?? '',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: dataList.length,
-      itemBuilder: (context, index) {
-        Appello data = dataList[index];
-        return Card(
-          margin: const EdgeInsets.all(8.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: ListTile(
-            title: Text(data.nome),
-            subtitle: Text(
-              'ID Prova: ${data.idprova} - Tipologia: ${data.tipologia} - Data: ${data.data}',
-            ),
-            onTap: () {
-              _dialogInfoBuilder(context, data);
-            },
-          ),
-        );
-      },
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: ListTile(
+        title: Text(nome),
+        subtitle: Text(
+          'ID Prova: ${idprova} - Tipologia: ${tipologia}',
+        ),
+        trailing:
+            Text("$data", style: const TextStyle(fontWeight: FontWeight.bold)),
+        onTap: () => _dialogVotiBuilder(context, idprova, data),
+      ),
     );
   }
-}
-
-Future<void> _dialogInfoBuilder(BuildContext context, Appello data) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        backgroundColor: Colors.white, // Set dialog background color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0), // Rounded corners
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              DataTable(
-                columnSpacing: 20.0,
-                headingRowHeight: 40.0,
-                columns: const [
-                  DataColumn(label: Text("ID Prova")),
-                  DataColumn(label: Text("Tipologia")),
-                  DataColumn(label: Text("Opzionale")),
-                  DataColumn(label: Text("Data")),
-                  DataColumn(label: Text("Propedeutico")),
-                ],
-                rows: [
-                  DataRow(
-                    cells: [
-                      DataCell(Text(data.idprova)),
-                      DataCell(Text(data.tipologia)),
-                      DataCell(Text(data.opzionale.toString())),
-                      DataCell(Text(data.data)),
-                      DataCell(Text((data.dipendenza.isNotEmpty)
-                          ? data.dipendenza
-                          : "No")),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(width: 10),
-                  IconButton(
-                    icon: Icon(Icons.edit_document),
-                    onPressed: () {
-                      _dialogVotiBuilder(context, data.idprova, data.data);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
 }
 
 Future<void> _dialogVotiBuilder(
@@ -196,13 +147,15 @@ Future<void> _dialogVotiBuilder(
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                Expanded(
-                                  flex: 2,
-                                  child: TextFormField(
-                                    controller: voti[index],
-                                    decoration: const InputDecoration(
-                                      labelText: 'Voto',
-                                      border: OutlineInputBorder(),
+                                Visibility(
+                                  child: Expanded(
+                                    flex: 2,
+                                    child: TextFormField(
+                                      controller: voti[index],
+                                      decoration: const InputDecoration(
+                                        labelText: 'Voto',
+                                        border: OutlineInputBorder(),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -217,19 +170,22 @@ Future<void> _dialogVotiBuilder(
                 },
               ),
             ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  for (int i = 0; i < voti.length; ++i) {
-                    _inserisciVoto(
-                        idProva, data, candidati[i].email, voti[i].text);
-                  }
-                },
+            Visibility(
+              visible: candidati.isNotEmpty,
+              child: Positioned(
+                bottom: 8,
+                right: 8,
+                child: IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    for (int i = 0; i < voti.length; ++i) {
+                      _inserisciVoto(
+                          idProva, data, candidati[i].email, voti[i].text);
+                    }
+                  },
+                ),
               ),
-            ),
+            )
           ],
         ),
       );

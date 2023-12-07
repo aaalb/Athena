@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Studente/Menu/menu_item.dart';
-import 'package:frontend/utils/AuthService.dart';
+import 'package:frontend/utils/AppService.dart';
 import 'package:go_router/go_router.dart';
 
 class MenuComponent extends StatefulWidget {
@@ -9,7 +9,7 @@ class MenuComponent extends StatefulWidget {
 }
 
 class MenuComponentState extends State<MenuComponent> {
-  String nome = AuthService.userLoggedIn?.nome ?? "Error 404";
+  String nome = AppService.instance.currentUser?.nome ?? "Error 404";
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,7 +35,7 @@ class MenuComponentState extends State<MenuComponent> {
               child: MenuItem(
                 imagePath: "images/libretto_icon_2.png",
                 label: "Libretto",
-                onClick: () => GoRouter.of(context).go("/libretto"),
+                onClick: () => GoRouter.of(context).go("/studente/libretto"),
               ),
             ),
             const VerticalDivider(

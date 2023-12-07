@@ -31,6 +31,7 @@ def get_user_data():
             'datanascita' : str(record.datanascita),
             'facolta': record.facolta if tipo == 'Studente' else None, 
             'matricola': record.matricola if tipo == 'Studente' else None, 
+            'role' : tipo
         })
 
     if not result:

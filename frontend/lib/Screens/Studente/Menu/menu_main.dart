@@ -5,6 +5,7 @@ import 'package:frontend/Common/page_dimensions.dart';
 import 'package:frontend/Common/notifications.dart';
 
 class MenuStudente extends StatefulWidget {
+  static const route = '/studente';
   const MenuStudente({super.key});
 
   static PageDimensions dimensions = const PageDimensions(
