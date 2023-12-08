@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
-import 'libretto_screen.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
-class Libretto2 extends StatefulWidget {
-  const Libretto2({super.key});
+import './appelli_screen.dart';
+
+class Appelli2 extends StatefulWidget {
+  const Appelli2({super.key});
 
   static PageDimensions dimensions = const PageDimensions
   (
@@ -20,12 +21,11 @@ class Libretto2 extends StatefulWidget {
   );
 
   @override
-  State<Libretto2> createState() => _Libretto2State();
+  State<Appelli2> createState() => Appelli2State();
 }
 
-class _Libretto2State extends State<Libretto2>
-{
-  @override
+class Appelli2State extends State<Appelli2> {
+  
   void initState()
   {
     super.initState();
@@ -34,9 +34,9 @@ class _Libretto2State extends State<Libretto2>
     {
       LoadNewPageNotification
       (
-        width: Libretto2.dimensions.width,
-        height: Libretto2.dimensions.height,
-        constraints: Libretto2.dimensions.constraints,
+        width: Appelli2.dimensions.width,
+        height: Appelli2.dimensions.height,
+        constraints: Appelli2.dimensions.constraints,
       ).dispatch(context);
     });
   }
@@ -46,8 +46,9 @@ class _Libretto2State extends State<Libretto2>
     return const Padding
     (
       padding: EdgeInsets.all(20),
-      child: Center(child: LibrettoComponent()),
+      child: Center(child: Appelli2Component()),
     );
+
 
     /*return const Scaffold(
       drawer: SideMenu(),

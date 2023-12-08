@@ -14,20 +14,24 @@ class LibrettoComponent extends StatefulWidget {
 }
 
 class LibrettoComponentState extends State<LibrettoComponent> {
-  IconData backIcon = Icons.arrow_circle_left_outlined;
-  IconData searchIcon = Icons.search;
   bool noDataVisible = false;
-  double? searchHeight = 0;
-
   List<ExamTile> exams = []; // Using a single list for all exams
   List<ExamTile> allExams = [];
   List<double> visibleExams = [];
   List<double> visibleProve = [];
 
+  Future? _future;
+  @override
+  void initState()
+  {
+    super.initState();
+    _future = _fetchLibretto();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ExamTile>>(
-      future: _fetchLibretto(),
+   return FutureBuilder(
+      future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // Placeholder while loading
@@ -37,14 +41,20 @@ class LibrettoComponentState extends State<LibrettoComponent> {
           return const Center(
               child: Text('No data available')); // If no data is available
         } else {
-          List<ExamTile> exams = snapshot.data!;
-          return _buildUI(exams); // Build the UI using fetched data
+          if(allExams.isEmpty)
+          {
+            allExams = snapshot.data!;
+            exams = allExams;
+            debugPrint("DEBUG fetch: exams - ${exams.length}");
+            debugPrint("DEBUG fetch: allexams - ${exams.length}");
+          }
+          return _buildUI(); // Build the UI using fetched data
         }
       },
     );
   }
 
-  Future<List<ExamTile>> _fetchLibretto() async {
+  Future _fetchLibretto() async {
     var response = await ApiManager.fetchData('libretto');
     if (response != null) {
       var results = json.decode(response) as List?;
@@ -56,7 +66,9 @@ class LibrettoComponentState extends State<LibrettoComponent> {
     return [];
   }
 
-  Widget _buildUI(List<ExamTile> exams) {
+  Widget _buildUI() {
+    debugPrint("DEBUG buildui: exams - ${exams.length}");
+    debugPrint("DEBUG buildui: allexams - ${allExams.length}");
     if (exams.isEmpty) noDataVisible = true;
     return NotificationListener<SearchRequestedNotification>(
         onNotification: (notification) {
@@ -77,13 +89,14 @@ class LibrettoComponentState extends State<LibrettoComponent> {
                   visibleProve.clear();
 
                   String query = notification.text!;
-                  debugPrint("DEBUG: $query");
+                  debugPrint("\n\nQuery: $query");
                   exams = allExams.where((exam) {
                     return (exam.nome
                         .toLowerCase()
                         .contains(query.toLowerCase()));
                   }).toList();
-                  debugPrint(exams.toString());
+                  //debugPrint("AllExams: ${allExams.length}\n");
+                  debugPrint("DEBUG: exams lenght ${exams.length}");
                   noDataVisible = exams.isEmpty;
                 }
               });
@@ -164,12 +177,9 @@ class LibrettoComponentState extends State<LibrettoComponent> {
                                             voto: exams[index]
                                                 .storico[nestedIndex]
                                                 .voto,
-                                            data: exams[index]
+                                            opzionale: exams[index]
                                                 .storico[nestedIndex]
-                                                .data,
-                                            idoneita: exams[index]
-                                                .storico[nestedIndex]
-                                                .idoneita,
+                                                .opzionale,
                                           );
                                         })),
                               )

@@ -2,8 +2,7 @@ from app.api import bp
 from app.extensions import session
 from flask import jsonify, request
 from flask_jwt_extended import *
-from sqlalchemy import insert
-
+#from datetime import datetime
 from app.models.Libretto import Libretto
 from app.models.Esame import Esame
 from app.models.Appello import Appello
