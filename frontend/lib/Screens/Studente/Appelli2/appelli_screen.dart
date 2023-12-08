@@ -170,21 +170,11 @@ class Appelli2ComponentState extends State<Appelli2Component> {
                                 (
                                   opacity: visibleConferme[index],
                                   duration: Duration(milliseconds: 500),
-                                  /*child: ConfermaAppelloTile
+                                  child: ConfermaAppelloTile
                                   (
-                                      idprova: exams[index]
-                                            .storico[nestedIndex]
-                                            .idprova,
-                                        tipologia: exams[index]
-                                            .storico[nestedIndex]
-                                            .tipologia,
-                                        voto: exams[index]
-                                            .storico[nestedIndex]
-                                            .voto,
-                                        opzionale: exams[index]
-                                            .storico[nestedIndex]
-                                            .opzionale,
-                                  ),*/
+                                    idprova: appelli[index].idprova,
+                                    data: appelli[index].data,
+                                  )
                                 )
                               )
                             ],
@@ -192,26 +182,5 @@ class Appelli2ComponentState extends State<Appelli2Component> {
                         }))),
               ],
             )));
-  }
-}
-
-Future<bool> _prenotaAppello(String idprova, String data) async {
-  Map<String, dynamic> postData = {
-    'idprova': idprova,
-    'data': data,
-  };
-
-  try {
-    var response = await ApiManager.postData('appelli/prenota', postData);
-    
-    if (response!.containsKey("Status") && response["Status"] == "Success") {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    // Gestisci eventuali errori di chiamata API
-    print("Errore durante la chiamata API: $e");
-    return false;
   }
 }

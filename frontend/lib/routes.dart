@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Docente/AppelliDocente/appelli_main.dart';
 import 'package:frontend/Screens/Docente/EsamiDocente/esami_main.dart';
 import 'package:frontend/Screens/Studente/Appelli/appelli_main.dart';
+import 'package:frontend/Screens/Studente/Appelli2/appelli_main.dart';
 import 'package:frontend/Screens/Studente/Libretto/libretto_main.dart';
 import 'package:frontend/Screens/Studente/Menu/menu_main.dart';
 import 'package:frontend/Screens/Docente/Menu/menu_main.dart';
@@ -58,7 +59,7 @@ final router = GoRouter(
                 //maintainState: false,
                 transitionDuration: const Duration(milliseconds: 200),
                 key: state.pageKey,
-                child: Libretto(),
+                child: Libretto2(),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) =>
                         FadeTransition(
@@ -74,7 +75,7 @@ final router = GoRouter(
               //maintainState: false,
               transitionDuration: const Duration(milliseconds: 200),
               key: state.pageKey,
-              child: Appelli(),
+              child: Appelli2(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) =>
                       FadeTransition(

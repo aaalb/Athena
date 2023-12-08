@@ -177,9 +177,11 @@ class LibrettoComponentState extends State<LibrettoComponent> {
                                             voto: exams[index]
                                                 .storico[nestedIndex]
                                                 .voto,
-                                            opzionale: exams[index]
+                                            data: exams[index]
                                                 .storico[nestedIndex]
-                                                .opzionale,
+                                                .data,
+                                            idoneita: exams[index]
+                                                .storico[nestedIndex].idoneita,
                                           );
                                         })),
                               )
