@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
-
-import 'package:frontend/Screens/Studente/side_menu.dart';
 import 'libretto_screen.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 

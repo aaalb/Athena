@@ -1,238 +1,217 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/Common/notifications.dart';
 import 'package:frontend/Common/search.dart';
 import 'package:frontend/Common/title.dart';
+import 'package:frontend/Screens/Studente/models/appello_tile.dart';
 import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
-import 'package:frontend/Screens/Studente/models/Esame.dart';
-import 'package:go_router/go_router.dart';
 
-class Appelli2Component extends StatefulWidget
-{
-  const Appelli2Component({super.key});
+class Appelli2Component extends StatefulWidget {
+  const Appelli2Component({Key? key}) : super(key: key);
 
   @override
   State<Appelli2Component> createState() => Appelli2ComponentState();
 }
 
-class Appelli2ComponentState extends State<Appelli2Component> 
-{
-  IconData backIcon = Icons.arrow_circle_left_outlined;
-  IconData searchIcon = Icons.search;
-  
+class Appelli2ComponentState extends State<Appelli2Component> {
   bool noDataVisible = false;
-  
-  bool searchActive = false;
+  List<AppelloTile> appelli = []; // Using a single list for all exams
+  List<AppelloTile> allAppelli = [];
+  List<double> visibleAppelli = [];
+  List<double> visibleConferme = [];
 
-  double? searchHeight = 0;
-  List<ExamTile> exams = allExams;
-  
+  Future? _future;
   @override
-  Widget build(BuildContext context)
+  void initState() {
+    super.initState();
+    _future = _fetchAppelli();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // Placeholder while loading
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(
+              child: Text('No data available')); // If no data is available
+        } else {
+          if (allAppelli.isEmpty) {
+            allAppelli = snapshot.data!;
+            appelli = allAppelli;
+            debugPrint("DEBUG fetch: exams - ${appelli.length}");
+            debugPrint("DEBUG fetch: allexams - ${allAppelli.length}");
+          }
+          return _buildUI(); // Build the UI using fetched data
+        }
+      },
+    );
+  }
+
+  Future _fetchAppelli() async {
+    var response = await ApiManager.fetchData('appelli');
+    if (response != null) {
+      var results = json.decode(response) as List?;
+      print(results);
+      if (results != null) {
+        return results.map((e) => AppelloTile.fromJson(e)).toList();
+      }
+    }
+    return [];
+  }
+
+  Widget _buildUI() 
   {
-    if(exams.isEmpty) noDataVisible = true;
-    
-    return NotificationListener<SearchRequestedNotification>
-    (
-      onNotification: (notification) 
-      {
-        setState(() 
-          {
-            searchActive = notification.open!;
+    debugPrint("DEBUG buildui: exams - ${appelli.length}");
+    debugPrint("DEBUG buildui: allexams - ${allAppelli.length}");
+    if (appelli.isEmpty) noDataVisible = true;
+    return NotificationListener<SearchRequestedNotification>(
+        onNotification: (notification) {
+          setState(() {
+            if (notification.open == false) {
+              appelli = allAppelli;
+              visibleAppelli.clear();
+              visibleConferme.clear();
+            }
           });
-          debugPrint("DEBUG: richiesta ricevuta");
           return false;
-      },
-      child: Column
-    (
-      mainAxisSize: MainAxisSize.min,
-      children: 
-      [
-        WindowTitle(title: "Appelli"),
-
-        const Divider(height: 20,),
-        
-        TitleSearchBar(key: WindowTitleState.searchBarKey, hint: "Cerca esame"),
-        
-        Visibility(child: Text("No data"), visible: noDataVisible,),
-        
-        Expanded
-        (
-          //constraints: BoxConstraints(maxHeight: 250, minHeight: 10),
-          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-          child: //SingleChildScrollView(child:
-          (
-            ListView.builder
-            (
-              shrinkWrap: false,
-              itemCount: exams.length,
-              itemBuilder: (context, index) 
-              {
-                return ExamTile
-                (
-                  attivita: exams[index].attivita,
-                  idesame: exams[index].idesame,
-                  voto: exams[index].voto,
-                  crediti: exams[index].crediti,
-                  anno: exams[index].anno
-                );
-              },
-            )
-          )
-        ),
-      ],
-    )
-    ); 
-    
-    /*
-    FutureBuilder<List<Esame>>
-    (
-      future: _fetchLibretto(),
-      builder: (BuildContext context, AsyncSnapshot<List<Esame>> snapshot) 
-      {
-        if (snapshot.connectionState == ConnectionState.none ||
-            !snapshot.hasData) 
-        {
-          return const Text('no data');
-        } 
-        else if (snapshot.connectionState == ConnectionState.done) 
-        {
-          return Container
-          (
-            padding: const EdgeInsets.all(defaultPadding),
-            child: DataClass(dataList: snapshot.data as List<Esame>),
-          );
-        }
-        else
-        {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );*/
-  }
-}
-
-var allExams = <ExamTile>
-[
-  ExamTile(idesame: "CT-0000", attivita: "Basi di dati", voto: 27, crediti: 12, anno: 2),
-  ExamTile(idesame: "CT-0000", attivita: "Calcolo 1", voto: 20, crediti: 6, anno: 1),
-  ExamTile(idesame: "CT-0000", attivita: "Algoritmi e strutture dati", voto: 19, crediti: 12, anno: 2),
-  ExamTile(idesame: "CT-0000", attivita: "Ricerca operativa", voto: 24, crediti: 6, anno: 3),
-  //ExamTile(idesame: "CT-0000", attivita: "Calcolabilità e linguaggi formali", voto: 25, crediti: 6, anno: 3),
-];
-
-
-class ExamTile extends StatelessWidget
-{
-  String attivita;
-  String idesame;
-  int voto;
-  int crediti;
-  int anno;
-
-  ExamTile
-  (
-    {
-      required this.attivita,
-      required this.idesame,
-      required this.voto, 
-      required this.crediti, 
-      required this.anno
-    }
-  );
-
-  @override
-  Widget build(BuildContext context)
-  {
-
-    return Card
-    (
-      margin: EdgeInsets.all(8.0),
-      shape: RoundedRectangleBorder
-      (
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ListTile
-      (
-        title: Text(attivita),
-        subtitle: Text
-        (
-          'ID Esame: ${idesame} - Anno: ${anno} - Crediti: ${crediti}',
-        ),
-        trailing: Text("$voto"),
-
-        onTap: () 
-        {
-          //_dialogBuilder(context, data.proveList, data.idesame);
         },
-      ),
-    );
+        child: NotificationListener<SearchQueryNotification>(
+            onNotification: (notification) {
+              setState(() {
+                if (notification.text != null) {
+                  visibleAppelli.clear();
+                  visibleConferme.clear();
+
+                  String query = notification.text!;
+                  debugPrint("\n\nQuery: $query");
+                  appelli = allAppelli.where((appello) {
+                    return (appello.nome
+                        .toLowerCase()
+                        .contains(query.toLowerCase()));
+                  }).toList();
+                  //debugPrint("AllExams: ${allExams.length}\n");
+                  debugPrint("DEBUG: exams lenght ${appelli.length}");
+                  noDataVisible = appelli.isEmpty;
+                }
+              });
+              return false;
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                WindowTitle(title: "Appelli"),
+                const Divider(
+                  height: 20,
+                ),
+                TitleSearchBar(
+                    key: WindowTitleState.searchBarKey, hint: "Cerca appello"),
+                Visibility(
+                  child: Text("No data"),
+                  visible: noDataVisible,
+                ),
+                Expanded(
+                    child: (ListView.builder(
+                        shrinkWrap: false,
+                        itemCount: appelli.length,
+                        itemBuilder: (context, index) 
+                        {
+                          visibleAppelli.add(1);
+                          visibleConferme.add(0);
+                          return Column(
+                            children: 
+                            [
+                              Visibility
+                              (
+                                visible: visibleAppelli[index] == 1,
+                                maintainAnimation: true,
+                                maintainState: true,
+                                child: AnimatedOpacity
+                                (
+                                  opacity: visibleAppelli[index],
+                                  duration: Duration(milliseconds: 500),
+                                  child: AppelloTile(
+                                    nome: appelli[index].nome,
+                                    idprova: appelli[index].idprova,
+                                    tipologia: appelli[index].tipologia,
+                                    dipendenza: appelli[index].dipendenza,
+                                    opzionale: appelli[index].opzionale,
+                                    data: appelli[index].data,
+                                    onTap: () 
+                                    {
+                                      setState(() {
+                                        for (int i = 0; i < visibleAppelli.length; i++) 
+                                        {
+                                          if (i != index) 
+                                          {
+                                            visibleAppelli[i] = visibleAppelli[i] == 1 ? 0 : 1;
+                                          }
+                                          else
+                                          {
+                                            visibleConferme[i] = visibleConferme[i] == 1 ? 0 : 1;
+                                          }
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                              Visibility
+                              (
+                                visible: visibleConferme[index] == 1,
+                                maintainAnimation: true,
+                                maintainState: true,
+                                child: AnimatedOpacity
+                                (
+                                  opacity: visibleConferme[index],
+                                  duration: Duration(milliseconds: 500),
+                                  /*child: ConfermaAppelloTile
+                                  (
+                                      idprova: exams[index]
+                                            .storico[nestedIndex]
+                                            .idprova,
+                                        tipologia: exams[index]
+                                            .storico[nestedIndex]
+                                            .tipologia,
+                                        voto: exams[index]
+                                            .storico[nestedIndex]
+                                            .voto,
+                                        opzionale: exams[index]
+                                            .storico[nestedIndex]
+                                            .opzionale,
+                                  ),*/
+                                )
+                              )
+                            ],
+                          );
+                        }))),
+              ],
+            )));
   }
 }
 
+Future<bool> _prenotaAppello(String idprova, String data) async {
+  Map<String, dynamic> postData = {
+    'idprova': idprova,
+    'data': data,
+  };
 
-class ExamRow extends StatelessWidget
-{
-  String attivita;
-  int voto;
-  int crediti;
-  int anno;
-
-  ExamRow
-  (
-    {
-      required this.attivita, 
-      required this.voto, 
-      required this.crediti, 
-      required this.anno
+  try {
+    var response = await ApiManager.postData('appelli/prenota', postData);
+    
+    if (response!.containsKey("Status") && response["Status"] == "Success") {
+      return true;
+    } else {
+      return false;
     }
-  );
-
-  @override
-  Widget build(BuildContext context)
-  {
-    return Row
-    (
-      children: 
-      [
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(attivita),
-          )
-        ),
-        VerticalDivider(width: 10,),
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(voto.toString()),
-          )
-        ),
-        VerticalDivider(width: 10,),
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(crediti.toString()),
-          )
-        ),
-        VerticalDivider(width: 10,),
-        Expanded
-        (
-          child: Align
-          (
-            alignment: Alignment.center,
-            child: Text(anno.toString()),
-          )
-        ),
-      ],
-    );
+  } catch (e) {
+    // Gestisci eventuali errori di chiamata API
+    print("Errore durante la chiamata API: $e");
+    return false;
   }
 }

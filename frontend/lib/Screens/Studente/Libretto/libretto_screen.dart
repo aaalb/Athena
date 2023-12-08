@@ -14,11 +14,7 @@ class LibrettoComponent extends StatefulWidget {
 }
 
 class LibrettoComponentState extends State<LibrettoComponent> {
-  IconData backIcon = Icons.arrow_circle_left_outlined;
-  IconData searchIcon = Icons.search;
   bool noDataVisible = false;
-  double? searchHeight = 0;
-
   List<ExamTile> exams = []; // Using a single list for all exams
   List<ExamTile> allExams = [];
   List<double> visibleExams = [];
@@ -30,9 +26,6 @@ class LibrettoComponentState extends State<LibrettoComponent> {
   {
     super.initState();
     _future = _fetchLibretto();
-    
-    //Future<List<ExamTile>>
-    //allExams = _fetchLibretto();
   }
 
   @override

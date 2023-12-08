@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Docente/AppelliDocente/appelli_main.dart';
-import 'package:frontend/Screens/Studente/Appelli/appelli_main.dart';
 import 'package:frontend/Screens/Studente/Appelli2/appelli_main.dart';
-import 'package:frontend/Screens/Studente/Libretto2/libretto_main.dart';
+import 'package:frontend/Screens/Studente/Libretto/libretto_main.dart';
 import 'package:frontend/Screens/Studente/Menu/menu_main.dart';
 import 'package:frontend/Screens/Docente/Menu/menu_main.dart';
-import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_main.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:go_router/go_router.dart';
-import 'package:frontend/utils/AuthService.dart';
-import 'package:frontend/Screens/Docente/EsamiDocente/esami_main.dart';
 
 final router = GoRouter
 (
