@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Screens/Studente/Menu/menu_item.dart';
 import 'package:frontend/utils/AppService.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/utils/AuthService.dart';
 
 class MenuComponent extends StatefulWidget {
   @override
@@ -41,10 +42,13 @@ class MenuComponentState extends State<MenuComponent> {
             const VerticalDivider(
               width: 30,
             ),
-            const Expanded(
-                child: MenuItem(
-                    imagePath: "images/iscrizione_icon_2.png",
-                    label: "Appelli")),
+            Expanded(
+              child: MenuItem(
+                imagePath: "images/iscrizione_icon_2.png",
+                label: "Appelli",
+                onClick: () => GoRouter.of(context).go("/studente/appelli"),
+              ),
+            ),
             const VerticalDivider(
               width: 30,
             ),

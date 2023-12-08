@@ -8,7 +8,33 @@ from app.models.Libretto import Libretto
 from app.models.Esame import Esame
 from app.models.Appello import Appello
 from app.models.Iscrizione import Iscrizione
+from app.models.Prova import Prova
 import sys
+
+def _storico_appelli(email):
+    try:
+        query = session.query(Iscrizione.voto, Prova.idprova, Iscrizione.idoneita, Prova.tipologia, Appello.data) \
+            .select_from(Iscrizione) \
+            .join(Appello) \
+            .join(Prova) \
+            .join(Esame) \
+            .filter(Iscrizione.email == email) \
+            .filter(Iscrizione.voto != None)
+        
+        result = []
+        for record in query:
+            result.append({
+                'idprova' : record.idprova, 
+                'tipologia' : record.tipologia,
+                'data' : str(record.data),
+                'voto' : record.voto,
+                'idoneita' : record.idoneita,
+            })
+
+        return result
+    except Exception as e:
+        print(e, file=sys.stderr)
+        return {"Error":"Internal Server Error"}
 
 @bp.route('/libretto', methods=['GET'])
 @jwt_required()
@@ -35,8 +61,9 @@ def get_libretto():
                 'voto_complessivo' : record.votocomplessivo,
                 'crediti' : record.crediti,
                 'anno' : record.anno,
-                'data' : str(data.data),
+                'data' : '2024-05-02',
                 'idesame' : record.idesame,
+                'prove' : _storico_appelli(current_user['email'])  
             })
 
         return jsonify(result), 200
@@ -60,12 +87,12 @@ def inserisci_in_libretto():
         if not idesame or not stud_email or not voto:
             return jsonify({"Error":"Missing parameters"}), 400
 
-        insert(Libretto).values(
+        query = insert(Libretto).values(
             idesame = idesame,
             email = stud_email,
             votocomplessivo = voto
         )
-
+        session.execute(query)
         session.commit()
         return jsonify({"Status": "Success"}),200
     except Exception as e:

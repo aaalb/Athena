@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Screens/Docente/EsamiDocente/creazione_esame.dart';
 import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
 import 'package:frontend/Screens/Docente/models/EsameTile.dart';
@@ -161,10 +162,8 @@ class Libretto2ComponentState extends State<EsamiDocenteComponent> {
                     child: Text('Errore durante il caricamento dei dati'));
               } else {
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  allAppelli = snapshot
-                      .data!; // Salva tutti gli esami ottenuti dalla chiamata API
-                  appelli = List.from(
-                      allAppelli); // Inizializza la lista exams con tutti gli esami
+                  allAppelli = snapshot.data!;
+                  appelli = List.from(allAppelli);
                   return appelli.isEmpty
                       ? const Center(child: Text('Nessun dato disponibile'))
                       : ListView.builder(
@@ -184,6 +183,18 @@ class Libretto2ComponentState extends State<EsamiDocenteComponent> {
                   return const Center(child: Text('Nessun dato disponibile'));
                 }
               }
+            },
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: IconButton(
+            icon: const Icon(
+              Icons.add,
+              color: Colors.redAccent,
+            ),
+            onPressed: () {
+              creaEsame(context);
             },
           ),
         ),

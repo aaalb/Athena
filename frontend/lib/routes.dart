@@ -33,9 +33,7 @@ final router = GoRouter(
         ),
       ),
     ),
-
-    GoRoute
-    (
+    GoRoute(
       name: "MenuStudente",
       path: '/studente',
       pageBuilder: (context, state) {

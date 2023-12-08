@@ -185,9 +185,8 @@ def get_candidati(idesame):
             if flag: 
                 candidati.append(tmp)
         
-        return jsonify(candidati)
+        return jsonify(candidati), 200
     
     except Exception as e:
-        session.rollback()
         return jsonify({"Status": "Internal Server Error"}), 500
         

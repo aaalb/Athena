@@ -11,9 +11,9 @@ class EsamiDocente extends StatefulWidget {
   static PageDimensions dimensions = const PageDimensions(
       constraints: BoxConstraints(
     minWidth: 390,
-    maxWidth: 600,
+    maxWidth: 800,
     minHeight: 200,
-    maxHeight: 600,
+    maxHeight: 700,
   ));
 
   @override

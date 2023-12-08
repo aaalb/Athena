@@ -70,21 +70,3 @@ class ApiManager {
     }
   }
 }
-
-//----------------------------------------------------------------------------
-
-Future<bool> deleteAppello(String idProva, String data) async {
-  try {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String access_token = prefs.getString("access_token") ?? '';
-    http.Response response = await http.delete(
-        Uri.parse('http://localhost:8000/api/appelli/sprenota'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $access_token'
-        },
-        body: json.encode({'idprova': idProva, 'data': data}));
-    if (response.statusCode == 200) return true;
-  } catch (e) {}
-  return false;
-}

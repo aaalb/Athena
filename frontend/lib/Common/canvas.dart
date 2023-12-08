@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/utils/AppService.dart';
-import 'package:frontend/utils/AuthService.dart';
 import 'white_box.dart';
 
 GlobalKey<MyCanvasState> canvasKey =
@@ -36,26 +34,6 @@ class MyCanvasState extends State<MyCanvas> {
             ),
           ),
           WhiteBox(child: child),
-          Positioned(
-            bottom: 16.0,
-            right: 16.0,
-            child: Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: IconButton(
-                icon: Icon(Icons.logout_rounded),
-                color: Colors.red,
-                onPressed: () {
-                  AuthService.logout();
-                  AppService.instance.manageAutoLogout();
-                },
-              ),
-            ),
-          ),
         ],
       ),
     );

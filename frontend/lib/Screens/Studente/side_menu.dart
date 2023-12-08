@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:js';
 import 'package:go_router/go_router.dart';
 
 class SideMenu extends StatelessWidget {
@@ -13,14 +14,19 @@ class SideMenu extends StatelessWidget {
             child: Image.asset("images/cf-logo.png"),
           ),
           DrawerListTile(
-            title: "I miei esami",
+            title: "Libretto",
             svgSrc: "images/libretto_icon.png",
-            press: () => context.go('/docente/esami'),
+            press: () => context.go('/libretto'),
           ),
           DrawerListTile(
-            title: "Appelli",
-            svgSrc: "images/libretto_icon.png",
-            press: () => context.go('/docente/appelli'),
+            title: "Iscrizione agli appelli",
+            svgSrc: "images/iscrizione_icon.png",
+            press: () => context.go('/appelli'),
+          ),
+          DrawerListTile(
+            title: "Bacheca prenotazioni",
+            svgSrc: "images/bacheca_icon.png",
+            press: () => context.go('/prenotazioni'),
           ),
         ],
       ),

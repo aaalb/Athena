@@ -71,7 +71,7 @@ void _confirmDelete(BuildContext context, String idprova, String data) {
             ),
             TextButton(
                 onPressed: () async {
-                  deleteAppello(idprova, data);
+                  _deleteAppello(idprova, data);
                   //  Navigator.of(context).pop();
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (BuildContext context) => const Prenotazioni(),
@@ -81,4 +81,13 @@ void _confirmDelete(BuildContext context, String idprova, String data) {
           ],
         );
       });
+}
+
+Future<void> _deleteAppello(String idProva, String data) async {
+  Map<String, dynamic> postData = {
+    'idprova': idProva,
+    'data': data,
+  };
+
+  ApiManager.deleteData('appelli/sprenota', postData);
 }

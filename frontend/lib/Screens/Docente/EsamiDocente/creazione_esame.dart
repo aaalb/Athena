@@ -13,16 +13,16 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
   TextEditingController creditiController = TextEditingController();
   TextEditingController annoController = TextEditingController();
 
-  int counter = 0;
   List<String> selectedValue = [];
 
   @override
   Widget build(BuildContext context) {
+    int counter = 1;
     return Dialog(
       insetPadding: const EdgeInsets.all(20.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: FractionallySizedBox(
-        widthFactor: 0.9,
+        widthFactor: 1,
         child: Container(
           padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
@@ -32,7 +32,10 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
               children: <Widget>[
                 const Text(
                   "Crea un nuovo esame",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20.0),
@@ -83,72 +86,62 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${idesameController.text}-$counter",
+                        "${idesameController.text}-${counter++}",
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 16), // Aggiornato lo spazio tra elementi
                       Row(
                         children: [
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: TextFormField(
-                                controller: controllers[i],
-                                decoration: const InputDecoration(
-                                  labelText: 'Tipologia',
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: TextFormField(
-                                controller: controllers[i + 1],
-                                decoration: const InputDecoration(
-                                  labelText: 'Scadenza',
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: TextFormField(
-                                controller: controllers[i + 2],
-                                decoration: const InputDecoration(
-                                  labelText: 'Dipendenza',
-                                  border: OutlineInputBorder(),
-                                ),
+                            child: TextFormField(
+                              controller: controllers[i],
+                              decoration: const InputDecoration(
+                                labelText: 'Tipologia',
+                                border: OutlineInputBorder(),
                               ),
                             ),
                           ),
                           const SizedBox(
-                            width: 10,
-                          ),
+                              width: 12), // Aggiornato lo spazio tra elementi
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: TextFormField(
-                                controller: controllers[i + 3],
-                                decoration: const InputDecoration(
-                                  labelText: 'Responsabile',
-                                  border: OutlineInputBorder(),
-                                ),
+                            child: TextFormField(
+                              controller: controllers[i + 1],
+                              decoration: const InputDecoration(
+                                labelText: 'Scadenza',
+                                border: OutlineInputBorder(),
                               ),
                             ),
                           ),
                           const SizedBox(
-                            width: 10,
+                              width: 12), // Aggiornato lo spazio tra elementi
+                          Expanded(
+                            child: TextFormField(
+                              controller: controllers[i + 2],
+                              decoration: const InputDecoration(
+                                labelText: 'Dipendenza',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(
+                              width: 12), // Aggiornato lo spazio tra elementi
+                          Expanded(
+                            child: TextFormField(
+                              controller: controllers[i + 3],
+                              decoration: const InputDecoration(
+                                labelText: 'Responsabile',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                              width: 12), // Aggiornato lo spazio tra elementi
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Checkbox(
                                 value: i + 4 < controllers.length
@@ -163,12 +156,18 @@ class _DynamicInputDialogState extends State<_DynamicInputDialog> {
                                   });
                                 },
                               ),
-                              const Text("Opzionale"),
+                              const SizedBox(
+                                  width:
+                                      8), // Aggiornato lo spazio tra elementi
+                              const Text(
+                                "Opzionale",
+                                textAlign: TextAlign.start,
+                                // Aggiornato lo stile, il colore o altre proprietà del testo qui
+                              ),
                             ],
                           ),
                           const SizedBox(
-                            width: 10,
-                          ),
+                              width: 12), // Aggiornato lo spazio tra elementi
                           IconButton(
                             icon: const Icon(Icons.delete_outline_rounded),
                             onPressed: () {
@@ -260,8 +259,7 @@ Future<void> _creaEsame(String idEsame, String nome, String crediti,
   };
 
   // Assuming you have an ApiManager class with a postData method
-  await ApiManager.postData('esami/crea',
-      postData); // Changed to postData method assuming it creates an exam
+  await ApiManager.postData('esami/crea', postData);
 
   // Consider handling the response or errors after the API call
 }

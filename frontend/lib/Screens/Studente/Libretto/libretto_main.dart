@@ -3,10 +3,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
-import './appelli_screen.dart';
+import './libretto_screen.dart';
 
-class Appelli extends StatefulWidget {
-  const Appelli({super.key});
+class Libretto extends StatefulWidget {
+  const Libretto({super.key});
 
   static PageDimensions dimensions = const PageDimensions(
       //width: 800,
@@ -18,18 +18,18 @@ class Appelli extends StatefulWidget {
   ));
 
   @override
-  State<Appelli> createState() => Appelli2State();
+  State<Libretto> createState() => LibrettoState();
 }
 
-class Appelli2State extends State<Appelli> {
+class LibrettoState extends State<Libretto> {
   void initState() {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       LoadNewPageNotification(
-        width: Appelli.dimensions.width,
-        height: Appelli.dimensions.height,
-        constraints: Appelli.dimensions.constraints,
+        width: Libretto.dimensions.width,
+        height: Libretto.dimensions.height,
+        constraints: Libretto.dimensions.constraints,
       ).dispatch(context);
     });
   }
@@ -38,7 +38,7 @@ class Appelli2State extends State<Appelli> {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.all(20),
-      child: Center(child: Appelli2Component()),
+      child: Center(child: LibrettoComponent()),
     );
   }
 }

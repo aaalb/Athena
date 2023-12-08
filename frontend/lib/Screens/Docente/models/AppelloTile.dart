@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './Candidato.dart';
+import 'Candidato.dart';
 import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
 
@@ -80,7 +80,7 @@ class AppelloTile extends StatelessWidget {
 Future<void> _dialogVotiBuilder(
     BuildContext context, String idProva, String data) {
   List<TextEditingController> voti = [];
-  List<Candidato> candidati = [];
+  late List<Candidato> candidati = [];
 
   return showDialog<void>(
     context: context,
@@ -90,103 +90,112 @@ Future<void> _dialogVotiBuilder(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder<List<Candidato>>(
-                future: _fetchCandidati(idProva, data),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Candidato>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Errore durante il recupero dei dati'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('Nessuna iscrizione alla prova'),
-                    );
-                  } else {
-                    candidati = snapshot.data!;
-                    for (int i = 0; i < candidati.length; ++i) {
-                      voti.add(TextEditingController());
-                    }
-                    ;
-                    return ListView.builder(
-                      itemCount: candidati.length,
-                      itemBuilder: (context, index) {
-                        Candidato data = candidati[index];
-                        return Card(
-                          margin: const EdgeInsets.all(8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${data.cognome} ${data.nome}",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder<List<Candidato>>(
+            future: _fetchCandidati(idProva, data),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<Candidato>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: Text('Errore durante il recupero dei dati'),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Nessuna iscrizione alla prova'),
+                );
+              } else {
+                candidati = snapshot.data!;
+                for (int i = 0; i < candidati.length; ++i) {
+                  voti.add(TextEditingController());
+                }
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: candidati.length,
+                        itemBuilder: (context, index) {
+                          Candidato data = candidati[index];
+                          return Card(
+                            margin: const EdgeInsets.all(8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${data.cognome} ${data.nome}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text('Email: ${data.email}'),
-                                    ],
+                                        const SizedBox(height: 4),
+                                        Text('Email: ${data.email}'),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Visibility(
-                                  child: Expanded(
-                                    flex: 2,
-                                    child: TextFormField(
-                                      controller: voti[index],
-                                      decoration: const InputDecoration(
-                                        labelText: 'Voto',
-                                        border: OutlineInputBorder(),
+                                  const SizedBox(width: 8),
+                                  Visibility(
+                                    visible: candidati.isNotEmpty,
+                                    child: Expanded(
+                                      flex: 2,
+                                      child: TextFormField(
+                                        controller: voti[index],
+                                        decoration: const InputDecoration(
+                                          labelText: 'Voto',
+                                          border: OutlineInputBorder(),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                              ],
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-            Visibility(
-              visible: candidati.isNotEmpty,
-              child: Positioned(
-                bottom: 8,
-                right: 8,
-                child: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    for (int i = 0; i < voti.length; ++i) {
-                      _inserisciVoto(
-                          idProva, data, candidati[i].email, voti[i].text);
-                    }
-                  },
-                ),
-              ),
-            )
-          ],
+                          );
+                        },
+                      ),
+                    ),
+                    Visibility(
+                      visible: candidati.isNotEmpty,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 8.0,
+                          right: 8.0,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.send),
+                          onPressed: () {
+                            for (int i = 0; i < voti.length; ++i) {
+                              _inserisciVoto(
+                                idProva,
+                                data,
+                                candidati[i].email,
+                                voti[i].text,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       );
     },

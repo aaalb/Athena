@@ -12,9 +12,9 @@ class AppelliDocente extends StatefulWidget {
       //width: 800,
       constraints: BoxConstraints(
     minWidth: 390,
-    maxWidth: 600,
+    maxWidth: 800,
     minHeight: 200,
-    maxHeight: 600,
+    maxHeight: 700,
   ));
 
   @override

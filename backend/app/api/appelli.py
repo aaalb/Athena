@@ -36,7 +36,7 @@ def get_appelli():
 
         return jsonify(result), 200
     except:
-        jsonify({"Error":"Internal Server Error"}), 500
+        return jsonify({"Error":"Internal Server Error"}), 500
 
 
 @bp.route('/appelli/prenotazioni', methods=['GET'])
@@ -71,7 +71,7 @@ def get_appelli_prenotati():
 
         return jsonify(result), 200
     except:
-        jsonify({"Error":"Internal Server Error"}), 500
+        return jsonify({"Error":"Internal Server Error"}), 500
 
 @bp.route('/appelli/prenota', methods=['POST'])
 @jwt_required()
@@ -137,37 +137,6 @@ def sprenota_appello():
         return jsonify({"Status":"Success"}), 200
     except:
         session.rollback()
-        return jsonify({"Error":"Internal Server Error"}), 500
-
-
-@bp.route('/appelli/storico', methods=['GET'])
-@jwt_required()
-def storico_appelli():
-    try:
-        current_user = get_jwt_identity()
-        if current_user['role'] == 'Docente':
-            return jsonify({"Error":"Not Allowed"}), 403
-
-        query = session.query(Iscrizione.voto, Prova.idprova, Esame.nome, Prova.tipologia, Appello.data) \
-            .select_from(Iscrizione) \
-            .join(Appello) \
-            .join(Prova) \
-            .join(Esame) \
-            .filter(Iscrizione.email == current_user['email']) \
-            .filter(Iscrizione.voto != None)
-        
-        result = []
-        for record in query:
-            result.append({
-                'idprova' : record.idprova, 
-                'nome' : record.nome,
-                'tipologia' : record.tipologia,
-                'data' : str(record.data),
-                'voto' : record.voto
-            })
-
-        return jsonify(result), 200
-    except:
         return jsonify({"Error":"Internal Server Error"}), 500
 
 
