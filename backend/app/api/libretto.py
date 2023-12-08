@@ -7,7 +7,33 @@ from app.models.Libretto import Libretto
 from app.models.Esame import Esame
 from app.models.Appello import Appello
 from app.models.Iscrizione import Iscrizione
+from app.models.Prova import Prova
 import sys
+
+def _storico_appelli(email):
+    try:
+        query = session.query(Iscrizione.voto, Prova.idprova, Iscrizione.idoneita, Prova.tipologia, Appello.data) \
+            .select_from(Iscrizione) \
+            .join(Appello) \
+            .join(Prova) \
+            .join(Esame) \
+            .filter(Iscrizione.email == email) \
+            .filter(Iscrizione.voto != None)
+        
+        result = []
+        for record in query:
+            result.append({
+                'idprova' : record.idprova, 
+                'tipologia' : record.tipologia,
+                'data' : str(record.data),
+                'voto' : record.voto,
+                'idoneita' : record.idoneita,
+            })
+
+        return result
+    except Exception as e:
+        print(e, file=sys.stderr)
+        return {"Error":"Internal Server Error"}
 
 @bp.route('/libretto', methods=['GET'])
 @jwt_required()
@@ -22,7 +48,7 @@ def get_libretto():
             .filter(Libretto.email == current_user['email']) \
             .all()
 
-        d = session.query(Appello.data) \
+        data = session.query(Appello.data) \
             .join(Iscrizione) \
             .filter(Iscrizione.idoneita == True) \
             .filter(Iscrizione.voto != None).first()
@@ -34,14 +60,9 @@ def get_libretto():
                 'voto_complessivo' : record.votocomplessivo,
                 'crediti' : record.crediti,
                 'anno' : record.anno,
-                'data' : str(d.data),
-                'idesame': record.idesame,
-                'prove' : [{
-                    'idprova':'CT0002-1',
-                    'tipologia':'Parlato',
-                    'opzionale':False,
-                    'voto':'43',
-                }]
+                'data' : '2024-05-02',
+                'idesame' : record.idesame,
+                'prove' : _storico_appelli(current_user['email'])  
             })
 
         return jsonify(result), 200
@@ -49,4 +70,32 @@ def get_libretto():
         print(e, file=sys.stderr)
         return jsonify({"Error":"Internal Server Error"}), 500
 
+
+@bp.route('/libretto/inserisci', methods=['POST'])
+@jwt_required()
+def inserisci_in_libretto():
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] == 'Studente':
+            return jsonify({"Error":"Not Allowed"}), 403
+        
+        idesame = request.json["idesame"]
+        stud_email = request.json["stud_email"]
+        voto = request.json["voto"]
+
+        if not idesame or not stud_email or not voto:
+            return jsonify({"Error":"Missing parameters"}), 400
+
+        query = insert(Libretto).values(
+            idesame = idesame,
+            email = stud_email,
+            votocomplessivo = voto
+        )
+        session.execute(query)
+        session.commit()
+        return jsonify({"Status": "Success"}),200
+    except Exception as e:
+        print(e, file=sys.stderr)
+        session.rollback()
+        return jsonify({"Error":"Internal Server Error"}), 500
     

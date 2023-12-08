@@ -1,36 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Docente/AppelliDocente/components/appelli_screen.dart';
-import 'package:frontend/Screens/Docente/side_menu.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:frontend/Common/notifications.dart';
+import 'appelli_screen.dart';
+import 'package:frontend/Common/page_dimensions.dart';
 
 class AppelliDocente extends StatefulWidget {
+  static const route = '/docente/appelli';
   const AppelliDocente({super.key});
 
+  static PageDimensions dimensions = const PageDimensions(
+      //width: 800,
+      constraints: BoxConstraints(
+    minWidth: 390,
+    maxWidth: 800,
+    minHeight: 200,
+    maxHeight: 700,
+  ));
+
   @override
-  State<AppelliDocente> createState() => _LibrettoState();
+  State<AppelliDocente> createState() => _Libretto2State();
 }
 
-class _LibrettoState extends State<AppelliDocente> {
+class _Libretto2State extends State<AppelliDocente> {
+  @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      LoadNewPageNotification(
+        width: AppelliDocente.dimensions.width,
+        height: AppelliDocente.dimensions.height,
+        constraints: AppelliDocente.dimensions.constraints,
+      ).dispatch(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      drawer: SideMenu(),
-      body: SafeArea(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              // default flex = 1
-              // and it takes 1/6 part of the screen
-              child: SideMenu(),
-            ),
-            Expanded(
-              // It takes 5/6 part of the screen
-              flex: 5,
-              child: AppelliDocenteScreen(),
-            ),
-          ],
-        ),
-      ),
+    return const Padding(
+      padding: EdgeInsets.all(20),
+      child: Center(child: AppelliDocenteComponent()),
     );
   }
 }

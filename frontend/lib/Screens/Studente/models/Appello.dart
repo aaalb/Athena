@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
 class Appello {
   final String? idprova, nome, tipologia, data, opzionale, dipendeda;
 

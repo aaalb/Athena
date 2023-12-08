@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Screens/Docente/Menu/menu_item.dart';
+import 'package:frontend/Screens/Studente/Menu/menu_item.dart';
+import 'package:frontend/utils/AppService.dart';
+import 'package:go_router/go_router.dart';
 
 class MenuComponent extends StatefulWidget {
   @override
@@ -7,45 +9,46 @@ class MenuComponent extends StatefulWidget {
 }
 
 class MenuComponentState extends State<MenuComponent> {
+  String nome = AppService.instance.currentUser?.nome ?? "Error 404";
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         Text(
-          "Ciao, Professore",
-          style: TextStyle(
+          "Ciao, $nome",
+          style: const TextStyle(
             color: Color.fromARGB(255, 209, 67, 67),
             fontFamily: 'SourceSansPro',
             fontWeight: FontWeight.w600,
             fontSize: 44,
           ),
         ),
-        Divider(
+        const Divider(
           height: 20,
         ),
         Row(
           children: [
-            VerticalDivider(
+            const VerticalDivider(
               width: 30,
             ),
             Expanded(
-                child: MenuItem(
-                    imagePath: "images/libretto_icon_2.png",
-                    label: "I miei Esami")),
-            VerticalDivider(
+              child: MenuItem(
+                imagePath: "images/libretto_icon_2.png",
+                label: "I miei Esami",
+                onClick: () => GoRouter.of(context).go("/docente/esami"),
+              ),
+            ),
+            const VerticalDivider(
               width: 30,
             ),
             Expanded(
-                child: MenuItem(
-                    imagePath: "images/iscrizione_icon_2.png",
-                    label: "Appelli")),
-            VerticalDivider(
-              width: 30,
+              child: MenuItem(
+                imagePath: "images/iscrizione_icon_2.png",
+                label: "Appelli",
+                onClick: () => GoRouter.of(context).go("/docente/appelli"),
+              ),
             ),
           ],
-        ),
-        Divider(
-          height: 30,
         ),
       ],
     );

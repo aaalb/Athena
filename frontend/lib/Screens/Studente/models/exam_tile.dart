@@ -61,34 +61,38 @@ class ExamTile extends StatelessWidget {
 }
 
 class ProvaTile extends StatelessWidget {
-  String idprova, tipologia;
-  bool opzionale;
-  String voto;
+  String idprova, tipologia, data;
+  bool idoneita;
+  int voto;
 
-  ProvaTile({
-    required this.tipologia,
-    required this.idprova,
-    required this.opzionale,
-    required this.voto,
-  });
+  ProvaTile(
+      {required this.tipologia,
+      required this.idprova,
+      required this.idoneita,
+      required this.voto,
+      required this.data});
 
   factory ProvaTile.fromJson(Map<String, dynamic> json) {
     return ProvaTile(
       idprova: json['idprova'] ?? '',
       tipologia: json['tipologia'] ?? '',
-      opzionale: json['opzionale'] ?? '',
-      voto: json['voto'] ?? '',
+      idoneita: json['idoneita'],
+      voto: json['voto'],
+      data: json['data'] ?? '',
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
+        color: (idoneita)
+            ? Color.fromARGB(91, 206, 254, 208)
+            : Color.fromARGB(255, 255, 206, 202),
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 25.0),
         child: ListTile(
           title: Text(idprova),
           subtitle: Text(
-            'Tipologia: $idprova - Opzionale - ${opzionale.toString()}',
+            'Tipologia: $idprova - Data - ${data}',
           ),
           trailing: Text("$voto"),
         ));
