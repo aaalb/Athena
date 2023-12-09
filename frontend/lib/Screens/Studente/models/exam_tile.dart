@@ -30,12 +30,12 @@ class ExamTile extends StatelessWidget {
       proveList.add(ProvaTile.fromJson(item));
     }
     return ExamTile(
-      nome: json['nome'],
-      idesame: json['idesame'],
-      voto: json['voto_complessivo'],
-      crediti: json['crediti'],
-      anno: json['anno'],
-      data: json['data'],
+      nome: json['nome'] ?? '',
+      idesame: json['idesame'] ?? '',
+      voto: json['voto_complessivo'] ?? '',
+      crediti: json['crediti'] ?? 0,
+      anno: json['anno'] ?? 0,
+      data: json['data'] ?? '',
       storico: proveList,
     );
   }

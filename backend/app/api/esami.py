@@ -3,6 +3,7 @@ from app.extensions import session
 from flask import jsonify, request
 from flask_jwt_extended import *
 from sqlalchemy import insert
+from sqlalchemy.exc import IntegrityError, DataError, SQLAlchemyError
 
 from app.utils import genera_date_appello
 from app.models.Esame import Esame
@@ -78,6 +79,15 @@ def crea_esame():
         session.commit()
         return jsonify({"Status": "Success"}),200
 
+    except IntegrityError:
+        session.rollback()
+        return jsonify({"Error": "Exam already exists in the transcript"}), 409  # 409 - Conflict
+    except DataError:
+        session.rollback()
+        return jsonify({"Error": "Invalid data format or type"}), 400  # 400 - Bad Request
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
     except Exception as e:
         session.rollback()
         return jsonify({"Status": "Failure"}), 500
@@ -101,6 +111,9 @@ def elimina_esame():
         session.commit()
         return jsonify({"Status": "Success"}),200
     
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
     except Exception as e:
         session.rollback()
         return jsonify({"Status": "Internal Server Error"}), 500
@@ -109,39 +122,47 @@ def elimina_esame():
 @bp.route('/esami', methods=['GET'])
 @jwt_required()
 def visualizza_esame():
-    current_user = get_jwt_identity()
-    if current_user['role'] == 'Studente':
-        return jsonify({"Error":"Not Allowed"}), 403
-    
-    subquery = session.query(Realizza.idesame).filter(Realizza.email == current_user['email'])
-    esami = session.query(Esame).filter(Esame.idesame.in_(subquery))
+    try:
+        current_user = get_jwt_identity()
+        if current_user['role'] == 'Studente':
+            return jsonify({"Error":"Not Allowed"}), 403
+        
+        subquery = session.query(Realizza.idesame).filter(Realizza.email == current_user['email'])
+        esami = session.query(Esame).filter(Esame.idesame.in_(subquery))
 
-    if not esami:
-            return jsonify({"Error": "Nessun Esame Trovato"}), 404
+        if not esami:
+                return jsonify({"Error": "Nessun Esame Trovato"}), 404
 
-    result = []
-    for esame in esami:
-        prove = session.query(Prova).filter(Prova.idesame == esame.idesame)
+        result = []
+        for esame in esami:
+            prove = session.query(Prova).filter(Prova.idesame == esame.idesame)
 
-        lista_prove = []
-        for prova in prove:
-            lista_prove.append({
-                "idprova" : prova.idprova,
-                "tipologia" : prova.tipologia,
-                "opzionale" : prova.opzionale,
-                "datascadenza" : str(prova.datascadenza),
-                "dipendeda" : prova.dipendeda 
+            lista_prove = []
+            for prova in prove:
+                lista_prove.append({
+                    "idprova" : prova.idprova,
+                    "tipologia" : prova.tipologia,
+                    "opzionale" : prova.opzionale,
+                    "datascadenza" : str(prova.datascadenza),
+                    "dipendeda" : prova.dipendeda 
+                })
+
+            result.append({
+                "idesame" : esame.idesame,
+                "nome" : esame.nome,
+                "crediti" : esame.crediti,
+                "anno" : esame.anno,
+                "prove" : lista_prove
             })
 
-        result.append({
-            "idesame" : esame.idesame,
-            "nome" : esame.nome,
-            "crediti" : esame.crediti,
-            "anno" : esame.anno,
-            "prove" : lista_prove
-        })
-
-    return jsonify(result), 200
+        return jsonify(result), 200
+    
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
+        session.rollback()
+        return jsonify({"Error":"Internal Server Error"}), 500
 
 
 @bp.route('/esami/<idesame>/candidati', methods=['GET'])
@@ -187,6 +208,9 @@ def get_candidati(idesame):
         
         return jsonify(candidati), 200
     
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
     except Exception as e:
         return jsonify({"Status": "Internal Server Error"}), 500
         

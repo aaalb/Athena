@@ -3,6 +3,7 @@ from app.extensions import session
 from flask import jsonify, request
 from flask_jwt_extended import *
 from sqlalchemy import insert
+from sqlalchemy.exc import SQLAlchemyError, DataError
 
 from app.models.Appello import Appello
 from app.models.Iscrizione import Iscrizione
@@ -35,9 +36,12 @@ def get_appelli():
             })
 
         return jsonify(result), 200
-    except:
+    
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception:
         return jsonify({"Error":"Internal Server Error"}), 500
-
 
 @bp.route('/appelli/prenotazioni', methods=['GET'])
 @jwt_required()
@@ -70,7 +74,10 @@ def get_appelli_prenotati():
             })
 
         return jsonify(result), 200
-    except:
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         return jsonify({"Error":"Internal Server Error"}), 500
 
 @bp.route('/appelli/prenota', methods=['POST'])
@@ -85,8 +92,8 @@ def prenota_appello():
         data = request.json['data']
 
         if not id_prova or not data:
-            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
-
+            return jsonify({"Error":"Missing parameters!"}), 400
+            
         appello = session.query(Appello) \
             .filter(Appello.idprova == id_prova) \
             .filter(Appello.data == data).first()
@@ -103,7 +110,11 @@ def prenota_appello():
         session.commit()
 
         return jsonify({"Status":"Success"}), 200
-    except:
+    
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         return jsonify({"Error":"Internal Server Error"}), 500
 
 
@@ -119,7 +130,7 @@ def sprenota_appello():
         data = request.json['data']
 
         if not id_prova or not data:
-            return jsonify({"Status": 401, "Reason":"Missing parameters!"})
+            return jsonify({"Error":"Missing parameters!"}), 400
 
         appello = session.query(Appello.idappello) \
             .filter(Appello.idprova == id_prova) \
@@ -135,7 +146,14 @@ def sprenota_appello():
         
         session.commit()
         return jsonify({"Status":"Success"}), 200
-    except:
+    
+    except DataError:
+        session.rollback()
+        return jsonify({"Error": "Invalid data format or type"}), 400  # 400 - Bad Request
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         session.rollback()
         return jsonify({"Error":"Internal Server Error"}), 500
 
@@ -167,7 +185,11 @@ def get_appelli_docente():
             })
 
         return jsonify(result), 200
-    except:
+    
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         return jsonify({"Error":"Internal Server Error"}), 500
 
 
@@ -195,5 +217,8 @@ def get_info_appello(idprova):
             })
 
         return jsonify(result), 200
-    except:
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         return jsonify({"Error":"Internal Server Error"}), 500

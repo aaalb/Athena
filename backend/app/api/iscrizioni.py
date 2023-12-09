@@ -3,6 +3,7 @@ from app.extensions import session
 from flask import jsonify, request
 from flask_jwt_extended import *
 from sqlalchemy import update
+from sqlalchemy.exc import SQLAlchemyError, DataError
 
 from app.models.Iscrizione import Iscrizione
 from app.models.Studente import Studente
@@ -44,7 +45,14 @@ def get_iscritti(idprova=None, data=None):
             return jsonify({"Error": "No Data Found"}), 404
 
         return jsonify(result), 200
-    except:
+    
+    except DataError:
+        session.rollback()
+        return jsonify({"Error": "Invalid data format or type"}), 400  # 400 - Bad Request
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         return jsonify({"error": "Something went wrong"}), 500
     
 
@@ -59,7 +67,7 @@ def inserisci_voto(idprova, data):
         responsabile = session.query(Prova).filter(Prova.idprova == idprova).first()
 
         if responsabile.responsabile != current_user['email']:
-            return jsonify({"Error":"Not Allowed"}), 403
+            return jsonify({"Error":f"Not Allowed to modify grades for {idprova}"}), 403
 
         stud_email = request.json['stud_email']
         voto = None
@@ -96,6 +104,12 @@ def inserisci_voto(idprova, data):
         
         return jsonify({"Status":"Success"})
     
-    except:
+    except DataError:
+        session.rollback()
+        return jsonify({"Error": "Invalid data format or type"}), 400  # 400 - Bad Request
+    except SQLAlchemyError as e:
+        session.rollback()
+        return jsonify({"Error": "Database error"}), 500
+    except Exception as e:
         session.rollback()
         return jsonify({"Error":"Internal Server Error"}), 500

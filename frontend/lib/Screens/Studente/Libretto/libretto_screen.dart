@@ -22,15 +22,14 @@ class LibrettoComponentState extends State<LibrettoComponent> {
 
   Future? _future;
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
     _future = _fetchLibretto();
   }
 
   @override
   Widget build(BuildContext context) {
-   return FutureBuilder(
+    return FutureBuilder(
       future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -41,8 +40,7 @@ class LibrettoComponentState extends State<LibrettoComponent> {
           return const Center(
               child: Text('No data available')); // If no data is available
         } else {
-          if(allExams.isEmpty)
-          {
+          if (allExams.isEmpty) {
             allExams = snapshot.data!;
             exams = allExams;
             debugPrint("DEBUG fetch: exams - ${exams.length}");
@@ -67,8 +65,6 @@ class LibrettoComponentState extends State<LibrettoComponent> {
   }
 
   Widget _buildUI() {
-    debugPrint("DEBUG buildui: exams - ${exams.length}");
-    debugPrint("DEBUG buildui: allexams - ${allExams.length}");
     if (exams.isEmpty) noDataVisible = true;
     return NotificationListener<SearchRequestedNotification>(
         onNotification: (notification) {
@@ -95,8 +91,6 @@ class LibrettoComponentState extends State<LibrettoComponent> {
                         .toLowerCase()
                         .contains(query.toLowerCase()));
                   }).toList();
-                  //debugPrint("AllExams: ${allExams.length}\n");
-                  debugPrint("DEBUG: exams lenght ${exams.length}");
                   noDataVisible = exams.isEmpty;
                 }
               });
@@ -177,9 +171,12 @@ class LibrettoComponentState extends State<LibrettoComponent> {
                                             voto: exams[index]
                                                 .storico[nestedIndex]
                                                 .voto,
-                                            opzionale: exams[index]
+                                            data: exams[index]
                                                 .storico[nestedIndex]
-                                                .opzionale,
+                                                .data,
+                                            idoneita: exams[index]
+                                                .storico[nestedIndex]
+                                                .idoneita,
                                           );
                                         })),
                               )

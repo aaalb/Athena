@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
-import 'package:frontend/Screens/Studente/models/PrenotazioneTile.dart';
+import 'package:frontend/Screens/Studente/models/prenotazione_tile.dart';
 import 'package:go_router/go_router.dart';
 
 Future<List<PrenotazioneTile>> _fetchPrenotazioni() async {

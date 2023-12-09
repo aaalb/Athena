@@ -1,6 +1,7 @@
 import random
 from datetime import datetime, timedelta
 from app.extensions import session
+from flask import jsonify
 
 from app.models.Prova import Prova
 from app.models.Appello import Appello
