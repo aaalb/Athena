@@ -5,3 +5,7 @@ Internal Server Error: datascadenza
 Internal Server Error: datascadenza
 Internal Server Error: can't compare datetime.datetime to datetime.date
 Internal Server Error: '>' not supported between instances of 'str' and 'datetime.date'
+Internal Server Error: '>' not supported between instances of 'str' and 'datetime.date'
+Internal Server Error: can't compare datetime.datetime to datetime.date
+Internal Server Error: can't compare datetime.datetime to datetime.date
+Internal Server Error: strptime() argument 1 must be str, not datetime.date

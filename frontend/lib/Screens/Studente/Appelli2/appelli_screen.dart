@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
 import 'package:frontend/Common/search.dart';
 import 'package:frontend/Common/title.dart';
@@ -55,8 +54,7 @@ class Appelli2ComponentState extends State<Appelli2Component> {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            if (allAppelli.isEmpty) // needsRefresh)
-            {
+            if (needsRefresh) {
               needsRefresh = false;
               allAppelli = snapshot.data!;
               appelli = allAppelli;

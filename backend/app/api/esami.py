@@ -240,10 +240,13 @@ def get_candidati(idesame):
                     flag = False
                     exit
                 else:
-                    data_attuale = '2023-12-10'
+                    data_attuale = datetime.now()
+
+                    #converto la data di scadenza in datetime
+                    data_scadenza_datetime = datetime.strptime(str(prova.datascadenza), '%Y-%m-%d')
 
                     # se la data attuale è superiore a quella di scadenza, invalida la prova
-                    """if(data_attuale > prova.datascadenza):
+                    if(data_attuale > data_scadenza_datetime):
                         query = update(Iscrizione) \
                             .join(Appello) \
                             .filter(Iscrizione.email == studente.email) \
@@ -252,7 +255,7 @@ def get_candidati(idesame):
                                 idoneita = False 
                             )
                         session.execute(query)
-                        session.commit()"""
+                        session.commit()
 
                     query = session.query(Iscrizione.voto, Iscrizione.bonus) \
                         .join(Appello) \

@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
             secondaryHeaderColor: secondaryColor,
             brightness: Brightness.light,
             primarySwatch:
-                createMaterialColor(Color.fromARGB(255, 157, 98, 31)),
+                createMaterialColor(Color.fromARGB(255, 209, 67, 67)),
             inputDecorationTheme: InputDecorationTheme(
               filled: false,
               border: OutlineInputBorder(
