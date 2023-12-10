@@ -24,6 +24,7 @@ class EsameTile extends StatelessWidget {
   final String nome, idesame;
   final int crediti, anno;
   final List<Prova> prove;
+  void Function()? onTap;
 
   EsameTile({
     required this.idesame,
@@ -31,6 +32,7 @@ class EsameTile extends StatelessWidget {
     required this.crediti,
     required this.anno,
     required this.prove,
+    this.onTap,
   });
 
   factory EsameTile.fromJson(Map<String, dynamic> json) {
@@ -72,7 +74,7 @@ class EsameTile extends StatelessWidget {
             _dialogVotiBuilder(context, idesame);
           },
         ),
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }
@@ -129,6 +131,7 @@ Future<void> _dialogVotiBuilder(BuildContext context, String idEsame) {
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
+                    print(snapshot.error);
                     return const Center(
                       child: Text('Errore durante il recupero dei dati'),
                     );
@@ -141,7 +144,6 @@ Future<void> _dialogVotiBuilder(BuildContext context, String idEsame) {
                     for (int i = 0; i < candidati.length; ++i) {
                       voti.add(TextEditingController());
                     }
-                    ;
                     return ListView.builder(
                       itemCount: candidati.length,
                       itemBuilder: (context, index) {
@@ -162,13 +164,11 @@ Future<void> _dialogVotiBuilder(BuildContext context, String idEsame) {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${data.cognome} ${data.nome}",
+                                        "${data.email}",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text('Email: ${data.email}'),
                                     ],
                                   ),
                                 ),
@@ -197,13 +197,21 @@ Future<void> _dialogVotiBuilder(BuildContext context, String idEsame) {
               ),
             ),
             Visibility(
-              visible: candidati.isNotEmpty,
+              visible: true,
               child: Positioned(
                 bottom: 8,
                 right: 8,
                 child: IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: () {},
+                  onPressed: () {
+                    for (int i = 0; i < voti.length; ++i) {
+                      _inserisciVoto(
+                        idEsame,
+                        candidati[i].email ?? '',
+                        voti[i].text,
+                      );
+                    }
+                  },
                 ),
               ),
             )
@@ -220,4 +228,52 @@ Future<void> _deleteEsame(String idEsame) async {
   };
 
   ApiManager.deleteData('esami/elimina', postData);
+}
+
+class ProvaTile extends StatelessWidget {
+  String idProva, tipologia, dataScadenza, opzionale, dipendenza;
+
+  ProvaTile({
+    required this.idProva,
+    required this.tipologia,
+    required this.opzionale,
+    required this.dataScadenza,
+    required this.dipendenza,
+  });
+
+  factory ProvaTile.fromJson(Map<String, dynamic> json) {
+    return ProvaTile(
+      idProva: json['idprova'],
+      tipologia: json['tipologia'],
+      opzionale: (json['opzionale'] == "true") ? "Si" : "No",
+      dataScadenza: json['datascadenza'],
+      dipendenza: json['dipendeda'] ?? "",
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String opzionale_text = (opzionale == "Si") ? "Opzionale" : "";
+    return Card(
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 25.0),
+        child: ListTile(
+          title: Text(idProva),
+          subtitle: Text(
+            'Tipologia: $tipologia - Scadenza: ${dataScadenza}',
+          ),
+          trailing: Text(opzionale_text),
+        ));
+  }
+}
+
+Future<void> _inserisciVoto(String idEsame, String email, String voto) async {
+  Map<String, dynamic> postData = {
+    'idesame': idEsame,
+    'stud_email': email,
+    'voto': voto,
+  };
+
+  // Assuming you have an ApiManager class with a postData method
+  await ApiManager.postData('libretto/inserisci',
+      postData); // Changed to postData method assuming it creates an exam
 }

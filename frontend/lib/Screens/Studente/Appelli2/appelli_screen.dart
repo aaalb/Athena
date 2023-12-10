@@ -37,8 +37,7 @@ class Appelli2ComponentState extends State<Appelli2Component> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-              child: Text('No data available')); // If no data is available
+          return _buildUI(); // If no data is available
         } else {
           if (allAppelli.isEmpty) {
             allAppelli = snapshot.data!;
@@ -64,10 +63,7 @@ class Appelli2ComponentState extends State<Appelli2Component> {
     return [];
   }
 
-  Widget _buildUI() 
-  {
-    debugPrint("DEBUG buildui: exams - ${appelli.length}");
-    debugPrint("DEBUG buildui: allexams - ${allAppelli.length}");
+  Widget _buildUI() {
     if (appelli.isEmpty) noDataVisible = true;
     return NotificationListener<SearchRequestedNotification>(
         onNotification: (notification) {
@@ -111,27 +107,23 @@ class Appelli2ComponentState extends State<Appelli2Component> {
                 TitleSearchBar(
                     key: WindowTitleState.searchBarKey, hint: "Cerca appello"),
                 Visibility(
-                  child: Text("No data"),
+                  child: Text("Nessun appello disponibile"),
                   visible: noDataVisible,
                 ),
                 Expanded(
                     child: (ListView.builder(
                         shrinkWrap: false,
                         itemCount: appelli.length,
-                        itemBuilder: (context, index) 
-                        {
+                        itemBuilder: (context, index) {
                           visibleAppelli.add(1);
                           visibleConferme.add(0);
                           return Column(
-                            children: 
-                            [
-                              Visibility
-                              (
+                            children: [
+                              Visibility(
                                 visible: visibleAppelli[index] == 1,
                                 maintainAnimation: true,
                                 maintainState: true,
-                                child: AnimatedOpacity
-                                (
+                                child: AnimatedOpacity(
                                   opacity: visibleAppelli[index],
                                   duration: Duration(milliseconds: 500),
                                   child: AppelloTile(
@@ -141,18 +133,17 @@ class Appelli2ComponentState extends State<Appelli2Component> {
                                     dipendenza: appelli[index].dipendenza,
                                     opzionale: appelli[index].opzionale,
                                     data: appelli[index].data,
-                                    onTap: () 
-                                    {
+                                    onTap: () {
                                       setState(() {
-                                        for (int i = 0; i < visibleAppelli.length; i++) 
-                                        {
-                                          if (i != index) 
-                                          {
-                                            visibleAppelli[i] = visibleAppelli[i] == 1 ? 0 : 1;
-                                          }
-                                          else
-                                          {
-                                            visibleConferme[i] = visibleConferme[i] == 1 ? 0 : 1;
+                                        for (int i = 0;
+                                            i < visibleAppelli.length;
+                                            i++) {
+                                          if (i != index) {
+                                            visibleAppelli[i] =
+                                                visibleAppelli[i] == 1 ? 0 : 1;
+                                          } else {
+                                            visibleConferme[i] =
+                                                visibleConferme[i] == 1 ? 0 : 1;
                                           }
                                         }
                                       });
@@ -160,23 +151,17 @@ class Appelli2ComponentState extends State<Appelli2Component> {
                                   ),
                                 ),
                               ),
-
-                              Visibility
-                              (
-                                visible: visibleConferme[index] == 1,
-                                maintainAnimation: true,
-                                maintainState: true,
-                                child: AnimatedOpacity
-                                (
-                                  opacity: visibleConferme[index],
-                                  duration: Duration(milliseconds: 500),
-                                  child: ConfermaAppelloTile
-                                  (
-                                    idprova: appelli[index].idprova,
-                                    data: appelli[index].data,
-                                  )
-                                )
-                              )
+                              Visibility(
+                                  visible: visibleConferme[index] == 1,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  child: AnimatedOpacity(
+                                      opacity: visibleConferme[index],
+                                      duration: Duration(milliseconds: 500),
+                                      child: ConfermaAppelloTile(
+                                        idprova: appelli[index].idprova,
+                                        data: appelli[index].data,
+                                      )))
                             ],
                           );
                         }))),

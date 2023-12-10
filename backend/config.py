@@ -1,7 +1,6 @@
 import os 
 import datetime
 from dotenv import load_dotenv
-import ssl
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

@@ -132,7 +132,6 @@ class LibrettoComponentState extends State<LibrettoComponent> {
                                     crediti: exams[index].crediti,
                                     anno: exams[index].anno,
                                     storico: exams[index].storico,
-                                    data: exams[index].data,
                                     onTap: () {
                                       setState(() {
                                         for (int i = 0;

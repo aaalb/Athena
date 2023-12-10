@@ -239,7 +239,6 @@ Future<void> _creaEsame(String idEsame, String nome, String crediti,
   List<Map<String, dynamic>> prove = [];
 
   for (int i = 0; i < controllers.length; i += 5) {
-    // Adding each controller's text to the list as a Map
     prove.add({
       'tipologia': controllers[i].text,
       'datascadenza': controllers[i + 1].text,

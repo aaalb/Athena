@@ -18,6 +18,8 @@ def login():
         if not email or not password:
             return jsonify({"Error":"Missing Parameters"}), 400
 
+        # viene controllato il tipo di utente, se studente o docente e l'access token viene creato
+        # utilizzando l'email e il ruolo dell'utente
         studente = session.query(Studente).filter_by(email=email).first()
         if studente:
             if check_password_hash(studente.password, password):
@@ -54,8 +56,12 @@ def login():
 @jwt_required()
 def logout():
     try:
+        # Estrae l'identificatore univoco del token JWT corrente (JWT ID - jti) dall'oggetto JWT.
         jti = get_jwt()['jti']
+
+        # Aggiungi l'identificatore univoco del token JWT (jti) alla lista delle token blacklist.
         token_blacklist.append(jti)
+
         return jsonify({"Status":"Done"}), 200
     
     except SQLAlchemyError as e:

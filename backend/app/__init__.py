@@ -1,3 +1,5 @@
+import logging 
+
 from flask import Flask
 from config import Config
 from flask_jwt_extended import JWTManager
@@ -16,8 +18,10 @@ def create_app(config_class=Config):
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
+    # inizializzo jwt
     jwt = JWTManager(app)
 
+    # decoratore usato per controllare se il jwt è nella blacklist
     @jwt.token_in_blocklist_loader
     def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
         jti = jwt_payload["jti"]
@@ -25,4 +29,8 @@ def create_app(config_class=Config):
     
     #csrf = CSRFProtect(app) 
     CORS(app)
+
+    handler = logging.FileHandler(filename='log.log')
+    app.logger.addHandler(handler)
+    
     return app

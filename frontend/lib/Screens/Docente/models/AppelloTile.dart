@@ -101,6 +101,7 @@ Future<void> _dialogVotiBuilder(
                   child: CircularProgressIndicator(),
                 );
               } else if (snapshot.hasError) {
+                print(snapshot.error);
                 return const Center(
                   child: Text('Errore durante il recupero dei dati'),
                 );
@@ -137,13 +138,11 @@ Future<void> _dialogVotiBuilder(
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${data.cognome} ${data.nome}",
+                                          "${data.email}",
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text('Email: ${data.email}'),
                                       ],
                                     ),
                                   ),
@@ -183,7 +182,7 @@ Future<void> _dialogVotiBuilder(
                               _inserisciVoto(
                                 idProva,
                                 data,
-                                candidati[i].email,
+                                candidati[i].email ?? "",
                                 voti[i].text,
                               );
                             }

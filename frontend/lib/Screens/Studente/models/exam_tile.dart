@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class ExamTile extends StatelessWidget {
   String nome;
   String idesame;
-  String data;
   int voto;
   int crediti;
   int anno;
@@ -13,7 +12,6 @@ class ExamTile extends StatelessWidget {
 
   ExamTile({
     required this.nome,
-    required this.data,
     required this.idesame,
     required this.voto,
     required this.crediti,
@@ -35,7 +33,6 @@ class ExamTile extends StatelessWidget {
       voto: json['voto_complessivo'] ?? '',
       crediti: json['crediti'] ?? 0,
       anno: json['anno'] ?? 0,
-      data: json['data'] ?? '',
       storico: proveList,
     );
   }

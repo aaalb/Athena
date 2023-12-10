@@ -10,18 +10,40 @@ class MenuComponent extends StatefulWidget {
 
 class MenuComponentState extends State<MenuComponent> {
   String nome = AppService.instance.currentUser?.nome ?? "Error 404";
+
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          "Ciao, $nome",
-          style: const TextStyle(
-            color: Color.fromARGB(255, 209, 67, 67),
-            fontFamily: 'SourceSansPro',
-            fontWeight: FontWeight.w600,
-            fontSize: 44,
-          ),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              "Ciao, $nome",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Color.fromARGB(255, 209, 67, 67),
+                fontFamily: 'SourceSansPro',
+                fontWeight: FontWeight.w600,
+                fontSize: 44,
+              ),
+            ),
+            Positioned(
+              right: 8,
+              child: IconButton(
+                icon: Icon(Icons.logout),
+                iconSize: 35,
+                color: Color.fromARGB(255, 209, 67, 67),
+                onPressed: () {
+                  // Aggiungi qui la logica per eseguire il logout
+                  AppService.instance
+                      .manageAutoLogout(); // Esempio di chiamata per il logout
+                  // Puoi navigare alla pagina di login o fare altre operazioni necessarie dopo il logout
+                },
+              ),
+            ),
+          ],
         ),
         const Divider(
           height: 20,
@@ -49,6 +71,9 @@ class MenuComponentState extends State<MenuComponent> {
               ),
             ),
           ],
+        ),
+        const Divider(
+          height: 30,
         ),
       ],
     );

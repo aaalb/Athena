@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/ApiManager.dart';
+import 'package:frontend/utils/AuthService.dart';
 import '../user-data.dart';
 import 'package:frontend/Screens/Login/login_main.dart';
 import 'package:go_router/go_router.dart';
@@ -40,6 +42,7 @@ class AppService extends ChangeNotifier {
   }
 
   Future<void> terminate() async {
+    AuthService.logout();
     currentUser = null;
     storageBox.clear();
   }

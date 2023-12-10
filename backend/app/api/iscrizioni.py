@@ -1,9 +1,10 @@
 from app.api import bp 
 from app.extensions import session
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from flask_jwt_extended import *
 from sqlalchemy import update
 from sqlalchemy.exc import SQLAlchemyError, DataError
+from datetime import datetime
 
 from app.models.Iscrizione import Iscrizione
 from app.models.Studente import Studente
@@ -13,19 +14,26 @@ from app.models.Prova import Prova
 @bp.route('/iscrizioni/<idprova>/<data>')
 @jwt_required()
 def get_iscritti(idprova=None, data=None):
+    """
+        Ritorna le informazioni per ciascun utente iscritto ad un appello
+
+        :param idprova
+        :param data: data dell'appello
+    """
     try:
         current_user = get_jwt_identity()
+
+        # se l'utente ha il ruolo di studente, gli viene negato l'accesso
         if current_user['role'] == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
+        # seleziono le informazioni dell'appello ricercato
         appello = session.query(Appello) \
             .filter(Appello.idprova == idprova) \
             .filter(Appello.data == data) \
             .first() 
 
-        if not appello:
-            return jsonify({"Error": "Nessun Appello Trovato"}), 404
-
+        # selezioni le informazioni riguardante l'utente dove il voto risulta essere NULL
         subquery = session.query(Iscrizione.email) \
             .filter(Iscrizione.idappello == appello.idappello) \
             .filter(Iscrizione.voto == None)
@@ -41,29 +49,44 @@ def get_iscritti(idprova=None, data=None):
                 'cognome' : record.cognome,
                 'email' : record.email,
             })
-        if not result:
-            return jsonify({"Error": "No Data Found"}), 404
 
         return jsonify(result), 200
     
     except DataError:
         session.rollback()
+        current_app.logger.error("DataError: %s", e)
+
         return jsonify({"Error": "Invalid data format or type"}), 400  # 400 - Bad Request
     except SQLAlchemyError as e:
         session.rollback()
+        current_app.logger.error("Database Error: %s", e)
+
         return jsonify({"Error": "Database error"}), 500
     except Exception as e:
-        return jsonify({"error": "Something went wrong"}), 500
+        current_app.logger.error("Internal Server Error: %s", e)
+        
+        return jsonify({"error": "Internal Server Error"}), 500
     
 
 @bp.route('/iscrizioni/<idprova>/<data>/voto', methods=['POST'])
 @jwt_required()
 def inserisci_voto(idprova, data):
+    """
+        Permette di registrare un voto per uno studente ad un determinato appello
+
+        :param stud_email: email dello studente
+        :param idprova
+        :param data: data dell'appello
+        :param voto | bonus | idoneita
+    """
     try:
         current_user = get_jwt_identity()
+
+        # se l'utente ha il ruolo di studente, gli viene negato l'accesso
         if current_user['role'] == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
+        # se il docente non è colui che ha crato l'esame, gli viene negato l'accesso
         responsabile = session.query(Prova).filter(Prova.idprova == idprova).first()
 
         if responsabile.responsabile != current_user['email']:
@@ -74,6 +97,7 @@ def inserisci_voto(idprova, data):
         bonus = None
         idoneita = True
 
+        # controllo per capire se viene inserito un voto, punti bonus oppure solo l'idoneità
         if "voto" in request.json:
             voto = request.json['voto']
             if int(voto) >= 18:
@@ -90,6 +114,7 @@ def inserisci_voto(idprova, data):
                 .filter(Appello.data == data) \
                 .first() 
 
+        #viene effettuato l'aggiornamento della tabella iscrizione con le informazioni inserite dall'utente
         query = update(Iscrizione) \
             .filter(Iscrizione.idappello == appello.idappello) \
             .filter(Iscrizione.email == stud_email) \
@@ -106,10 +131,16 @@ def inserisci_voto(idprova, data):
     
     except DataError:
         session.rollback()
+        current_app.logger.error("DataError: %s", e)
+
         return jsonify({"Error": "Invalid data format or type"}), 400  # 400 - Bad Request
     except SQLAlchemyError as e:
         session.rollback()
+        current_app.logger.error("Database Error: %s", e)
+
         return jsonify({"Error": "Database error"}), 500
     except Exception as e:
         session.rollback()
+
+        current_app.logger.error("Internal Server Error: %s", e)
         return jsonify({"Error":"Internal Server Error"}), 500
