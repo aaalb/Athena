@@ -20,33 +20,42 @@ class LibrettoComponentState extends State<LibrettoComponent> {
   List<double> visibleExams = [];
   List<double> visibleProve = [];
 
+  late bool needsRefresh;
+
   Future? _future;
   @override
   void initState()
   {
     super.initState();
-    _future = _fetchLibretto();
+
+    needsRefresh = true;
+    //_future = _fetchLibretto();
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("refresh: $needsRefresh");
    return FutureBuilder(
-      future: _future,
+      future: needsRefresh ? _fetchLibretto() : null,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // Placeholder while loading
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-              child: Text('No data available')); // If no data is available
-        } else {
-          if(allExams.isEmpty)
+        } else 
+        {
+          if (snapshot.hasError)
           {
-            allExams = snapshot.data!;
-            exams = allExams;
-            debugPrint("DEBUG fetch: exams - ${exams.length}");
-            debugPrint("DEBUG fetch: allexams - ${exams.length}");
+            return Text('Error: ${snapshot.error}');
+          } 
+          else
+          {
+            if(needsRefresh)
+            {
+              needsRefresh = false;
+              allExams = snapshot.data!;
+              exams = allExams;
+              visibleExams.clear();
+              visibleProve.clear();
+            }
           }
           return _buildUI(); // Build the UI using fetched data
         }
@@ -67,16 +76,17 @@ class LibrettoComponentState extends State<LibrettoComponent> {
   }
 
   Widget _buildUI() {
-    debugPrint("DEBUG buildui: exams - ${exams.length}");
-    debugPrint("DEBUG buildui: allexams - ${allExams.length}");
-    if (exams.isEmpty) noDataVisible = true;
+    debugPrint("exams empty: ${exams.isEmpty}");
+    noDataVisible = exams.isEmpty;
     return NotificationListener<SearchRequestedNotification>(
         onNotification: (notification) {
           setState(() {
             if (notification.open == false) {
+              debugPrint("allExams: ${allExams.length}");
               exams = allExams;
               visibleExams.clear();
               visibleProve.clear();
+              needsRefresh = true;
             }
           });
           return false;
@@ -104,90 +114,102 @@ class LibrettoComponentState extends State<LibrettoComponent> {
             },
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: 
+              [
                 WindowTitle(title: "Libretto"),
+                
                 const Divider(
                   height: 20,
                 ),
+                
                 TitleSearchBar(
                     key: WindowTitleState.searchBarKey, hint: "Cerca esame"),
-                Visibility(
-                  child: Text("No data"),
+                
+                Visibility
+                (
                   visible: noDataVisible,
+                  child: Expanded
+                  (
+                    child: Image.asset("images/nodatatext.png", fit: BoxFit.cover, color: Color.fromARGB(115, 1, 1, 1),),
+                  )                  
                 ),
-                Expanded(
-                    child: (ListView.builder(
-                        shrinkWrap: false,
-                        itemCount: exams.length,
-                        itemBuilder: (context, index) {
-                          visibleExams.add(1);
-                          visibleProve.add(0);
-                          return Column(
-                            children: [
-                              Visibility(
-                                visible: visibleExams[index] == 1,
-                                maintainAnimation: true,
-                                maintainState: true,
-                                child: AnimatedOpacity(
-                                  opacity: visibleExams[index],
-                                  duration: Duration(milliseconds: 500),
-                                  child: ExamTile(
-                                    nome: exams[index].nome,
-                                    idesame: exams[index].idesame,
-                                    voto: exams[index].voto,
-                                    crediti: exams[index].crediti,
-                                    anno: exams[index].anno,
-                                    storico: exams[index].storico,
-                                    data: exams[index].data,
-                                    onTap: () {
-                                      setState(() {
-                                        for (int i = 0;
-                                            i < visibleExams.length;
-                                            i++) {
-                                          if (i != index) {
-                                            visibleExams[i] =
-                                                visibleExams[i] == 1 ? 0 : 1;
-                                          } else {
-                                            visibleProve[i] =
-                                                visibleProve[i] == 1 ? 0 : 1;
+
+                Visibility(
+                  visible: !noDataVisible,
+                  child: Expanded(
+                      child: (ListView.builder(
+                          shrinkWrap: false,
+                          itemCount: exams.length,
+                          itemBuilder: (context, index) {
+                            visibleExams.add(1);
+                            visibleProve.add(0);
+                            return Column(
+                              children: [
+                                Visibility(
+                                  visible: visibleExams[index] == 1,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  child: AnimatedOpacity(
+                                    opacity: visibleExams[index],
+                                    duration: Duration(milliseconds: 500),
+                                    child: ExamTile(
+                                      nome: exams[index].nome,
+                                      idesame: exams[index].idesame,
+                                      voto: exams[index].voto,
+                                      crediti: exams[index].crediti,
+                                      anno: exams[index].anno,
+                                      storico: exams[index].storico,
+                                      data: exams[index].data,
+                                      onTap: () {
+                                        setState(() {
+                                          for (int i = 0;
+                                              i < visibleExams.length;
+                                              i++) {
+                                            if (i != index) {
+                                              visibleExams[i] =
+                                                  visibleExams[i] == 1 ? 0 : 1;
+                                            } else {
+                                              visibleProve[i] =
+                                                  visibleProve[i] == 1 ? 0 : 1;
+                                            }
                                           }
-                                        }
-                                      });
-                                    },
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Visibility(
-                                visible: visibleProve[index] == 1,
-                                maintainAnimation: true,
-                                maintainState: true,
-                                child: AnimatedOpacity(
-                                    opacity: visibleProve[index],
-                                    duration: Duration(milliseconds: 500),
-                                    child: ColumnBuilder(
-                                        itemCount: exams[index].storico.length,
-                                        itemBuilder: (context, nestedIndex) {
-                                          return ProvaTile(
-                                            idprova: exams[index]
-                                                .storico[nestedIndex]
-                                                .idprova,
-                                            tipologia: exams[index]
-                                                .storico[nestedIndex]
-                                                .tipologia,
-                                            voto: exams[index]
-                                                .storico[nestedIndex]
-                                                .voto,
-                                            data: exams[index]
-                                                .storico[nestedIndex]
-                                                .data,
-                                            idoneita: exams[index]
-                                                .storico[nestedIndex].idoneita,
-                                          );
-                                        })),
-                              )
-                            ],
-                          );
-                        }))),
+                                Visibility(
+                                  visible: visibleProve[index] == 1,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  child: AnimatedOpacity(
+                                      opacity: visibleProve[index],
+                                      duration: Duration(milliseconds: 500),
+                                      child: ColumnBuilder(
+                                          itemCount: exams[index].storico.length,
+                                          itemBuilder: (context, nestedIndex) {
+                                            return ProvaTile(
+                                              idprova: exams[index]
+                                                  .storico[nestedIndex]
+                                                  .idprova,
+                                              tipologia: exams[index]
+                                                  .storico[nestedIndex]
+                                                  .tipologia,
+                                              voto: exams[index]
+                                                  .storico[nestedIndex]
+                                                  .voto,
+                                              data: exams[index]
+                                                  .storico[nestedIndex]
+                                                  .data,
+                                              idoneita: exams[index]
+                                                  .storico[nestedIndex].idoneita,
+                                            );
+                                          })),
+                                )
+                              ],
+                            );
+                          }))),
+                ),
               ],
             )));
   }

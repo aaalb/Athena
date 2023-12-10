@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Screens/Studente/Appelli2/appelli_screen.dart';
 import 'package:frontend/utils/ApiManager.dart';
-import 'package:lottie/lottie.dart';
 
-class AppelloTile extends StatelessWidget {
+class AppelloTile extends StatelessWidget
+{
   String idprova;
   String nome;
   String tipologia;
@@ -32,17 +33,17 @@ class AppelloTile extends StatelessWidget {
       dipendenza: json['dipendeda'] ?? 'Nessuna',
     );
   }
-
   @override
   Widget build(BuildContext context) {
     String opzionale_str = (opzionale) ? "Si" : "No";
     return Card(
+        color: Color.fromARGB(255, 242, 239, 239),
       margin: EdgeInsets.all(8.0),
-      color: Color.fromARGB(255, 222, 180, 180),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: ListTile(
+        //leading: showBack ? Icon(Icons.arrow_back_ios_new_sharp) : null,
         title: Text(nome),
         subtitle: Text(
           'ID Prova: $idprova - Tipologia: $tipologia - Opzionale: ${opzionale_str} - Dipendenza: $dipendenza',
@@ -53,7 +54,6 @@ class AppelloTile extends StatelessWidget {
     );
   }
 }
-
 
 class ConfermaAppelloTile extends StatefulWidget
 {
@@ -78,10 +78,10 @@ class ConfermaAppelloTileState extends State<ConfermaAppelloTile>
   String data;
   String idprova;
 
-  Widget tileText = Text('Prenotati');
-
+  Widget tileText = Text('Prenotati', textAlign: TextAlign.center,);
 
   AssetImage? okImage;
+
   @override
   void initState()
   {
@@ -96,6 +96,11 @@ class ConfermaAppelloTileState extends State<ConfermaAppelloTile>
   }
 
   ConfermaAppelloTileState({required this.data, required this.idprova});
+
+
+  static GlobalKey<Appelli2ComponentState> appelliKey = GlobalKey<Appelli2ComponentState>();
+
+
   @override
   Widget build(BuildContext context) {
     return Card
@@ -110,7 +115,6 @@ class ConfermaAppelloTileState extends State<ConfermaAppelloTile>
         splashColor: Color.fromARGB(197, 229, 79, 79),
         onTap: ()
         {
-          
           _prenotaAppello(this.idprova, this.data).then((value)
           {
             setState(() {
@@ -118,6 +122,10 @@ class ConfermaAppelloTileState extends State<ConfermaAppelloTile>
               {
                 tileText = Image(image: okImage!, fit: BoxFit.cover,);
                 okImage!.evict();
+                Future.delayed(Duration(milliseconds: 1000)).then((value)
+                {
+                  appelliKey.currentState?.refresh();
+                });
               }
               else
               {

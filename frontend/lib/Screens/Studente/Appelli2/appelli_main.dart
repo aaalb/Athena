@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
 import 'package:frontend/Common/page_dimensions.dart';
+import 'package:frontend/Screens/Studente/models/appello_tile.dart';
 
 import './appelli_screen.dart';
 
@@ -43,10 +44,10 @@ class Appelli2State extends State<Appelli2> {
   
   @override
   Widget build(BuildContext context) {
-    return const Padding
+    return Padding
     (
       padding: EdgeInsets.all(20),
-      child: Center(child: Appelli2Component()),
+      child: Center(child: Appelli2Component(key: ConfermaAppelloTileState.appelliKey,)),
     );
 
 

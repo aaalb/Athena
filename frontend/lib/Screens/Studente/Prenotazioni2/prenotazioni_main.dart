@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
+import 'package:frontend/Screens/Studente/models/PrenotazioneTile.dart';
+import 'prenotazioni_screen.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
-import './appelli_screen.dart';
+class Prenotazioni extends StatefulWidget {
+  static const route = '/studente/prenotazioni';
 
-class Appelli extends StatefulWidget {
-  const Appelli({super.key});
+  const Prenotazioni({super.key});
 
   static PageDimensions dimensions = const PageDimensions(
       //width: 800,
@@ -18,27 +20,28 @@ class Appelli extends StatefulWidget {
   ));
 
   @override
-  State<Appelli> createState() => Appelli2State();
+  State<Prenotazioni> createState() => _Libretto2State();
 }
 
-class Appelli2State extends State<Appelli> {
+class _Libretto2State extends State<Prenotazioni> {
+  @override
   void initState() {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       LoadNewPageNotification(
-        width: Appelli.dimensions.width,
-        height: Appelli.dimensions.height,
-        constraints: Appelli.dimensions.constraints,
+        width: Prenotazioni.dimensions.width,
+        height: Prenotazioni.dimensions.height,
+        constraints: Prenotazioni.dimensions.constraints,
       ).dispatch(context);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.all(20),
-      child: Center(child: Appelli2Component()),
+      child: Center(child: PrenotazioniComponent(key: CancellaPrenotazioneTileState.prenotazioniKey)),
     );
   }
 }
