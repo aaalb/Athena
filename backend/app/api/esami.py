@@ -5,7 +5,7 @@ from flask_jwt_extended import *
 from sqlalchemy import insert, update
 from sqlalchemy.exc import IntegrityError, DataError, SQLAlchemyError
 from datetime import datetime
-
+import sys
 from app.utils import genera_date_appello
 from app.models.Esame import Esame
 from app.models.Prova import Prova
@@ -222,7 +222,7 @@ def get_candidati(idesame):
         if not studenti:
             return jsonify({"Error": "Nessuno Studente Trovato"}), 404
         
-        prove = session.query(Prova.idprova).filter(Prova.idesame == idesame).all()
+        prove = session.query(Prova.idprova, Prova.datascadenza).filter(Prova.idesame == idesame).all()
         if not prove:
             return jsonify({"Error": "Nessuna Prova Trovata"}), 404
         
@@ -240,10 +240,10 @@ def get_candidati(idesame):
                     flag = False
                     exit
                 else:
-                    data_attuale = datetime.now()
+                    data_attuale = '2023-12-10'
 
                     # se la data attuale è superiore a quella di scadenza, invalida la prova
-                    if(data_attuale > prova.datascadenza):
+                    """if(data_attuale > prova.datascadenza):
                         query = update(Iscrizione) \
                             .join(Appello) \
                             .filter(Iscrizione.email == studente.email) \
@@ -252,7 +252,7 @@ def get_candidati(idesame):
                                 idoneita = False 
                             )
                         session.execute(query)
-                        session.commit()
+                        session.commit()"""
 
                     query = session.query(Iscrizione.voto, Iscrizione.bonus) \
                         .join(Appello) \
@@ -281,6 +281,7 @@ def get_candidati(idesame):
 
         return jsonify({"Error": "Database error"}), 500
     except Exception as e:
+        print(e, file=sys.stderr)
         current_app.logger.error("Internal Server Error: %s", e)
 
         return jsonify({"Status": "Internal Server Error"}), 500

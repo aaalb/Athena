@@ -25,14 +25,15 @@ def get_appelli():
         if current_user['role'] == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
-        # seleziono tutti gli appelli disponibili a cui l'utente non si è prenotato
-        prenotazioni = session.query(Iscrizione.idappello) \
-            .filter(Iscrizione.voto == None) \
-            .filter(Iscrizione.email == current_user['email'])
 
         data_attuale = datetime.now()
         # Calcolo la data attuale a cui vengono sommati 2 mesi
         data_due_mesi_dopo = data_attuale + timedelta(days=2*30)
+
+        # seleziono tutti gli appelli disponibili a cui l'utente non si è prenotato
+        prenotazioni = session.query(Iscrizione.idappello) \
+            .filter(Iscrizione.voto == None) \
+            .filter(Iscrizione.email == current_user['email'])
 
         #seleziono tutti gli appelli entro la data calcolata
         query = session.query(Appello.data, Prova.idprova, Prova.tipologia, Prova.opzionale, Prova.dipendeda, Esame.nome, Esame.idesame) \

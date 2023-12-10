@@ -41,7 +41,7 @@ class ExamTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(8.0),
-      color: Color.fromARGB(255, 222, 180, 180),
+      color: Color.fromARGB(255, 242, 239, 239),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),

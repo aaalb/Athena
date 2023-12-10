@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/Common/notifications.dart';
+import 'package:frontend/Screens/Studente/models/prenotazione_tile.dart';
 import 'prenotazioni_screen.dart';
 import 'package:frontend/Common/page_dimensions.dart';
 
@@ -38,9 +39,11 @@ class _Libretto2State extends State<Prenotazioni> {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.all(20),
-      child: Center(child: PrenotazioniComponent()),
+      child: Center(
+          child: PrenotazioniComponent(
+              key: CancellaPrenotazioneTileState.prenotazioniKey)),
     );
   }
 }

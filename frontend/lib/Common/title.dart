@@ -18,7 +18,7 @@ class WindowTitleState extends State<WindowTitle>
   static GlobalKey<TitleSearchBarState> searchBarKey = GlobalKey<TitleSearchBarState>();
 
   String title;
-  IconData backIcon = Icons.arrow_circle_left_outlined;
+  IconData backIcon = Icons.home_outlined;//Icons.arrow_circle_left_outlined;
   IconData searchIcon = Icons.search;
   
   WindowTitleState({required this.title});
@@ -48,7 +48,7 @@ class WindowTitleState extends State<WindowTitle>
             onHover: (hovered)
             {
               setState(() {
-                backIcon = hovered ? Icons.arrow_circle_left_rounded : Icons.arrow_circle_left_outlined;
+                backIcon = hovered ? Icons.home_rounded : Icons.home_outlined;//Icons.arrow_circle_left_rounded : Icons.arrow_circle_left_outlined;
               });
             },
           )

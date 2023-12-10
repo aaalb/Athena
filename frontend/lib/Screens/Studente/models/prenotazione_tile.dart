@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Common/notifications.dart';
 import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_main.dart';
+import 'package:frontend/Screens/Studente/Prenotazioni/prenotazioni_screen.dart';
 import 'package:frontend/utils/ApiManager.dart';
 
 class PrenotazioneTile extends StatelessWidget {
   final String nome, idprova, tipologia, data, dipendenza, responsabile;
+
+  void Function()? onTap;
 
   PrenotazioneTile(
       {required this.nome,
@@ -11,7 +15,8 @@ class PrenotazioneTile extends StatelessWidget {
       required this.tipologia,
       required this.data,
       required this.dipendenza,
-      required this.responsabile});
+      required this.responsabile,
+      this.onTap});
 
   factory PrenotazioneTile.fromJson(Map<String, dynamic> json) {
     return PrenotazioneTile(
@@ -24,70 +29,155 @@ class PrenotazioneTile extends StatelessWidget {
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return Card(
+      color: Color.fromARGB(255, 242, 239, 239),
       margin: EdgeInsets.all(8.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: ListTile(
-        leading: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () {
-                _confirmDelete(context, idprova, data);
-              },
-              child: const Icon(
-                Icons.close,
-                color: Colors.redAccent,
-              ),
-            )),
         title: Text(nome),
         subtitle: Text(
-          'ID Prova: ${idprova} - Tipologia: ${tipologia}',
+          'ID Prova: $idprova - Tipologia: $tipologia',
         ),
-        trailing:
-            Text("$data", style: const TextStyle(fontWeight: FontWeight.bold)),
+        trailing: Text(data),
+        onTap: onTap,
       ),
     );
   }
 }
 
-void _confirmDelete(BuildContext context, String idprova, String data) {
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Conferma cancellazione prenotazione"),
-          content: const Text(
-              "Sei sicuro di confermare la cancellazione dell'appello?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("No"),
-            ),
-            TextButton(
-                onPressed: () async {
-                  _deleteAppello(idprova, data);
-                  //  Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => const Prenotazioni(),
-                  ));
-                },
-                child: const Text("Si")),
-          ],
-        );
-      });
+class CancellaPrenotazioneTile extends StatefulWidget {
+  String data;
+  String idprova;
+
+  CancellaPrenotazioneTile({required this.data, required this.idprova});
+
+  factory CancellaPrenotazioneTile.fromJson(Map<String, dynamic> json) {
+    return CancellaPrenotazioneTile(
+      idprova: json['idprova'] ?? '',
+      data: json['data'] ?? '',
+    );
+  }
+
+  @override
+  State<CancellaPrenotazioneTile> createState() =>
+      CancellaPrenotazioneTileState(data: data, idprova: idprova);
 }
 
-Future<void> _deleteAppello(String idProva, String data) async {
+class CancellaPrenotazioneTileState extends State<CancellaPrenotazioneTile> {
+  String data;
+  String idprova;
+
+  Widget tileText = Text(
+    'Annulla Prenotazione',
+    textAlign: TextAlign.center,
+  );
+  AssetImage? okImage;
+  AssetImage? warningImage;
+
+  int confirmState = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    confirmState = 0;
+    okImage = AssetImage('images/ok.gif');
+    warningImage = AssetImage('images/warning.gif');
+  }
+
+  @override
+  void dispose() {
+    okImage!.evict();
+    warningImage!.evict();
+    super.dispose();
+  }
+
+  CancellaPrenotazioneTileState({required this.data, required this.idprova});
+
+  static GlobalKey<PrenotazioniComponentState> prenotazioniKey =
+      GlobalKey<PrenotazioniComponentState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: Color.fromARGB(255, 209, 67, 67),
+          )),
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 25.0),
+      child: InkWell(
+        splashColor: Color.fromARGB(197, 229, 79, 79),
+        onTap: () {
+          if (confirmState == 0) {
+            setState(() {
+              confirmState = 1;
+              tileText = Image(
+                image: warningImage!,
+                fit: BoxFit.cover,
+                color: Color.fromARGB(255, 209, 67, 67),
+              );
+              warningImage!.evict();
+            });
+            Future.delayed(Duration(milliseconds: 1750)).then((value) {
+              setState(() {
+                tileText = Text(
+                  "Clicca per confermare",
+                  textAlign: TextAlign.center,
+                );
+                confirmState = 2;
+              });
+            });
+          } else if (confirmState == 2) {
+            confirmState = 1;
+            _deleteAppello(this.idprova, this.data).then((value) {
+              setState(() {
+                if (value) {
+                  tileText = Image(
+                    image: okImage!,
+                    fit: BoxFit.cover,
+                    color: Color.fromARGB(255, 209, 67, 67),
+                  );
+                  okImage!.evict();
+                  Future.delayed(Duration(milliseconds: 1000)).then((value) {
+                    prenotazioniKey.currentState?.refresh();
+                  });
+                } else {
+                  tileText = Text("Errore");
+                }
+              });
+            });
+          }
+        },
+        child: SizedBox(
+            width: 100,
+            height: 100,
+            child: Center(
+              child: tileText,
+            )),
+      ),
+    );
+  }
+}
+
+Future<bool> _deleteAppello(String idProva, String data) async {
   Map<String, dynamic> postData = {
     'idprova': idProva,
     'data': data,
   };
-
-  ApiManager.deleteData('appelli/sprenota', postData);
+  try {
+    var response = await ApiManager.deleteData('appelli/sprenota', postData);
+    return true;
+    /*if (response!.containsKey("Status") && response["Status"] == "Success") {
+      return true;
+    } else {
+      return false;
+    }*/
+  } catch (e) {
+    // Gestisci eventuali errori di chiamata API
+    print("Errore durante la chiamata API: $e");
+    return false;
+  }
 }

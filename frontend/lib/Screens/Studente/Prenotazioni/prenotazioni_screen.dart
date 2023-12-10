@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Common/notifications.dart';
+import 'package:frontend/Common/search.dart';
+import 'package:frontend/Common/title.dart';
 import 'package:frontend/utils/ApiManager.dart';
 import 'dart:convert';
 import 'package:frontend/Screens/Studente/models/prenotazione_tile.dart';
@@ -19,174 +22,181 @@ class PrenotazioniComponent extends StatefulWidget {
   const PrenotazioniComponent({Key? key}) : super(key: key);
 
   @override
-  State<PrenotazioniComponent> createState() => Libretto2ComponentState();
+  State<PrenotazioniComponent> createState() => PrenotazioniComponentState();
 }
 
-class Libretto2ComponentState extends State<PrenotazioniComponent> {
-  IconData backIcon = Icons.arrow_circle_left_outlined;
-  IconData searchIcon = Icons.search;
+class PrenotazioniComponentState extends State<PrenotazioniComponent> {
   bool noDataVisible = false;
-  double? searchHeight = 0;
-  late List<PrenotazioneTile> exams;
-  late List<PrenotazioneTile> allExams;
+  List<PrenotazioneTile> prenotazioni = []; // Using a single list for all exams
+  List<PrenotazioneTile> allPrenotazioni = [];
+  List<double> visiblePrenotazioni = [];
+  List<double> visibleConferme = [];
 
-  late Future<List<PrenotazioneTile>> _futureExams;
+  late bool needsRefresh;
 
+  Future? _future;
   @override
   void initState() {
     super.initState();
-    _futureExams = _fetchPrenotazioni();
+
+    needsRefresh = true;
+    //_future = _fetchPrenotazioni();
   }
 
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                child: Icon(
-                  backIcon,
-                  color: Color.fromARGB(255, 209, 67, 67),
-                  size: 40,
-                ),
-                onTap: () {
-                  context.go("/studente");
-                },
-                onHover: (hovered) {
-                  setState(() {
-                    backIcon = hovered
-                        ? Icons.arrow_circle_left_rounded
-                        : Icons.arrow_circle_left_outlined;
-                  });
-                },
-              ),
-            ),
-            const Expanded(
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Prenotazioni",
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 209, 67, 67),
-                    fontFamily: 'SourceSansPro',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 44,
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                child: Icon(
-                  searchIcon,
-                  color: Color.fromARGB(255, 209, 67, 67),
-                  size: 40,
-                ),
-                onTap: () {
-                  setState(() {
-                    if (searchIcon == Icons.search) {
-                      searchIcon = Icons.search_off;
-                      searchHeight = null;
-                      exams = List.from(allExams); // Ripristina tutti gli esami
-                    } else {
-                      searchIcon = Icons.search;
-                      searchHeight = 0;
-                    }
-                    noDataVisible = false; // Resetta il flag "No data"
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-        const Divider(
-          height: 20,
-        ),
-        AnimatedSize(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.easeIn,
-          child: Container(
-            height: searchHeight,
+    return FutureBuilder(
+      future: needsRefresh ? _fetchPrenotazioni() : null, //_future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // Placeholder while loading
+        } else {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            if (needsRefresh) {
+              needsRefresh = false;
+              allPrenotazioni = snapshot.data!;
+              prenotazioni = allPrenotazioni;
+              visiblePrenotazioni.clear();
+              visibleConferme.clear();
+            }
+            return _buildUI(); // Build the UI using fetched data
+          }
+        }
+      },
+    );
+  }
+
+  Widget _buildUI() {
+    noDataVisible = prenotazioni.isEmpty;
+    return NotificationListener<SearchRequestedNotification>(
+        onNotification: (notification) {
+          debugPrint("DEBUG got notification");
+          setState(() {
+            if (notification.open == false) {
+              prenotazioni = allPrenotazioni;
+              visiblePrenotazioni.clear();
+              visibleConferme.clear();
+              needsRefresh = true;
+            }
+          });
+          return false;
+        },
+        child: NotificationListener<SearchQueryNotification>(
+            onNotification: (notification) {
+              setState(() {
+                if (notification.text != null) {
+                  visiblePrenotazioni.clear();
+                  visibleConferme.clear();
+
+                  String query = notification.text!;
+                  debugPrint("\n\nQuery: $query");
+                  prenotazioni = allPrenotazioni.where((appello) {
+                    return (appello.nome
+                        .toLowerCase()
+                        .contains(query.toLowerCase()));
+                  }).toList();
+                  //debugPrint("AllExams: ${allExams.length}\n");
+                  debugPrint(
+                      "DEBUG: prenotazioni lenght ${prenotazioni.length}");
+                  noDataVisible = prenotazioni.isEmpty;
+                }
+              });
+              return false;
+            },
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Nome della prova",
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 209, 67, 67),
-                        width: 3,
-                      ),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      if (value.isEmpty) {
-                        exams = List.from(
-                            allExams); // Ripristina tutti gli esami se il campo di ricerca è vuoto
-                      } else {
-                        exams = allExams.where((exam) {
-                          return exam.nome
-                              .toLowerCase()
-                              .contains(value.toLowerCase());
-                        }).toList();
-                      }
-                      noDataVisible = exams.isEmpty;
-                    });
-                  },
-                ),
+                WindowTitle(title: "Prenotazioni"),
                 const Divider(
                   height: 20,
                 ),
+                TitleSearchBar(
+                    key: WindowTitleState.searchBarKey, hint: "Cerca appello"),
+                Visibility(
+                    visible: noDataVisible,
+                    child: Expanded(
+                      child: Image.asset(
+                        "images/nodatatext.png",
+                        fit: BoxFit.cover,
+                        color: Color.fromARGB(115, 1, 1, 1),
+                      ),
+                    )),
+                Visibility(
+                    visible: !noDataVisible,
+                    child: Expanded(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: prenotazioni.length,
+                            itemBuilder: (context, index) {
+                              visiblePrenotazioni.add(1);
+                              visibleConferme.add(0);
+                              return Column(
+                                children: [
+                                  Visibility(
+                                    visible: visiblePrenotazioni[index] == 1,
+                                    maintainAnimation: true,
+                                    maintainState: true,
+                                    child: AnimatedOpacity(
+                                      opacity: visiblePrenotazioni[index],
+                                      duration: Duration(milliseconds: 500),
+                                      child: PrenotazioneTile(
+                                        nome: prenotazioni[index].nome,
+                                        idprova: prenotazioni[index].idprova,
+                                        tipologia:
+                                            prenotazioni[index].tipologia,
+                                        dipendenza:
+                                            prenotazioni[index].dipendenza,
+                                        data: prenotazioni[index].data,
+                                        responsabile:
+                                            prenotazioni[index].responsabile,
+                                        onTap: () {
+                                          setState(() {
+                                            for (int i = 0;
+                                                i < visiblePrenotazioni.length;
+                                                i++) {
+                                              if (i != index) {
+                                                visiblePrenotazioni[i] =
+                                                    visiblePrenotazioni[i] == 1
+                                                        ? 0
+                                                        : 1;
+                                              } else {
+                                                visibleConferme[i] =
+                                                    visibleConferme[i] == 1
+                                                        ? 0
+                                                        : 1;
+                                              }
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                      visible: visibleConferme[index] == 1,
+                                      //maintainAnimation: true,
+                                      //maintainState: true,
+                                      child: AnimatedOpacity(
+                                          opacity: visibleConferme[index],
+                                          duration: Duration(milliseconds: 500),
+                                          child: CancellaPrenotazioneTile(
+                                            idprova:
+                                                prenotazioni[index].idprova,
+                                            data: prenotazioni[index].data,
+                                          )))
+                                ],
+                              );
+                            })))
               ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: FutureBuilder<List<PrenotazioneTile>>(
-            future: _futureExams,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const Center(
-                    child: Text('Errore durante il caricamento dei dati'));
-              } else {
-                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  allExams = snapshot
-                      .data!; // Salva tutti gli esami ottenuti dalla chiamata API
-                  exams = List.from(
-                      allExams); // Inizializza la lista exams con tutti gli esami
-                  return exams.isEmpty
-                      ? const Center(child: Text('Nessun dato disponibile'))
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: exams.length,
-                          itemBuilder: (context, index) {
-                            return PrenotazioneTile(
-                              nome: exams[index].nome,
-                              idprova: exams[index].idprova,
-                              tipologia: exams[index].tipologia,
-                              data: exams[index].data,
-                              responsabile: exams[index].responsabile,
-                              dipendenza: exams[index].data,
-                            );
-                          },
-                        );
-                } else {
-                  return const Center(child: Text('Nessun dato disponibile'));
-                }
-              }
-            },
-          ),
-        ),
-      ],
-    );
+            )));
+  }
+
+  void refresh() {
+    setState(() {
+      prenotazioni = allPrenotazioni;
+      visiblePrenotazioni.clear();
+      visibleConferme.clear();
+      needsRefresh = true;
+    });
   }
 }
