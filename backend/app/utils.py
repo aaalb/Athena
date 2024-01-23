@@ -10,7 +10,7 @@ def genera_date_appello():
 
     for mese in mesi_validi:
         #calcolo il numero di giorni nel determinato mese
-        giorni_nel_mese = (datetime(2024, mese, 1) - timedelta(days=1)).day
+        giorni_nel_mese = 29
 
         #seleziono un giorno casuale del mese
         giorno_casuale = random.randint(1, giorni_nel_mese) 

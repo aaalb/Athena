@@ -107,6 +107,7 @@ def crea_esame():
         return jsonify({"Error": "Database error"}), 500
     except Exception as e:
         session.rollback()
+        current_app.logger.error("Database Error: %s", e)
         return jsonify({"Status": "Internal Server Error"}), 500
     
 

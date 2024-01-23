@@ -15,4 +15,4 @@ EXPOSE 5000
 
 COPY backend/ .
 
-CMD ["flask", "run", "--debug"]
+CMD ["flask", "run"]

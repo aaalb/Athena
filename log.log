@@ -9,3 +9,4 @@ Internal Server Error: '>' not supported between instances of 'str' and 'datetim
 Internal Server Error: can't compare datetime.datetime to datetime.date
 Internal Server Error: can't compare datetime.datetime to datetime.date
 Internal Server Error: strptime() argument 1 must be str, not datetime.date
+Database Error: day is out of range for month

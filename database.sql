@@ -22,14 +22,14 @@ CREATE TABLE UniExams.Esami (
     idEsame VARCHAR(8) PRIMARY KEY,
     nome VARCHAR(40),
     crediti INTEGER,
-    anno INTEGER CHECK (anno >= 0 AND anno <= 5),
+    anno INTEGER CHECK (anno >= 0 AND anno <= 5)
 );
 
 CREATE TABLE UniExams.Prove(
     idProva VARCHAR(10) PRIMARY KEY,
     tipologia VARCHAR(10),
     opzionale BOOLEAN,
-    dataScadenza DATE CHECK(data > CURRENT_DATE),
+    dataScadenza DATE CHECK(dataScadenza > CURRENT_DATE),
     dipendeDa VARCHAR(10),
     FOREIGN KEY (dipendeDa) REFERENCES UniExams.Prove (idProva) ON DELETE CASCADE,
     idEsame VARCHAR(8),
@@ -43,7 +43,7 @@ CREATE TABLE uniexams.Appelli(
     idProva VARCHAR(10),
     data DATE,
 
-    FOREIGN KEY(idProva) REFERENCES uniexams.Prove(idProva)
+    FOREIGN KEY(idProva) REFERENCES uniexams.Prove(idProva) ON DELETE CASCADE
 );
 
 CREATE TABLE uniexams.Iscrizioni(
@@ -68,7 +68,7 @@ CREATE TABLE uniexams.realizza(
 );
 
 CREATE TABLE UniExams.Libretto (
-    votoComplessivo INTEGER (votoComplessivo >= 0 AND votoComplessivo <= 31),
+    votoComplessivo INTEGER CHECK (votoComplessivo >= 0 AND votoComplessivo <= 31),
     email VARCHAR(64),
     idEsame VARCHAR(8),
     PRIMARY KEY(email, idEsame),
