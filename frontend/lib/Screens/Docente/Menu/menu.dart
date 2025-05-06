@@ -55,7 +55,7 @@ class MenuComponentState extends State<MenuComponent> {
             ),
             Expanded(
               child: MenuItem(
-                imagePath: "images/libretto_icon_2.png",
+                imagePath: "assets/images/libretto_icon_2.png",
                 label: "I miei Esami",
                 onClick: () => GoRouter.of(context).go("/docente/esami"),
               ),
@@ -65,7 +65,7 @@ class MenuComponentState extends State<MenuComponent> {
             ),
             Expanded(
               child: MenuItem(
-                imagePath: "images/iscrizione_icon_2.png",
+                imagePath: "assets/images/iscrizione_icon_2.png",
                 label: "Appelli",
                 onClick: () => GoRouter.of(context).go("/docente/appelli"),
               ),

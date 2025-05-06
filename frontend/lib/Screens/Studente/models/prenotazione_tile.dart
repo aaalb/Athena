@@ -83,8 +83,8 @@ class CancellaPrenotazioneTileState extends State<CancellaPrenotazioneTile> {
   void initState() {
     super.initState();
     confirmState = 0;
-    okImage = AssetImage('images/ok.gif');
-    warningImage = AssetImage('images/warning.gif');
+    okImage = AssetImage('assets/images/ok.gif');
+    warningImage = AssetImage('assets/images/warning.gif');
   }
 
   @override

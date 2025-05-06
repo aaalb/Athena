@@ -22,7 +22,7 @@ def get_appelli():
     """
     try:
         current_user = get_jwt_identity()
-        if current_user['role'] == 'Docente':
+        if get_jwt().get('role') == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
 
@@ -33,7 +33,7 @@ def get_appelli():
         # seleziono tutti gli appelli disponibili a cui l'utente non si è prenotato
         prenotazioni = session.query(Iscrizione.idappello) \
             .filter(Iscrizione.voto == None) \
-            .filter(Iscrizione.email == current_user['email'])
+            .filter(Iscrizione.email == current_user)
 
         #seleziono tutti gli appelli entro la data calcolata
         query = session.query(Appello.data, Prova.idprova, Prova.tipologia, Prova.opzionale, Prova.dipendeda, Esame.nome, Esame.idesame) \
@@ -82,13 +82,13 @@ def get_appelli_prenotati():
         current_user = get_jwt_identity()
 
         # se l'utente che accede alla risorsa non ha il ruolo di studente, gli viene negata la richiesta
-        if current_user['role'] == 'Docente':
+        if get_jwt().get('role') == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         # seleziono tutte le prenotazioni e i relativi dati delle prove a cui l'utente è prenotato
         subquery = session.query(Iscrizione.idappello) \
             .filter(Iscrizione.voto == None) \
-            .filter(Iscrizione.email == current_user['email'])
+            .filter(Iscrizione.email == current_user)
         
         query = session.query(Prova.idprova, Esame.nome, Appello.data, Prova.tipologia, Prova.responsabile, Prova.dipendeda) \
             .select_from(Appello) \
@@ -132,7 +132,7 @@ def prenota_appello():
         current_user = get_jwt_identity()
 
         # se l'utente che accede alla risorsa non ha il ruolo di studente, gli viene negata la richiesta
-        if current_user['role'] == 'Docente':
+        if get_jwt().get('role') == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
 
         id_prova = request.json['idprova']
@@ -152,7 +152,7 @@ def prenota_appello():
         #inserisco nella tabella "iscrizioni" una nuova prenotazione
         query = insert(Iscrizione).values(
             idappello = appello.idappello,
-            email = current_user['email']
+            email = current_user
         )
 
         session.execute(query)
@@ -183,7 +183,7 @@ def sprenota_appello():
         current_user = get_jwt_identity()
 
         # se l'utente che accede alla risorsa non ha il ruolo di studente, gli viene negata la richiesta
-        if current_user['role'] == 'Docente':
+        if get_jwt().get('role') == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
 
         id_prova = request.json['idprova']
@@ -202,7 +202,7 @@ def sprenota_appello():
 
        # rimuovo dalla tabella "iscrizioni" la prenotazione 
         session.query(Iscrizione) \
-            .filter(Iscrizione.email == current_user['email']) \
+            .filter(Iscrizione.email == current_user) \
             .filter(Iscrizione.idappello == appello.idappello) \
             .delete()
         
@@ -238,7 +238,7 @@ def get_appelli_docente():
         current_user = get_jwt_identity()
 
         #se l'utente ha il ruolo di studente, gli viene negato l'accesso 
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         data_attuale = datetime.now()
@@ -250,7 +250,7 @@ def get_appelli_docente():
             .select_from(Appello) \
             .join(Prova) \
             .join(Esame) \
-            .filter(Prova.responsabile == current_user['email']) \
+            .filter(Prova.responsabile == current_user) \
             .filter(Appello.data <= data_due_mesi_dopo) \
             .all()
 
@@ -288,7 +288,7 @@ def get_info_appello(idprova):
     """
     try:
         current_user = get_jwt_identity()
-        if current_user['role'] == 'Docente':
+        if get_jwt().get('role') == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         prova = session.query(Prova).filter(Prova.idprova == idprova).all()

@@ -86,7 +86,7 @@ class ConfermaAppelloTileState extends State<ConfermaAppelloTile>
   void initState()
   {
     super.initState();
-    okImage = AssetImage('images/ok.gif');
+    okImage = AssetImage('assets/images/ok.gif');
   }
 
   @override

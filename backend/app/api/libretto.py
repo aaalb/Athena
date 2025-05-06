@@ -46,13 +46,13 @@ def get_libretto():
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di docente, gli viene negato l'accesso
-        if current_user['role'] == 'Docente':
+        if get_jwt().get('role') == 'Docente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         # seleziono le informazioni riguardanti il libretto e lo storico delle prove 
         query = session.query(Libretto.votocomplessivo, Esame.nome, Esame.crediti, Esame.anno, Esame.idesame) \
             .join(Esame) \
-            .filter(Libretto.email == current_user['email']) \
+            .filter(Libretto.email == current_user) \
             .all()
         
         result = []
@@ -63,7 +63,7 @@ def get_libretto():
                 'crediti' : record.crediti,
                 'anno' : record.anno,
                 'idesame' : record.idesame,
-                'prove' : _storico_appelli(current_user['email'], record.idesame)  
+                'prove' : _storico_appelli(current_user, record.idesame)  
             })
 
         return jsonify(result), 200
@@ -93,7 +93,7 @@ def inserisci_in_libretto():
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di docente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         idesame = request.json["idesame"]

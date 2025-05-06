@@ -18,25 +18,26 @@ def login():
         if not email or not password:
             return jsonify({"Error":"Missing Parameters"}), 400
 
-        # viene controllato il tipo di utente, se studente o docente e l'access token viene creato
-        # utilizzando l'email e il ruolo dell'utente
+        # Controlla se è uno studente
         studente = session.query(Studente).filter_by(email=email).first()
         if studente:
             if check_password_hash(studente.password, password):
-                identity = {'email': email, 'role': 'Studente'}
-                ret = {
-                    'access_token': create_access_token(identity=identity)
-                    }
-                return jsonify(ret), 200
+                # Usa l'email come subject (stringa) e aggiungi il ruolo come claim aggiuntivo
+                access_token = create_access_token(
+                    identity=email,
+                    additional_claims={"role": "Studente"}
+                )
+                return jsonify(access_token=access_token), 200
         
+        # Controlla se è un docente
         docente = session.query(Docente).filter_by(email=email).first()
         if docente:
             if check_password_hash(docente.password, password):
-                identity = {'email': email, 'role': 'Docente'}
-                ret = {
-                    'access_token': create_access_token(identity=identity)
-                    }
-                return jsonify(ret), 200
+                access_token = create_access_token(
+                    identity=email,
+                    additional_claims={"role": "Docente"}
+                )
+                return jsonify(access_token=access_token), 200
         
         return jsonify({"Error":"Wrong Credentials"}), 403
     
@@ -48,9 +49,7 @@ def login():
         return jsonify({"Error": "Database error"}), 500
     except Exception as e:
         session.rollback()
-        return jsonify({"Error":"Internal Server Error"}), 500
-    
-    
+        return jsonify({"Error":"Internal Server Error"}), 500    
 
 @bp.route('/logout', methods=['POST'])
 @jwt_required()

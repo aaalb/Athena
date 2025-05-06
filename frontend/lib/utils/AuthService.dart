@@ -36,6 +36,7 @@ class AuthService {
         final data = jsonDecode(response.body);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("access_token", data['access_token']);
+        print('DEBUG AuthService: ${data["access_token"]}');
         return true;
       }
     } catch (e) {

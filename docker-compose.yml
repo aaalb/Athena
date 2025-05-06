@@ -24,7 +24,8 @@ services:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: athena_db
     volumes:
-        - postgres_data:/var/datadb/
+        - postgres_data:/var/lib/postgresql/data  # Path corretto per i dati
+        - ./init_db:/docker-entrypoint-initdb.d  # Mount script SQL
 
   pgadmin-compose:
     container_name: pgadmin

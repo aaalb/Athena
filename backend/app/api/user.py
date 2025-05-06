@@ -17,18 +17,18 @@ def get_user_data():
     """
     try:
         current_user = get_jwt_identity()
-        tipo = current_user['role']
+        tipo = get_jwt().get('role')
         
         result = []
 
         #in base al ruolo dell'utente vengono effettuate due query diverse
         if tipo == 'Studente':
             query = session.query(Studente.nome, Studente.cognome, Studente.email, Studente.datanascita, Studente.matricola, Studente.facolta) \
-                .filter(Studente.email == current_user['email']) \
+                .filter(Studente.email == current_user) \
                 .all()
         else:
             query = session.query(Docente.nome, Docente.cognome, Docente.email, Docente.datanascita) \
-                .filter(Docente.email == current_user['email']) \
+                .filter(Docente.email == current_user) \
                 .all()
             
         result = []

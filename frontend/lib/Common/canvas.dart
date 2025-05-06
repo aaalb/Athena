@@ -36,7 +36,7 @@ class MyCanvasState extends State<MyCanvas>
             (
               image: DecorationImage
               (
-                image: AssetImage("images/wallpaper.jpg"),
+                image: AssetImage("assets/images/wallpaper.jpg"),
                 fit: BoxFit.cover
               )
             )

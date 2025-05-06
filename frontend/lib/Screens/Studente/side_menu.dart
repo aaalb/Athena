@@ -11,21 +11,21 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-            child: Image.asset("images/cf-logo.png"),
+            child: Image.asset("assets/images/cf-logo.png"),
           ),
           DrawerListTile(
             title: "Libretto",
-            svgSrc: "images/libretto_icon.png",
+            svgSrc: "assets/images/libretto_icon.png",
             press: () => context.go('/libretto'),
           ),
           DrawerListTile(
             title: "Iscrizione agli appelli",
-            svgSrc: "images/iscrizione_icon.png",
+            svgSrc: "assets/images/iscrizione_icon.png",
             press: () => context.go('/appelli'),
           ),
           DrawerListTile(
             title: "Bacheca prenotazioni",
-            svgSrc: "images/bacheca_icon.png",
+            svgSrc: "assets/images/bacheca_icon.png",
             press: () => context.go('/prenotazioni'),
           ),
         ],

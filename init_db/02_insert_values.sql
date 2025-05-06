@@ -1,3 +1,9 @@
+-- Assicurati che lo schema esista (potresti aver già eseguito il CREATE SCHEMA)
+CREATE SCHEMA IF NOT EXISTS uniexams;
+
+-- Assicurati che le tabelle siano state create con i CREATE TABLE forniti
+-- (omessi qui per brevità, ma necessari prima degli INSERT)
+
 INSERT INTO uniexams.studenti (nome, cognome, DataNascita, password, email, facolta, matricola)
 VALUES
     ('Roberto', 'Neri', '1892-01-03', 'scrypt:32768:8:1$mKz7CYhVCz9OKp5d$c631e0252630a17bc3b7e0ee301bc2de8459ea0513e7fe61e52672553388acbb041c2c4ba7e16e5e619b0ecbb5180510f3cc12b069a2480d2e000db2dad8f462', '600653@unive.it', 'Informatica', '600653'), --password123
@@ -19,7 +25,7 @@ VALUES
     ('CT1002', 'Programmazione e Laboratorio', 12, 2);
 
 INSERT INTO uniexams.realizza(email, idEsame)
-VALUES 
+VALUES
     ('luciopozzobon@unive.it', 'CT0006'),
     ('mariabordin@unive.it', 'CT0006'),
     ('francescoquagliotto@unive.it', 'CT0200'),
@@ -36,24 +42,26 @@ VALUES
     (29, '600653@unive.it', 'CT0006');
 
 INSERT INTO uniexams.prove(idProva, tipologia, opzionale, dataScadenza, dipendeDa, idEsame, responsabile)
-VALUES 
-    ('CT0006-1', 'scritto', 'false', '2024-06-30', NULL, 'CT0006', 'luciopozzobon@unive.it'),
-    ('CT0006-2', 'progetto', 'false', '2024-06-30', 'CT0006-1', 'CT0006', 'mariabordin@unive.it'),
-    ('CT0200-1', 'scritto', 'false', '2024-06-30', NULL, 'CT0200', 'francescoquagliotto@unive.it'),
-    ('CT1002-1', 'orale', 'false', '2024-06-30', NULL, 'CT1002', 'elenarossi@unive.it');
+VALUES
+    -- Corretta la dataScadenza a una data futura (es. 2026-06-30)
+    ('CT0006-1', 'scritto', 'false', '2026-06-30', NULL, 'CT0006', 'luciopozzobon@unive.it'),
+    ('CT0006-2', 'progetto', 'false', '2026-06-30', 'CT0006-1', 'CT0006', 'mariabordin@unive.it'),
+    ('CT0200-1', 'scritto', 'false', '2026-06-30', NULL, 'CT0200', 'francescoquagliotto@unive.it'),
+    ('CT1002-1', 'orale', 'false', '2026-06-30', NULL, 'CT1002', 'elenarossi@unive.it');
 
 INSERT INTO uniexams.appelli(idProva, data)
-VALUES 
-    ('CT0006-1', '2023-01-3'),
-    ('CT0006-2', '2023-01-6'),
-    ('CT0200-1', '2023-01-10'),
-    ('CT0200-1', '2023-01-15'),
-    ('CT1002-1', '2023-01-30');
-
+VALUES
+    ('CT0006-1', '2023-01-3'), -- Questo sarà idAppello 1
+    ('CT0006-2', '2023-01-6'), -- Questo sarà idAppello 2
+    ('CT0200-1', '2023-01-10'), -- Questo sarà idAppello 3
+    ('CT0200-1', '2023-01-15'), -- Questo sarà idAppello 4
+    ('CT1002-1', '2023-01-30'); -- Questo sarà idAppello 5
 
 INSERT INTO uniexams.Iscrizioni(idAppello, email, voto, bonus, idoneita)
 VALUES
-	(6, '886512@unive.it', 17, 0, false),
-	(7, '886512@unive.it', 30, 0, true),
-	(8, '600653@unive.it', 18, 1, true),
-	(9, '886512@unive.it', NULL, 0, true);
+    -- Corretti gli idAppello per fare riferimento a quelli esistenti (1-5)
+    -- Corretti i valori di bonus 0 a 1 per soddisfare CHECK(bonus > 0)
+    (1, '886512@unive.it', 17, 1, false), -- Usato idAppello 1, bonus da 0 a 1
+    (2, '886512@unive.it', 30, 1, true),  -- Usato idAppello 2, bonus da 0 a 1
+    (3, '600653@unive.it', 18, 1, true),  -- Usato idAppello 3 (bonus era già 1)
+    (4, '886512@unive.it', NULL, 1, true); -- Usato idAppello 4, bonus da 0 a 1

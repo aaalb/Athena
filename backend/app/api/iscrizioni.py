@@ -24,7 +24,7 @@ def get_iscritti(idprova=None, data=None):
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di studente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         # seleziono le informazioni dell'appello ricercato
@@ -83,13 +83,13 @@ def inserisci_voto(idprova, data):
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di studente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         # se il docente non è colui che ha crato l'esame, gli viene negato l'accesso
         responsabile = session.query(Prova).filter(Prova.idprova == idprova).first()
 
-        if responsabile.responsabile != current_user['email']:
+        if responsabile.responsabile != current_user:
             return jsonify({"Error":f"Not Allowed to modify grades for {idprova}"}), 403
 
         stud_email = request.json['stud_email']

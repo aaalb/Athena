@@ -43,7 +43,7 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
       Padding(
         padding: EdgeInsets.symmetric(vertical: 20),
         child: Image.asset(
-          "images/cf-logo.png",
+          "assets/images/cf-logo.png",
           fit: BoxFit.fill,
         ),
       ),

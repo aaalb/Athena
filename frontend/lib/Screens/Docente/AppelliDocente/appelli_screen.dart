@@ -117,7 +117,7 @@ class AppelliDocenteComponentState extends State<AppelliDocenteComponent> {
                     visible: noDataVisible,
                     child: Expanded(
                       child: Image.asset(
-                        "images/nodatatext.png",
+                        "assets/images/nodatatext.png",
                         fit: BoxFit.cover,
                         color: Color.fromARGB(115, 1, 1, 1),
                       ),

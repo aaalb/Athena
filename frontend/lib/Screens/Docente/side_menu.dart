@@ -10,16 +10,16 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-            child: Image.asset("images/cf-logo.png"),
+            child: Image.asset("assets/images/cf-logo.png"),
           ),
           DrawerListTile(
             title: "I miei esami",
-            svgSrc: "images/libretto_icon.png",
+            svgSrc: "assets/images/libretto_icon.png",
             press: () => context.go('/docente/esami'),
           ),
           DrawerListTile(
             title: "Appelli",
-            svgSrc: "images/libretto_icon.png",
+            svgSrc: "assets/images/libretto_icon.png",
             press: () => context.go('/docente/appelli'),
           ),
         ],

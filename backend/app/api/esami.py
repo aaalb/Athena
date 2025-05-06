@@ -31,7 +31,7 @@ def crea_esame():
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di studente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
 
         idesame = request.json["idesame"]
@@ -52,12 +52,12 @@ def crea_esame():
 
         session.execute(query)
 
-        collaboratori = [current_user['email']]
+        collaboratori = [current_user]
 
         for index, prova in enumerate(prove, start=1):
             #per ogni prova, calcolo l'id della prova
             idprova = f"{idesame}-{index}",
-            responsabile = prova.get("responsabile") if prova.get("responsabile") != "" else current_user['email']
+            responsabile = prova.get("responsabile") if prova.get("responsabile") != "" else current_user
 
             query = insert(Prova).values(
                 idprova = idprova,
@@ -123,7 +123,7 @@ def elimina_esame():
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di studente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
 
         idesame = request.json["idesame"]
@@ -133,7 +133,7 @@ def elimina_esame():
 
         # se il docente non è colui che ha realizzato l'esame, gli viene negato l'accesso
         creatore = session.query(Realizza).filter(Realizza.idesame == idesame).first()
-        if(creatore.email != current_user['email']):
+        if(creatore.email != current_user):
             return jsonify({"Error":"Not Allowed"}), 403
 
         session.query(Esame).filter(Esame.idesame == idesame).delete()
@@ -159,10 +159,10 @@ def visualizza_esame():
         current_user = get_jwt_identity()
 
         # se l'utente ha il ruolo di studente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
-        subquery = session.query(Realizza.idesame).filter(Realizza.email == current_user['email'])
+        subquery = session.query(Realizza.idesame).filter(Realizza.email == current_user)
         esami = session.query(Esame).filter(Esame.idesame.in_(subquery))
 
         if not esami:
@@ -211,12 +211,12 @@ def get_candidati(idesame):
         current_user = get_jwt_identity()
         
          # se l'utente ha il ruolo di studente, gli viene negato l'accesso
-        if current_user['role'] == 'Studente':
+        if get_jwt().get('role') == 'Studente':
             return jsonify({"Error":"Not Allowed"}), 403
         
         # se il docente non è colui che ha realizzato l'esame, gli viene negato l'accesso
         creatore = session.query(Realizza).filter(Realizza.idesame == idesame).first()
-        if(creatore.email != current_user['email']):
+        if(creatore.email != current_user):
             return jsonify({"Error":"Not Allowed"}), 403
 
         studenti = session.query(Studente).all()
